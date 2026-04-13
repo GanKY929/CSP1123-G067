@@ -1,7 +1,19 @@
 from flask import Flask, render_template
-from database import setup_app
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import DeclarativeBase
 
-app = setup_app()
+class Base(DeclarativeBase):
+    pass
+
+app = Flask(__name__)
+db = SQLAlchemy(model_class = Base)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+db.init_app(app)
+
+import database
+with app.app_context():
+    db.create_all()
 
 @app.route("/")
 def index():
