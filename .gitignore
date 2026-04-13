@@ -1,4 +1,3 @@
 *.tmproj
 virtual/
-__pycache__/
-.gitignore
+__pycache__
