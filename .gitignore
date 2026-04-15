@@ -1,4 +1,4 @@
 *.tmproj
-virtual/
 __pycache__/
 .gitignore
+*.pyc
