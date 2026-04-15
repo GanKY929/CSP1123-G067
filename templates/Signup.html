@@ -31,14 +31,14 @@
   <div class="login-box">
     <h2>SIGN UP</h2>
     <label>Email</label>
-    <input type="email" id="s-email" placeholder="Enter your email" />
+    <input type="email" id="s-email" placeholder="Enter your email" name="email"/>
     <label>Username</label>
-    <input type="text" id="s-user" placeholder="Choose a username" />
+    <input type="text" id="s-user" placeholder="Choose a username" name="username"/>
     <label>Password</label>
-    <input type="password" id="s-pass" placeholder="Choose a password" />
+    <input type="password" id="s-pass" placeholder="Choose a password" name="password"/>
     <label>Confirm password</label>
-    <input type="password" id="s-pass2" placeholder="Repeat password" />
-    <button class="btn-main" onclick="doSignup()">CREATE ACCOUNT</button>
+    <input type="password" id="s-pass2" placeholder="Repeat password" name="confirmPassword"/>
+    <button class="btn-main" onclick="location.href='{{ url_for(\'doSignup\') }}'">CREATE ACCOUNT</button>
     <p class="error-msg" id="s-err"></p>
     <p class="success-msg" id="s-ok">Account created! You can now log in.</p>
     <div class="sub-links">
