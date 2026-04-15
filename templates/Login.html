@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>MMU InfoHUB – Login</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
   <style>
     .login-center { display: flex; justify-content: center; align-items: center; padding: 60px 20px; }
     .login-box { border: solid #333333; padding: 40px 36px; width: 100%; max-width: 380px; }
@@ -37,8 +37,8 @@
     <button class="btn-main" onclick="doLogin()">LOGIN</button>
     <p class="error-msg" id="l-err">Invalid username or password.</p>
     <div class="sub-links">
-      <button class="btn-link" onclick="window.location.href='ForgotPass.html'">Forgot password / username?</button>
-      <button class="btn-link" onclick="window.location.href='Signup.html'">Sign up</button>
+      <a href="{{ url_for('forgotPass') }}" class="btn-link">Forgot password / username?</a>
+      <a href="{{ url_for('signup') }}" class="btn-link">Sign up</a>
     </div>
   </div>
 
