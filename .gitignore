@@ -3,5 +3,10 @@ __pycache__/
 .gitignore
 *.pyc
 
+<<<<<<< HEAD
 instance/
 *.db
+=======
+#database
+instance/
+>>>>>>> Amirul_Haqimi
