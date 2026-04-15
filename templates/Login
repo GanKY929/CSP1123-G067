@@ -1,1 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MMU InfoHUB – Login</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .login-center { display: flex; justify-content: center; align-items: center; padding: 60px 20px; }
+    .login-box { border: solid #333333; padding: 40px 36px; width: 100%; max-width: 380px; }
+    .login-box h2 { font-size: 40px; color: #333333; margin-bottom: 24px; }
+    .login-box p.sub-text { font-size: 14px; color: #555; margin-bottom: 18px; padding: 0; }
+    .login-box label { display: block; font-size: 13px; color: #333333; margin-bottom: 5px; font-weight: 500; }
+    .login-box input { display: block; width: 100%; box-sizing: border-box; padding: 12px 14px; margin-bottom: 14px; background: #f8f5f3; border: solid #333333; color: #333333; font-size: 15px; font-family: inherit; outline: none; }
+    .login-box input:focus { background: #333333; color: #f8f5f3; }
+    .btn-main { display: block; width: 100%; padding: 13px 16px; background: #f8f5f3; border: solid #333333; color: #333333; font-size: 15px; font-family: inherit; cursor: pointer; font-weight: 600; letter-spacing: 0.05em; margin-top: 4px; }
+    .btn-main:hover { background: #333333; color: #f8f5f3; }
+    .sub-links { display: flex; justify-content: space-between; margin-top: 16px; }
+    .btn-link { background: none; border: none; color: #333333; font-size: 13px; font-family: inherit; cursor: pointer; text-decoration: underline; padding: 0; }
+    .btn-link:hover { color: #666; }
+    .error-msg { color: #c0392b; font-size: 13px; margin-top: 10px; display: none; }
+  </style>
+</head>
+<body>
 
+<header>
+  <h1>MMU InfoHUB</h1>
+</header>
+
+<div class="login-center">
+
+  <!-- LOGIN THING -->
+  <div class="login-box">
+    <h2>LOGIN</h2>
+    <label>Username</label>
+    <input type="text" id="l-user" placeholder="Enter username" />
+    <label>Password</label>
+    <input type="password" id="l-pass" placeholder="Enter password" />
+    <button class="btn-main" onclick="doLogin()">LOGIN</button>
+    <p class="error-msg" id="l-err">Invalid username or password.</p>
+    <div class="sub-links">
+      <button class="btn-link" onclick="window.location.href='ForgotPass.html'">Forgot password / username?</button>
+      <button class="btn-link" onclick="window.location.href='Signup.html'">Sign up</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- KOK YANG, use doLogin() pls -->
+
+</body>
+</html>
