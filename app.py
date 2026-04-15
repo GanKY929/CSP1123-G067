@@ -50,10 +50,8 @@ def signup():
 
 def doSignup(username, email, password, confirmPassword):
     try:
-        if password.lower() == password:
-            raise Exception("password cannot be all lowercase.")
-        if password.upper() == password:
-            raise Exception("password cannot be all uppercase.")
+        if password.lower() or password.upper() == password:
+            raise Exception("password cannot be all lowercase or all uppercase.")
         for char in password:
             if char.isspace():
                 raise Exception("password cannot contain spaces.")
@@ -65,12 +63,13 @@ def doSignup(username, email, password, confirmPassword):
             raise Exception("username already exists.")
         if db.session.query(                ).filter_by(email=email).first():
             raise Exception("email already exists.")
+        
         #new_user = (username=username, email=email, password=password)
         #db.session.add(new_user)
         db.session.commit()
 
-    except Exception as e:
-        return render_template("signup.html", username=username, email=email)
+    except Exception as error:
+        return render_template("signup.html", error=str(error), username=username, email=email)
 
 
 @app.route("/forgotPass")
