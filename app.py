@@ -32,12 +32,18 @@ def login():
 
 @app.route("/doLogin" , methods=["POST"])
 def doLogin(username, password):
-        #database query to check if username and password are correct
+    try:
+        user = db.session.query(database.User).filter_by(username=username).first()
+        if not user:
+            raise Exception("Username does not exist.")
+        if user.password != password:
+            raise Exception("Incorrect password.")    
+        return render_template("index.html", username=username)
+    except Exception as error:
+        return render_template("login.html", error=str(error), username=username)
 
-        return render_template("login.html", username=username)
 
-
-@app.route("/signup", methods=["GET", "POST"])
+@app.route("/signup")
 def signup():
     if request.method == "POST":
         username = request.form.get("username")
@@ -47,10 +53,14 @@ def signup():
         return doSignup(username, email, password, confirmPassword)
     return render_template("signup.html")
 
-
+@app.route("/doSignup", methods=["POST"])
 def doSignup(username, email, password, confirmPassword):
     try:
-        if password.lower() or password.upper() == password:
+        if not username or not email or not password or not confirmPassword:
+            raise Exception("All fields are required.")
+        if username == db.session.query(database.User).filter_by(username=username).first():
+            raise Exception("username already exists.")
+        if password.lower() == password or password.upper() == password:
             raise Exception("password cannot be all lowercase or all uppercase.")
         for char in password:
             if char.isspace():
@@ -66,7 +76,7 @@ def doSignup(username, email, password, confirmPassword):
         new_user = database.User(username=username, email=email, password=password)
         db.session.add(new_user)
         db.session.commit()
-
+        return render_template("signup.html", success="Account created! You can now log in.", username=username, email=email)
     except Exception as error:
         return render_template("signup.html", error=str(error), username=username, email=email)
 
