@@ -59,13 +59,12 @@ def doSignup(username, email, password, confirmPassword):
             raise Exception("Passwords do not match.")
         if len(password) < 8:
             raise Exception("password must be at least 8 characters long.")
-        if db.session.query(                ).filter_by(username=username).first():
-            raise Exception("username already exists.")
-        if db.session.query(                ).filter_by(email=email).first():
+        if db.session.query(database.User).filter_by(username=username).first():
+            raise Exception("username already exists")
+        if db.session.query(database.User).filter_by(email=email).first():
             raise Exception("email already exists.")
-        
-        #new_user = (username=username, email=email, password=password)
-        #db.session.add(new_user)
+        new_user = database.User(username=username, email=email, password=password)
+        db.session.add(new_user)
         db.session.commit()
 
     except Exception as error:
