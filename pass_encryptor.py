@@ -1,4 +1,4 @@
-def get_CipheredPassword(ori_password):
+def get_CipheredPassword(ori_password: str) -> str:
     if(ori_password == None):
         print("You did not enter anything.")
         return
@@ -8,16 +8,16 @@ def get_CipheredPassword(ori_password):
         return 
 
     special_key = "SalT-Is-way-too-SAlty"
-    ori_password_with_key = ori_password + special_key #roti+SalT-Is-way-too-SAlty
-    ori_password_with_key_length = len(ori_password_with_key)
+    ori_password_with_key = ori_password + special_key 
+    ori_password_with_key_length: int = len(ori_password_with_key)
 
-    list_ciphered_password = []
+    list_ciphered_password: str = []
 
     for i in range(0, ori_password_with_key_length, 2):
         if i == ori_password_with_key_length-1:
             break
 
-        list_ciphered_password.append(str(ori_password_with_key[i])) #r7%6*o$5#6
+        list_ciphered_password.append(str(ori_password_with_key[i])) 
         list_ciphered_password.append("7%6*")
         list_ciphered_password.append(str(ori_password_with_key[i+1]))
         list_ciphered_password.append("$5#6")
