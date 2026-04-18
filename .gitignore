@@ -1,10 +1,7 @@
 *.tmproj
 __pycache__/
-.gitignore
 *.pyc
 
 
 #database
 instance/
-instance/project.db
-*.db
