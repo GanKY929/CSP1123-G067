@@ -15,8 +15,7 @@
     .sub-links { display: flex; justify-content: space-between; margin-top: 16px; }
     .btn-link { background: none; border: none; color: #333333; font-size: 13px; font-family: inherit; cursor: pointer; text-decoration: underline; padding: 0; }
     .btn-link:hover { color: #666; }
-    .error-msg { color: #c0392b; font-size: 13px; margin-top: 10px; display: none; }
-    .success-msg { color: #27ae60; font-size: 13px; margin-top: 10px; display: none; }
+
   </style>
 </head>
 <body>
@@ -26,18 +25,9 @@
 </header>
 
 <div class="login-center">
-  {% if error %}
-    <script>
-        alert("{{ error }}");
-    </script>
-  {% endif %}
-  {% if success %}
-    <script>
-        alert("{{ success }}");
-    </script>
-  {% endif %}
+  {% include "flash.html" %}
   <!-- SIGN UP -->
-  <form method="POST" action="/doSignup" id="signup-form">
+  <form method="POST" action="{{ url_for('signup') }}" id="signup-form">
   <div class="login-box">
     <h2>SIGN UP</h2>
     <label>Email</label>
@@ -55,10 +45,6 @@
   </div>
   </form>
 </div>
-
-<!-- KOK YANG, use doSignup() pls -->
-<!-- fields: s-email, s-user, s-pass, s-pass2 -->
-<!-- show s-err for errors, s-ok for success -->
 
 </body>
 </html>

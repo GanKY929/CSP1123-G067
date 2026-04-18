@@ -28,11 +28,7 @@
 
 
 <div class="content">
-    {% if success %}
-        <script>
-            alert("{{ success }}");
-        </script>
-    {% endif %}
+    {% include "flash.html" %}
     <h2 id="subtask">LATEST EVENTS! </h2><br>
 
 </div>

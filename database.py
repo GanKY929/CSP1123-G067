@@ -1,10 +1,9 @@
 from app import db
 from sqlalchemy import Integer, String, text
 from sqlalchemy.orm import Mapped, mapped_column
-from werkzeug.security import check_password_hash
-
+from werkzeug.security import check_password_hash as checkPasswordHash, generate_password_hash as generatePasswordHash
 class User(db.Model):
-    user_id: Mapped[int] = mapped_column(Integer, primary_key = True)
+    user_id: Mapped[int] = mapped_column(primary_key = True)
     username: Mapped[str] = mapped_column(unique = True)
     password: Mapped[str]
     email: Mapped[str]
@@ -16,5 +15,8 @@ class Post(db.Model):
     post_content: Mapped[str]
     post_owner: Mapped[int] = mapped_column(unique = True)
 
-def check_password(stored_password, password):
-    return check_password_hash(stored_password, password)
+def generatePassword(password):
+    return generatePasswordHash(password)
+
+def checkPassword(stored_password, password):
+    return checkPasswordHash(stored_password, password)
