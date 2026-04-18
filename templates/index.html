@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 <title>MMU InfoHUB</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
 <style>
 
 
@@ -19,6 +19,8 @@
     <li><a href= >LEARNING RESOURCES</a></li><br>
     <li><a href= >QUEST BOARD</a></li><br>
     <li><a href= >CONTACT</a></li><br>
+    </li><a href="{{ url_for('login') }}" class="btn-link">LOGIN</a>
+</li><br>
     <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project G067</li>
 </ul>
 </div>
