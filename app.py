@@ -96,7 +96,7 @@ def doSignup():
         if db.session.query(database.User).filter_by(email=email).first():
             raise Exception("email already exists.")
         
-        new_user = database.User(user_id = 1, username = username, password = password, email = email, tagged_post = "test")
+        new_user = database.User(user_id = 3, username = username, password = password, email = email, tagged_post = "test")
         db.session.add(new_user)
         db.session.commit()
 
