@@ -12,7 +12,6 @@
 <header>
     <h1>MMU InfoHUB</h1>
 </header>
-
 <div class="navigationBar">
 <ul><br>
     <li><a href= >HOME</a></li><br>
@@ -29,7 +28,11 @@
 
 
 <div class="content">
-    
+    {% if success %}
+        <script>
+            alert("{{ success }}");
+        </script>
+    {% endif %}
     <h2 id="subtask">LATEST EVENTS! </h2><br>
 
 </div>
