@@ -140,3 +140,15 @@ p{
     padding-top: 15px;
     padding-bottom: 100px;
 }
+#flash-messages .error {
+    color: #c0392b;
+    font-size: 13px;
+    margin-top: 10px;
+    display: block;
+}
+#flash-messages .success {
+    color: #27ae60;
+    font-size: 13px;
+    margin-top: 10px;
+    display: block;
+}

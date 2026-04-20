@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 
@@ -11,15 +11,20 @@ db = SQLAlchemy(model_class = Base)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 db.init_app(app)
 
+app.config["SECRET_KEY"] = "this_is_a_secret_key_here"
+
 import database
 with app.app_context():
     db.create_all()
 
+def checkUsername(username):
+    return database.User.query.filter_by(username=username).first()
+def checkEmail(email):
+    return database.User.query.filter_by(email=email).first()
 
 @app.route("/")
 def index():
     return render_template("index.html")
-
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -86,6 +91,13 @@ def signup():
 
     return render_template("signup.html", success="Account created! You can now log in.", username=username, email=email)
 
-@app.route("/forgotPass")
+@app.route("/forgotPass", methods=["POST"])
 def forgotPass():
+    if request.method == "POST":
+        return doForgotPass()
     return render_template("forgotPass.html")
+
+@app.route("/doForgotPass", methods=["POST"])
+def doForgotPass():
+    email = request.form.get("email")
+    return render_template("login.html", email=email)
