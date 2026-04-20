@@ -1,8 +1,7 @@
 *.tmproj
 __pycache__/
-virtual/
-.gitignore
 *.pyc
+
 
 #database
 instance/

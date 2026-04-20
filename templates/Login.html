@@ -16,7 +16,7 @@
     .sub-links { display: flex; justify-content: space-between; margin-top: 16px; }
     .btn-link { background: none; border: none; color: #333333; font-size: 13px; font-family: inherit; cursor: pointer; text-decoration: underline; padding: 0; }
     .btn-link:hover { color: #666; }
-    .error-msg { color: #c0392b; font-size: 13px; margin-top: 10px; display: none; }
+
   </style>
 </head>
 <body>
@@ -26,24 +26,26 @@
 </header>
 
 <div class="login-center">
-
-  <!-- LOGIN THING -->
-  <form method="POST" action="/doLogin" id="login-form">
+  {% include "flash.html" %}
+  <form method="POST" action="{{ url_for('login') }}" id="login-form">
     <div class="login-box">
-      <h2>LOGIN</h2>
-      <label>Username</label>
-      <input type="text" id="l-user" placeholder="Enter username" name="username"/>
-      <label>Password</label>
-      <input type="password" id="l-pass" placeholder="Enter password" name="password"/>
-      <button class="btn-main" type="submit">LOGIN</button>
-      <p class="error-msg" id="l-err">Invalid username or password.</p>
-      <div class="sub-links">
-        <a href="{{ url_for('forgotPass') }}" class="btn-link">Forgot password / username?</a>
-        <a href="{{ url_for('signup') }}" class="btn-link">Sign up</a>
-      </div>
+    <h2>LOGIN</h2>
+    <label for="l-user">Username</label>
+    <input type="text" id="l-user" name="username" placeholder="Enter username" required/>
+    
+    <label for="l-pass">Password</label>
+    <input type="password" id="l-pass" name="password" placeholder="Enter password" required/>
+    
+    <button class="btn-main" type="submit">LOGIN</button>
+    
+    <div class="sub-links">
+      <a href="{{ url_for('forgotPass') }}" class="btn-link">Forgot password / username?</a>
+      <a href="{{ url_for('signup') }}" class="btn-link">Sign up</a>
+    </div>
     </div>
   </form>
 </div>
+
 
 <!-- KOK YANG, use doLogin() pls -->
 
