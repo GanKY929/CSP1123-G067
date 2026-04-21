@@ -27,20 +27,29 @@
 <div class="login-center">
   {% include "flash.html" %}
   <!-- SIGN UP -->
-  <form method="POST" action="{{ url_for('signup') }}" id="signup-form">
-  <div class="login-box">
-    <h2>SIGN UP</h2>
-    <label>Email</label>
-    <input type="email" id="s-email" placeholder="Enter your email" name="email" required/>
-    <label>Username</label>
-    <input type="text" id="s-user" placeholder="Choose a username" name="username" required/>
-    <label>Password</label>
-    <input type="password" id="s-pass" placeholder="Choose a password" name="password" required/>
-    <label>Confirm password</label>
-    <input type="password" id="s-pass2" placeholder="Repeat password" name="confirmPassword" required/>
-    <button class="btn-main" type="submit">CREATE ACCOUNT</button>
-    <div class="sub-links">
-      <a href="{{ url_for('login') }}" class="btn-link">← Back to login</a>
+  <form method="POST" action="/signup" id="signup-form">
+    <div class="login-box">
+      <h2>SIGN UP</h2>
+      <label>Email</label>
+      <input type="email" id="s-email" placeholder="Enter your email" name="email"/>
+
+      <label>Username</label>
+      <input type="text" id="s-user" placeholder="Choose a username" name="username"/>
+
+      <label>Password</label>
+      <input type="password" id="s-pass" placeholder="Choose a password" name="password"/>
+
+      <label>Confirm password</label>
+      <input type="password" id="s-pass2" placeholder="Repeat password" name="confirmPassword"/>
+
+      <button class="btn-main" type="submit">CREATE ACCOUNT</button>
+      
+      <p class="error-msg" id="s-err"></p>
+      <p class="success-msg" id="s-ok">Account created! You can now log in.</p>
+
+      <div class="sub-links">
+        <a href="{{ url_for('login') }}" class="btn-link">← Back to login</a>
+      </div>
     </div>
   </div>
   </form>
