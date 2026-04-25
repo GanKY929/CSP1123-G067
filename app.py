@@ -108,3 +108,6 @@ def forgotPass():
 def doForgotPass():
     email = request.form.get("email")
     return render_template("login.html", email=email)
+
+if __name__ == "__main__":
+    app.run(debug=True)
