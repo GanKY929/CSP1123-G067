@@ -11,7 +11,8 @@ db = SQLAlchemy(model_class = Base)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 db.init_app(app)
 
-app.config["SECRET_KEY"] = "this_is_a_secret_key_here"
+import config
+app.config["SECRET_KEY"] = config.secret_key
 
 import database
 with app.app_context():
@@ -101,3 +102,6 @@ def forgotPass():
 def doForgotPass():
     email = request.form.get("email")
     return render_template("login.html", email=email)
+
+if __name__ == "__main__":
+    app.run(debug=True)
