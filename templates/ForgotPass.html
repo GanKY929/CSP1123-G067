@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>MMU InfoHUB – Forgot Password</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
   <style>
     .login-center { display: flex; justify-content: center; align-items: center; padding: 60px 20px; }
     .login-box { border: solid #333333; padding: 40px 36px; width: 100%; max-width: 380px; }
@@ -38,7 +38,7 @@
     <p class="error-msg" id="f-err">No account found with that email.</p>
     <p class="success-msg" id="f-ok">Check your email for further instructions.</p>
     <div class="sub-links">
-      <button class="btn-link" onclick="window.location.href='Login.html'">← Back to login</button>
+      <a href="{{ url_for('login') }}" class="btn-link">← Back to login</a>
     </div>
   </div>
 

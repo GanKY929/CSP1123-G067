@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>MMU InfoHUB – Sign Up</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
   <style>
     .login-center { display: flex; justify-content: center; align-items: center; padding: 60px 20px; }
     .login-box { border: solid #333333; padding: 40px 36px; width: 100%; max-width: 380px; }
@@ -15,8 +15,7 @@
     .sub-links { display: flex; justify-content: space-between; margin-top: 16px; }
     .btn-link { background: none; border: none; color: #333333; font-size: 13px; font-family: inherit; cursor: pointer; text-decoration: underline; padding: 0; }
     .btn-link:hover { color: #666; }
-    .error-msg { color: #c0392b; font-size: 13px; margin-top: 10px; display: none; }
-    .success-msg { color: #27ae60; font-size: 13px; margin-top: 10px; display: none; }
+
   </style>
 </head>
 <body>
@@ -26,31 +25,35 @@
 </header>
 
 <div class="login-center">
-
+  {% include "flash.html" %}
   <!-- SIGN UP -->
-  <div class="login-box">
-    <h2>SIGN UP</h2>
-    <label>Email</label>
-    <input type="email" id="s-email" placeholder="Enter your email" />
-    <label>Username</label>
-    <input type="text" id="s-user" placeholder="Choose a username" />
-    <label>Password</label>
-    <input type="password" id="s-pass" placeholder="Choose a password" />
-    <label>Confirm password</label>
-    <input type="password" id="s-pass2" placeholder="Repeat password" />
-    <button class="btn-main" onclick="doSignup()">CREATE ACCOUNT</button>
-    <p class="error-msg" id="s-err"></p>
-    <p class="success-msg" id="s-ok">Account created! You can now log in.</p>
-    <div class="sub-links">
-      <button class="btn-link" onclick="window.location.href='Login.html'">← Back to login</button>
+  <form method="POST" action="/signup" id="signup-form">
+    <div class="login-box">
+      <h2>SIGN UP</h2>
+      <label>Email</label>
+      <input type="email" id="s-email" placeholder="Enter your email" name="email"/>
+
+      <label>Username</label>
+      <input type="text" id="s-user" placeholder="Choose a username" name="username"/>
+
+      <label>Password</label>
+      <input type="password" id="s-pass" placeholder="Choose a password" name="password"/>
+
+      <label>Confirm password</label>
+      <input type="password" id="s-pass2" placeholder="Repeat password" name="confirmPassword"/>
+
+      <button class="btn-main" type="submit">CREATE ACCOUNT</button>
+      
+      <p class="error-msg" id="s-err"></p>
+      <p class="success-msg" id="s-ok">Account created! You can now log in.</p>
+
+      <div class="sub-links">
+        <a href="{{ url_for('login') }}" class="btn-link">← Back to login</a>
+      </div>
     </div>
   </div>
-
+  </form>
 </div>
-
-<!-- KOK YANG, use doSignup() pls -->
-<!-- fields: s-email, s-user, s-pass, s-pass2 -->
-<!-- show s-err for errors, s-ok for success -->
 
 </body>
 </html>
