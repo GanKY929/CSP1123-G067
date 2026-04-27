@@ -7,7 +7,7 @@ app.secret_key = "super-secret-key"
 
 CLIENT_ID = config.Client_ID
 CLIENT_SECRET = config.Client_Secret
-TENANT_ID = config.Tenant_ID
+TENANT_ID = config.Admin_ID
 AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
 REDIRECT_PATH = "/getAToken"
 SCOPE = ["User.Read"]
@@ -73,14 +73,9 @@ if __name__ == "__main__":
     app.run(debug=True)
 
 """
-Can't log in with Microsoft account yet. Will work on Microsoft login later.
+Can't log in with Microsoft account yet. Seen like need school admin approval. Will work on Microsoft login later.
 
-As it will display this message when trying to log in with Microsoft account:
-
-Need admin approval
-MMUinfo
-unverified
-MMUinfo needs permission to access resources in your organisation that only an admin can grant. 
-Please ask an admin to grant permission to this app before you can use it.
+So, Im trying to sign in without microsoft student account, 
+and deal with using the admin acccount, that I can review my login function works.
 
 """

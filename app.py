@@ -11,7 +11,8 @@ db = SQLAlchemy(model_class = Base)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 db.init_app(app)
 
-app.config["SECRET_KEY"] = "this_is_a_secret_key_here"
+import config
+app.config["SECRET_KEY"] = config.secret_key
 
 import database
 with app.app_context():

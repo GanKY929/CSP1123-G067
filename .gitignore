@@ -1,7 +1,8 @@
 *.tmproj
 __pycache__/
 *.pyc
-
+virtual/
+config.py
 
 #database
 instance/
