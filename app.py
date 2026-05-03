@@ -91,13 +91,10 @@ def signup():
 
     return render_template("signup.html", success="Account created! You can now log in.", username=username, email=email)
 
-@app.route("/forgotPass", methods=["POST"])
+@app.route("/forgotPass", methods=["GET", "POST"])
 def forgotPass():
-    if request.method == "POST":
-        return doForgotPass()
-    return render_template("forgotPass.html")
+    if request.method == "GET":
+        return render_template("forgotPass.html")
 
-@app.route("/doForgotPass", methods=["POST"])
-def doForgotPass():
     email = request.form.get("email")
     return render_template("login.html", email=email)
