@@ -26,10 +26,10 @@
 </header>
 
 <div class="login-center">
-  {% include "flash.html" %}
   <form method="POST" action="{{ url_for('login') }}" id="login-form">
     <div class="login-box">
     <h2>LOGIN</h2>
+    {% include "flash.html" %}
     <label for="l-user">Username</label>
     <input type="text" id="l-user" name="username" placeholder="Enter username" required/>
     
@@ -45,9 +45,6 @@
     </div>
   </form>
 </div>
-
-
-<!-- KOK YANG, use doLogin() pls -->
 
 </body>
 </html>

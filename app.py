@@ -1,23 +1,20 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase
 import random, smtplib
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta
+import database, config
+from database import db
 
-class Base(DeclarativeBase):
-    pass
+
 
 app = Flask(__name__)
-db = SQLAlchemy(model_class = Base)
-
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 db.init_app(app)
 
-import config
+
 app.config["SECRET_KEY"] = config.secret_key
 
-import database
+
 with app.app_context():
     db.create_all()
 
@@ -75,9 +72,9 @@ def signup():
         if len(password) < 8:
             raise Exception("Password must be at least 8 characters long.")
 
-        hashed_pw = database.generatePassword
+        hashed_pw = database.generatePassword(password)
 
-        otp_code = str(random.randint(100000, 999999))
+        otp_code = str(random.randint(100000, 999999)) # Generating 6 digit for OTP
 
         new_user = database.User(
             username=username,
@@ -95,7 +92,8 @@ def signup():
         return render_template("otp.html", email=email)
     
     except Exception as error:
-        return render_template("sign.html", error=str(error))
+        return render_template("signup.html", error=str(error))
+
 
 @app.route("/otp", methods=["GET", "POST"])
 def otp():
@@ -105,23 +103,26 @@ def otp():
     email = request.form.get("email")
     entered_otp = request.form.get("otp")
 
-    User = db.session.query(database.User).filter_by(email=email).first()
+    user = db.session.query(database.User).filter_by(email=email).first()
 
-    if not User:
+    user = db.session.query(database.User).filter_by(email=email).first()
+
+    if not user:
         return render_template("otp.html", error="User not found.", email=email)
 
-    # Expiry check (5 minutes)
-    if User.otp_created_at and datetime.utcnow() > User.otp_created_at + timedelta(minutes=5):
+    # Expiry check
+    if user.otp_created_at and datetime.utcnow() > user.otp_created_at + timedelta(minutes=5):
         return render_template("otp.html", error="OTP expired. Please request a new one.", email=email)
 
-    if User.otp_code == entered_otp:
-        User.verified = True
-        User.otp_code = None
-        User.otp_created_at = None
+    if str(user.otp_code) == entered_otp:
+        user.verified = True
+        user.otp_code = None
+        user.otp_created_at = None
         db.session.commit()
         return render_template("login.html", success="Account verified! You can now log in.")
     else:
         return render_template("otp.html", error="Invalid OTP. Please try again.", email=email)
+
 
 
 
