@@ -19,6 +19,7 @@ with app.app_context():
 
 def checkUsername(username):
     return database.User.query.filter_by(username=username).first()
+
 def checkEmail(email):
     return database.User.query.filter_by(email=email).first()
 
