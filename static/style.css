@@ -140,15 +140,372 @@ p{
     padding-top: 15px;
     padding-bottom: 100px;
 }
-#flash-messages .error {
-    color: #c0392b;
-    font-size: 13px;
-    margin-top: 10px;
-    display: block;
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 20px;
 }
-#flash-messages .success {
-    color: #27ae60;
-    font-size: 13px;
-    margin-top: 10px;
-    display: block;
+
+.post-card {
+  border: solid #333333;
+  cursor: pointer;
+  background-color: #f8f5f3;
+  transition: background-color 0.15s;
+}
+
+.post-card:hover {
+  background-color: #333333;
+  color: #f8f5f3;
+}
+
+.post-card:hover .post-meta {
+  color: #f8f5f3;
+}
+
+.post-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+  border-bottom: solid #333333;
+}
+
+.post-card-body {
+  padding: 16px;
+}
+
+.post-card-body h3 {
+  font-size: 18px;
+  background-color: transparent;
+  color: inherit;
+  height: auto;
+  padding: 0;
+  margin-bottom: 8px;
+  position: static;
+  display: block;
+  animation: none;
+}
+
+.post-meta {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.post-card-body p {
+  font-size: 14px;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+}
+
+/* POST PAGE */
+.post-full {
+  margin: 40px 28px;
+  margin-right: 330px;
+}
+
+.post-full img {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border: solid #333333;
+  margin-bottom: 24px;
+}
+
+.post-full h2 {
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+
+.post-full .post-meta {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 24px;
+}
+
+.post-full p {
+  font-size: 18px;
+  line-height: 1.7;
+  padding-bottom: 40px;
+}
+
+/* COMMENTS */
+.comments-section {
+  border-top: 2px solid #333333;
+  padding-top: 24px;
+  margin-top: 0;
+}
+
+.comments-section h3 {
+  font-size: 24px;
+  background-color: transparent;
+  color: #333333;
+  height: auto;
+  padding: 0;
+  margin-bottom: 20px;
+  position: static;
+  display: block;
+  animation: none;
+}
+
+.comment {
+  border-left: 3px solid #333333;
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  background-color: #f8f5f3;
+}
+
+.comment .comment-user {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.comment .comment-text {
+  font-size: 15px;
+  padding: 0;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  padding-bottom: 80px;
+}
+
+.comment-form input,
+.comment-form textarea {
+  padding: 12px 14px;
+  background: #f8f5f3;
+  border: solid #333333;
+  font-size: 15px;
+  font-family: inherit;
+  outline: none;
+  resize: vertical;
+}
+
+.comment-form input:focus,
+.comment-form textarea:focus {
+  background: #333333;
+  color: #f8f5f3;
+}
+
+.comment-form button {
+  align-self: flex-start;
+  padding: 12px 28px;
+  background: #f8f5f3;
+  border: solid #333333;
+  color: #333333;
+  font-size: 15px;
+  font-family: inherit;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.comment-form button:hover {
+  background: #333333;
+  color: #f8f5f3;
+}
+@media (max-width: 768px) {
+
+    header h1 {
+        font-size: 50px;
+    }
+
+    div.navigationBar {
+        float: none;
+        position: static;
+        width: 100%;
+        height: auto;
+        padding: 10px 20px;
+        box-sizing: border-box;
+    }
+
+    div.navigationBar ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+    }
+
+    div.navigationBar ul li a {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    div.content {
+        margin-left: 16px;
+        margin-right: 16px;
+        margin-top: 20px;
+    }
+
+    #task {
+        margin-left: 16px;
+        margin-right: 16px;
+        position: static;
+        margin-top: 0;
+    }
+
+    #task h2 {
+        font-size: 30px;
+        animation: none;
+    }
+
+    .posts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .post-full {
+        margin: 20px 16px;
+    }
+
+    .login-center {
+        padding: 30px 16px;
+        align-items: flex-start;
+    }
+
+    .login-box {
+        padding: 28px 20px;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    header h1 {
+        font-size: 32px;
+    }
+
+    #subtask {
+        font-size: 24px;
+    }
+
+    .post-card-body h3 {
+        font-size: 16px;
+    }
+
+    .sub-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+}
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.post-card {
+  border: solid #333333;
+  cursor: pointer;
+  background-color: #f8f5f3;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-card:hover {
+  background-color: #333333;
+  color: #f8f5f3;
+}
+
+.post-card:hover .post-meta,
+.post-card:hover .post-card-body p,
+.post-card:hover h3 {
+  color: #f8f5f3;
+}
+
+.post-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  border-bottom: solid #333333;
+  background-color: #ddd;
+}
+
+.post-card-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.post-card-body h3 {
+  font-size: 16px;
+  font-weight: 700;
+  background-color: transparent;
+  color: #333333;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  position: static;
+  display: block;
+  animation: none;
+}
+
+.post-card-body .post-meta {
+  font-size: 12px;
+  color: #888;
+  padding: 0;
+  margin: 0;
+}
+
+.post-card-body p {
+  font-size: 13px;
+  color: #555;
+  padding: 0;
+  margin: 0;
+  padding-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .posts-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .posts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.post-wrapper {
+  margin: 30px 28px;
+  margin-right: 330px;
+}
+
+.post-image-area {
+  width: 100%;
+  background-color: #e0e0e0;
+  border: solid #333333;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.post-image-area img {
+  width: 100%;
+  max-height: 600px;
+  object-fit: contain;
+  display: block;
+}
+
+
+.post-actions {
+  display: flex;
+  gap: 0;
+  margin-bottom: 28px;
+  border: solid #333333;
+  width: fit-content;
 }
