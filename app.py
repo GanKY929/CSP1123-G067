@@ -127,9 +127,6 @@ def otp():
     else:
         return render_template("otp.html", error="Invalid OTP. Please try again.", email=email)
 
-
-
-
 def send_otp_email(user_email, otp_code):
     msg = MIMEText(f"Your OTP code is {otp_code}\n\nThis code will expire in 5 minutes.")
     msg["Subject"] = "OTP Verification"
