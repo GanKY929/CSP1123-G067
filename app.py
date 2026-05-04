@@ -32,6 +32,11 @@ def login():
     if request.method == "GET":
         return render_template("login.html")
 
+    existing_data = database.User.query.first()
+
+    if not existing_data:
+        raise Exception("There is no User in database yet.")
+
     username: str = request.form.get("username")
     password: str = request.form.get("password")
 
