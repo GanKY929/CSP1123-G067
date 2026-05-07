@@ -7,3 +7,10 @@
     </div>
   {% endif %}
 {% endwith %}
+
+{% if error %}
+  <p style="color:red;">{{ error }}</p>
+{% endif %}
+{% if success %}
+  <p style="color:green;">{{ success }}</p>
+{% endif %}
