@@ -1,7 +1,7 @@
 from database import db
 import database
 
-def save_post(_post_title: str, _post_content:str, _post_owner: int):
+def save_post_details(_post_title: str, _post_content:str, _post_owner: int):
     if not _post_title or not _post_content or not _post_owner:
         print("Invalid arguments")
         return        
@@ -17,7 +17,7 @@ def save_post(_post_title: str, _post_content:str, _post_owner: int):
 
     return
 
-def get_post(_post_id: int)-> str:
+def get_post_details(_post_id: int)-> str:
     if not _post_id:
         print("Invalid argument")
         return
