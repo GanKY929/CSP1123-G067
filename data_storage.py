@@ -15,8 +15,6 @@ def save_post_details(_post_title: str, _post_content:str, _post_owner: int):
     db.session.add(new_post)
     db.session.commit()
 
-    return
-
 def get_post_details(_post_id: int)-> str:
     if not _post_id:
         print("Invalid argument")
