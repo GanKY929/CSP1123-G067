@@ -162,13 +162,21 @@ def resend_otp():
 @app.route("/forgotPass", methods=["POST"])
 def forgotPass():
     if request.method == "POST":
-        return doForgotPass()
-    return render_template("forgotPass.html")
+        email = request.form.get("email")
+        db_user = db.session.query(database.User).filter_by(email=email).first()
+        password = db_user.password
+        msg = MIMEText(f"Your password is {password}.")
+        msg["Subject"] = f"MMUinfo; Forgot Password"
+        msg["From"] = config.smtp_email
+        msg["To"] = email
 
-@app.route("/doForgotPass", methods=["POST"])
-def doForgotPass():
-    email = request.form.get("email")
-    return render_template("login.html", email=email)
+        with smtplib.SMTP(config.smtp_server, config.smtp_port) as server:
+            server.starttls()
+            server.login(config.smtp_email, config.smtp_password)
+            server.send_message(msg)
+        
+        return render_template("login.html")
+    return render_template("forgotPass.html")
 
 @app.route("/contact")
 def contact():
