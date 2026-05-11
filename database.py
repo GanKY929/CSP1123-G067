@@ -24,6 +24,7 @@ class User(Base):
 
 class Post(Base):
     __tablename__ = "posts"
+    
     post_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     post_title: Mapped[str] = mapped_column(String(200), nullable=False)
     post_content: Mapped[str] = mapped_column(String, nullable=False)

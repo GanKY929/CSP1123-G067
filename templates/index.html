@@ -1,81 +1,55 @@
-<!DOCTYPE html>
-<head>
-<title>MMU InfoHUB</title>
-<link rel="stylesheet" href="style.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
+{% extends "base.html" %}
 
-<header>
-    <h1>MMU InfoHUB</h1>
-</header>
+{% block title %}HOME{% endblock %}
 
-<div class="navigationBar">
-<ul><br>
-    <li><a href="IT-PROJECT.html">HOME</a></li><br>
-    <li><a href="learningresources.html">LEARNING RESOURCES</a></li><br>
-    <li><a href="quest.html">QUEST BOARD</a></li><br>
-    <li><a href="contact.html">CONTACT</a></li><br>
-    <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project G067</li>
-</ul>
-</div>
-
-<div id="task"><h2>HOME</h2></div>
-
-<div class="content">
-
-    <h2 id="subtask">LATEST EVENTS!</h2><br>
-
-    <div class="posts-grid">
-
-        <div class="post-card" style="background-color:#2a2a2a;" onclick="window.location.href='post.html?id='">
-            <img src="" alt="" />
-            <div class="post-card-body">
-                <p class="post-meta"></p>
-                <h3></h3>
-                <p></p>
-            </div>
+{% block content %}
+<h2 id="subtask">LATEST EVENTS!</h2><br>
+<div class="posts-grid">
+    <div class="post-card" style="background-color:#2a2a2a;" onclick="window.location.href='post.html?id='">
+        <img src="" alt="" />
+        <div class="post-card-body">
+            <p class="post-meta"></p>
+            <h3></h3>
+            <p></p>
         </div>
-
-        <div class="post-card" style="background-color:#3a3a3a;" onclick="window.location.href='post.html?id='">
-            <img src="" alt="" />
-            <div class="post-card-body">
-                <p class="post-meta"></p>
-                <h3></h3>
-                <p></p>
-            </div>
-        </div>
-
-        <div class="post-card" style="background-color:#444444;" onclick="window.location.href='post.html?id='">
-            <img src="" alt="" />
-            <div class="post-card-body">
-                <p class="post-meta"></p>
-                <h3></h3>
-                <p></p>
-            </div>
-        </div>
-
-        <div class="post-card" style="background-color:#3a3a3a;" onclick="window.location.href='post.html?id='">
-            <img src="" alt="" />
-            <div class="post-card-body">
-                <p class="post-meta"></p>
-                <h3></h3>
-                <p></p>
-            </div>
-        </div>
-
-        <div class="post-card" style="background-color:#2a2a2a;" onclick="window.location.href='post.html?id='">
-            <img src="" alt="" />
-            <div class="post-card-body">
-                <p class="post-meta"></p>
-                <h3></h3>
-                <p></p>
-            </div>
-        </div>
-
     </div>
 
+    <div class="post-card" style="background-color:#3a3a3a;" onclick="window.location.href='post.html?id='">
+        <img src="" alt="" />
+        <div class="post-card-body">
+            <p class="post-meta"></p>
+            <h3></h3>
+            <p></p>
+        </div>
+    </div>
 
-</body>
-</html>
+    <div class="post-card" style="background-color:#444444;" onclick="window.location.href='post.html?id='">
+        <img src="" alt="" />
+        <div class="post-card-body">
+            <p class="post-meta"></p>
+            <h3></h3>
+            <p></p>
+        </div>
+    </div>
+
+    <div class="post-card" style="background-color:#3a3a3a;" onclick="window.location.href='post.html?id='">
+        <img src="" alt="" />
+        <div class="post-card-body">
+            <p class="post-meta"></p>
+            <h3></h3>
+            <p></p>
+        </div>
+    </div>
+
+    <div class="post-card" style="background-color:#2a2a2a;" onclick="window.location.href='post.html?id='">
+        <img src="" alt="" />
+        <div class="post-card-body">
+            <p class="post-meta"></p>
+            <h3></h3>
+            <p></p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
 
