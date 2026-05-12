@@ -4,6 +4,5 @@ __pycache__/
 virtual/
 config.py
 
-
 #database
 instance/
