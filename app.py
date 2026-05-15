@@ -4,7 +4,7 @@ from email.mime.text import MIMEText
 from datetime import datetime, timedelta
 import database, config
 from database import db
-import data_storage as data_pipeline
+import data_storage as dpn #abbrev datapipeline
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = config.secret_key
@@ -200,7 +200,14 @@ def forgotPass():
 
 @app.route("/profile")
 def user_profile():
-    return
+    _username, _email, _tagged_post = dpn.get_user_details
+
+    return render_template(
+        "profile.html",
+        username = _username,
+        email = _email,
+        tagged_post = _tagged_post
+    )
 
 @app.route("/contact")
 def contact():
