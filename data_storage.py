@@ -49,6 +49,6 @@ def get_user_details(_user_id: int):
     
     _username = user_details.username
     _email = user_details.email
-    _tagged_post = user_details.details.tagged_post
+    _tagged_post = user_details.tagged_post
 
     return _username, _email, _tagged_post
