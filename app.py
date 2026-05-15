@@ -4,6 +4,7 @@ from email.mime.text import MIMEText
 from datetime import datetime, timedelta
 import database, config
 from database import db
+import data_storage as data_pipeline
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = config.secret_key
@@ -196,6 +197,10 @@ def forgotPass():
         
         return render_template("login.html")
     return render_template("forgotPass.html")
+
+@app.route("/profile")
+def user_profile():
+    return
 
 @app.route("/contact")
 def contact():
