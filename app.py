@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import random, smtplib
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta
 import database, config
+from urllib.parse import urlparse
 from database import db
 
 
@@ -69,8 +70,9 @@ def login():
             if not database.checkPassword(db_user.password, password):
                 raise Exception("Incorrect password.")
             if db_user.verified != True:
-                raise Exception("Unverified of OTP")
+                raise Exception("Account not verified. Please check your email for the OTP.")
 
+            session["username"] = db_user.username
             return redirect(url_for("index"))
 
         except Exception as error:
@@ -113,7 +115,7 @@ def signup():
         otp_code = create_otp(username)
 
         send_otp_email(email, otp_code)
-        return render_template("otp.html", email=email)
+        return redirect(url_for("otp", email=email))
     
     except Exception as error:
         return render_template("signup.html", error=str(error))
@@ -123,60 +125,111 @@ def signup():
 
 @app.route("/otp", methods=["GET", "POST"])
 def otp():
+    email = request.args.get("email") or request.form.get("email")
+    purpose = request.args.get("purpose") or request.form.get("purpose", "verify")
+    entered_otp = request.form.get("otp")
+    db_user = db.session.query(database.User).filter_by(email=email).first()
+
+    if not email:
+        return redirect(url_for("login", error="Missing email."))
+
+    if not db_user:
+        return render_template("otp.html", error="User not found.", email=email)
+
+    if db_user.verified and purpose == "verify":
+        return redirect(url_for("login", success="Account already verified!"))
+
     if request.method == "GET":
-        return render_template("otp.html")
+        return render_template("otp.html", email=email, purpose=purpose)
+
+    if not entered_otp:
+        return render_template("otp.html", error="Please enter an OTP.", email=email, purpose=purpose)
+
+    if db_user.otp_created_at and datetime.utcnow() > db_user.otp_created_at + timedelta(minutes=5):
+        return render_template("otp.html", error="OTP expired. Please request a new one.", email=email, purpose=purpose)
+
+    if str(db_user.otp_code) == entered_otp:
+        db_user.otp_code = None
+        db_user.otp_created_at = None
+        db_user.verified = True
+
+        if purpose == "reset":
+            db.session.commit()
+            return redirect(url_for("resetPass", email=email))
+        else:
+            db_user.verified = True
+            db.session.commit()
+            return redirect(url_for("login", success="Account verified successfully! You can now log in."))
+    else:
+        return render_template("otp.html", error="Invalid OTP. Please try again.", email=email, purpose=purpose)
+
+
+@app.route("/resend_otp", methods=["GET", "POST"])
+def resend_otp():
+    email = request.form.get("email") or request.args.get("email")
+    if not email:
+        return render_template("login.html", error="Missing email")
+
+    db_user = db.session.query(database.User).filter_by(email=email).first()
+    if not db_user:
+        return render_template("otp.html", error="User not found.", email=email)
+
+    if db_user.verified:
+        return redirect(url_for("login", success="Account already verified!"))
+
+    otp_code = create_otp(db_user.username)
+    send_otp_email(user_email=email, otp_code=otp_code)
+    return render_template("otp.html", success="OTP resent successfully.", email=email)
+
+
+
+@app.route("/forgotPass", methods=["GET", "POST"])
+def forgotPass():
+    if request.method == "GET":
+        return render_template("forgotPass.html")
 
     email = request.form.get("email")
-    entered_otp = request.form.get("otp")
-
     db_user = db.session.query(database.User).filter_by(email=email).first()
 
     if not db_user:
-        return render_template("signup.html", error="User not found. SignUp Unsuccessful, Try again.", email=email)
+        return render_template("forgotPass.html", error="No account found with that email.")
 
-    # Expiry check
-    if db_user.otp_created_at and datetime.utcnow() > db_user.otp_created_at + timedelta(minutes=5):
-        return render_template("otp.html", error="OTP expired. Please request a new one.", email=email)
-
-    if str(db_user.otp_code) == entered_otp:
-        db_user.verified = True
-        db_user.otp_code = None
-        db_user.otp_created_at = None
-        db.session.commit()
-        return render_template("login.html", success="Account verified! You can now log in.")
-    else:
-        return render_template("otp.html", error="Invalid OTP. Please try again.", email=email)
-
-
-
-@app.route("/resend_otp", methods=["POST"])
-def resend_otp():
-    email = request.form.get("email")
-    db_user = db.session.query(database.User).filter_by(email=email).first()
     otp_code = create_otp(db_user.username)
-    send_otp_email(user_email=email, otp_code=otp_code)
-    return render_template("otp.html", email=email)
+    send_otp_email(email, otp_code)
+
+    return redirect(url_for("otp", email=email, purpose="reset"))
 
 
 
-@app.route("/forgotPass", methods=["POST"])
-def forgotPass():
-    if request.method == "POST":
-        email = request.form.get("email")
-        db_user = db.session.query(database.User).filter_by(email=email).first()
-        password = db_user.password
-        msg = MIMEText(f"Your password is {password}.")
-        msg["Subject"] = f"MMUinfo; Forgot Password"
-        msg["From"] = config.smtp_email
-        msg["To"] = email
+@app.route("/resetPass", methods=["GET", "POST"])
+def resetPass():
+    email = request.args.get("email") or request.form.get("email")
+    if not email:
+        return redirect(url_for("forgotPass"))
 
-        with smtplib.SMTP(config.smtp_server, config.smtp_port) as server:
-            server.starttls()
-            server.login(config.smtp_email, config.smtp_password)
-            server.send_message(msg)
-        
-        return render_template("login.html")
-    return render_template("forgotPass.html")
+    db_user = db.session.query(database.User).filter_by(email=email).first()
+    if not db_user:
+        return render_template("forgotPass.html", error="User not found.")
+
+    if request.method == "GET":
+        return render_template("resetPass.html", email=email)
+
+    password = request.form.get("new_password")
+    confirmPassword = request.form.get("confirm_password")
+
+    if not password or not confirmPassword:
+        return render_template("resetPass.html", error="Please fill all fields.", email=email)
+    if password != confirmPassword:
+        return render_template("resetPass.html", error="Passwords do not match.", email=email)
+    if len(password) < 8:
+        return render_template("resetPass.html", error="Password must be at least 8 characters.", email=email)
+
+    db_user.password = database.generatePassword(password)
+    db.session.commit()
+
+    return redirect(url_for("login", success="Password reset successfully! You can now log in."))
+
+
 
 @app.route("/contact")
 def contact():

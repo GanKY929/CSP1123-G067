@@ -5,12 +5,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    {% include "flash.html" %}
-    
+{% include "flash.html" %}
+
 <h2>Verify OTP</h2>
 <form method="POST" action="/otp" class="mt-3">
-    {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
-    {% if success %}<div class="alert alert-success">{{ success }}</div>{% endif %}
+    <input type="hidden" name="purpose" value="{{ purpose }}">
     <input type="hidden" name="email" value="{{ email }}">
     <div class="mb-3">
         <label>Enter OTP</label>
@@ -21,9 +20,10 @@
 
 <hr>
 <form method="POST" action="/resend_otp" class="mt-3">
+    <input type="hidden" name="purpose" value="{{ purpose }}">
     <input type="hidden" name="email" value="{{ email }}">
     <button type="submit" class="btn btn-warning">Resend OTP</button>
 </form>
+
 </body>
 </html>
-
