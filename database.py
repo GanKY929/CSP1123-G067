@@ -29,7 +29,7 @@ class Post(Base):
     post_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     post_title: Mapped[str] = mapped_column(String(200), nullable=False)
     post_content: Mapped[str] = mapped_column(String, nullable=False)
-    post_owner: Mapped[int] = mapped_column(Integer, ForeignKey("User.user_id"), nullable=False)
+    post_owner: Mapped[int] = mapped_column(Integer, ForeignKey("users.user_id"), nullable=False)
 
 
 def generatePassword(password):
