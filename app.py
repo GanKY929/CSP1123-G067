@@ -200,7 +200,9 @@ def forgotPass():
 
 @app.route("/profile")
 def user_profile():
-    _username, _email, _tagged_post = dpn.get_user_details(1)
+    USER_ID = 1 #Temporary User_ID for testing
+
+    _username, _email, _tagged_post = dpn.get_user_details(USER_ID)
 
     return render_template(
         "profile.html",
