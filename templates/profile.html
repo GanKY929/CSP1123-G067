@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 <title>MMU InfoHUB – Profile</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="/static/style.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   .profile-wrapper {
@@ -53,7 +53,7 @@
     margin: 0;
   }
 
-  .profile-details .email-badge {
+  .email-badge {
     display: inline-block;
     font-size: 11px;
     font-weight: 600;
@@ -67,23 +67,10 @@
   .email-badge.mmu { border-color: #2980b9; color: #2980b9; }
   .email-badge.gmail { border-color: #e67e22; color: #e67e22; }
 
-  .section-title {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    background-color: #333333;
-    color: #f8f5f3;
-    display: inline-block;
-    padding: 4px 14px;
-    margin-bottom: 16px;
-    margin-top: 32px;
-  }
-
   .history-tabs {
     display: flex;
     gap: 0;
-    margin-bottom: 20px;
+    margin-bottom: 0;
     margin-top: 32px;
   }
 
@@ -155,8 +142,10 @@
   .empty-msg {
     font-size: 14px;
     color: #888;
-    padding: 16px 0;
+    padding: 16px;
     margin: 0;
+    border: solid #333333;
+    border-top: none;
   }
 
   @media (max-width: 768px) {
@@ -174,10 +163,10 @@
 
 <div class="navigationBar">
 <ul><br>
-    <li><a href="index.html">HOME</a></li><br>
-    <li><a href="board.html">BOARD</a></li><br>
-    <li><a href="profile.html">PROFILE</a></li><br>
-    <li><a href="Login.html">LOGOUT (FIXING) </a></li><br>
+    <li><a href="{{ url_for('index') }}">HOME</a></li><br>
+    <li><a href="{{ url_for('user_profile') }}">PROFILE</a></li><br>
+    <li><a href="{{ url_for('contact') }}">CONTACT</a></li><br>
+    <li><a href="{{ url_for('logout') }}">LOGOUT</a></li><br>
     <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project G067</li>
 </ul>
 </div>
@@ -188,86 +177,48 @@
 
     <!-- PROFILE HEADER -->
     <div class="profile-header">
-        <div class="profile-avatar">U</div>
+        <div class="profile-avatar">{{ username[0].upper() }}</div>
         <div class="profile-details">
-            <h2></h2>
-            <p></p>
-            <!-- email badge: swap class to 'mmu' once they update their email -->
+            <h2>{{ username }}</h2>
+            <p>{{ email }}</p>
+            {% if 'mmu.edu.my' in email %}
+            <span class="email-badge mmu">MMU EMAIL</span>
+            {% else %}
             <span class="email-badge gmail">GMAIL — PENDING MMU EMAIL</span>
+            {% endif %}
         </div>
     </div>
 
     <!-- TABS -->
     <div class="history-tabs">
-        <button class="tab-btn active" onclick="switchTab('posts')">POSTS</button>
-        <button class="tab-btn" onclick="switchTab('comments')">COMMENTS</button>
+        <button class="tab-btn active" onclick="switchTab(event, 'posts')">POSTS</button>
+        <button class="tab-btn" onclick="switchTab(event, 'comments')">COMMENTS</button>
     </div>
 
     <!-- POSTS TAB -->
     <div class="tab-panel active" id="tab-posts">
-
+        {% for post in posts %}
         <div class="history-row">
             <div>
-                <a href="post.html?id="></a>
-                <p class="row-meta">post 1 <strong></strong></p>
-                <p class="row-excerpt"></p>
+                <a href="{{ url_for('view_post', post_id=post.post_id) }}">{{ post.post_title }}</a>
+                <p class="row-excerpt">{{ post.post_content[:100] }}...</p>
             </div>
-            <p class="history-date"></p>
+            <p class="history-date">{{ post.created_at.strftime('%d %b %Y') if post.created_at else '' }}</p>
         </div>
-
-        <div class="history-row">
-            <div>
-                <a href="post.html?id="></a>
-                <p class="row-meta">post 2 <strong></strong></p>
-                <p class="row-excerpt"></p>
-            </div>
-            <p class="history-date"></p>
-        </div>
-
-        <div class="history-row">
-            <div>
-                <a href="post.html?id="></a>
-                <p class="row-meta">post 3 <strong></strong></p>
-                <p class="row-excerpt"></p>
-            </div>
-            <p class="history-date"></p>
-        </div>
-
+        {% else %}
+        <p class="empty-msg">No posts yet.</p>
+        {% endfor %}
     </div>
 
     <!-- COMMENTS TAB -->
     <div class="tab-panel" id="tab-comments">
-
-        <div class="history-row">
-            <div>
-                <p class="row-meta">comment 1 <a href="post.html?id="></a></p>
-                <p class="row-excerpt"></p>
-            </div>
-            <p class="history-date"></p>
-        </div>
-
-        <div class="history-row">
-            <div>
-                <p class="row-meta">comment 2 <a href="post.html?id="></a></p>
-                <p class="row-excerpt"></p>
-            </div>
-            <p class="history-date"></p>
-        </div>
-
-        <div class="history-row">
-            <div>
-                <p class="row-meta">comment 3 <a href="post.html?id="></a></p>
-                <p class="row-excerpt"></p>
-            </div>
-            <p class="history-date"></p>
-        </div>
-
+        <p class="empty-msg">Comments coming soon.</p>
     </div>
 
 </div>
 
 <script>
-  function switchTab(tab) {
+  function switchTab(event, tab) {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('tab-' + tab).classList.add('active');
