@@ -61,20 +61,8 @@ def login():
     if request.method == "GET":
         return render_template("login.html")
 
-    existing_data = database.User.query.first()
-
-    if not existing_data:
-        raise Exception("There is no User in database yet.")
-
     username: str = request.form.get("username")
     password: str = request.form.get("password")
-
-    if not db_user:
-        raise Exception("Username does not exist.")
-    if not database.checkPassword(db_user.password, password):
-        raise Exception("Incorrect password.")
-    if db_user.verified != True:
-                raise Exception("Unverified of OTP")
 
     try:
         db_user = db.session.query(database.User).filter_by(username=username).first()
