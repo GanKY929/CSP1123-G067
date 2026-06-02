@@ -69,9 +69,12 @@ def login():
 
         if not db_user:
             raise Exception("Username does not exist.")
-        if db_user.password != password:
-            raise Exception("Incorrect password.")    
+        if not database.checkPassword(db_user.password, password):
+                raise Exception("Incorrect password.")
+        if db_user.verified != True:
+                raise Exception("Account not verified. Please check your email for the OTP.")
 
+        session["username"] = db_user.username
         return redirect(url_for("index"))
 
     except Exception as error:
