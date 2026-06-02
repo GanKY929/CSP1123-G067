@@ -163,10 +163,10 @@
 
 <div class="navigationBar">
 <ul><br>
-    <li><a href="#">HOME</a></li><br>
+    <li><a href="temp">HOME</a></li><br>
     <li><a href="/profile">PROFILE</a></li><br>
-    <li><a href="#">CONTACT</a></li><br>
-    <li><a href="#">LOGOUT</a></li><br>
+    <li><a href="temp">CONTACT</a></li><br>
+    <li><a href="temp">LOGOUT</a></li><br>
     <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project G067</li>
 </ul>
 </div>
@@ -200,7 +200,7 @@
         {% for post in posts %}
         <div class="history-row">
             <div>
-                <a href="#">{{ post.post_title }}</a>
+                <a href="{{ url_for('view_post', post_id=post.post_id) }}">{{ post.post_title }}</a>
                 <p class="row-excerpt">{{ post.post_content[:100] }}...</p>
             </div>
             <p class="history-date">{{ post.created_at.strftime('%d %b %Y') if post.created_at else '' }}</p>
