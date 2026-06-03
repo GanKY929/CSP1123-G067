@@ -163,10 +163,10 @@
 
 <div class="navigationBar">
 <ul><br>
-    <li><a href="temp">HOME</a></li><br>
-    <li><a href="/profile">PROFILE</a></li><br>
-    <li><a href="temp">CONTACT</a></li><br>
-    <li><a href="temp">LOGOUT</a></li><br>
+    <li><a href="{{ url_for('index') }}">HOME</a></li><br>
+    <li><a href="{{ url_for('user_profile') }}">PROFILE</a></li><br>
+    <li><a href="{{ url_for('contact') }}">CONTACT</a></li><br>
+    <li><a href="{{ url_for('logout') }}">LOGOUT</a></li><br>
     <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project G067</li>
 </ul>
 </div>
