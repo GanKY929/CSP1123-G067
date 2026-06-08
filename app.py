@@ -73,6 +73,7 @@ def login():
                 raise Exception("Account not verified. Please check your email for the OTP.")
 
             session["username"] = db_user.username
+            session["user_id"] = db_user.user_id 
             return redirect(url_for("index"))
 
         except Exception as error:
