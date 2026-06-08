@@ -236,10 +236,13 @@ def resetPass():
 
 @app.route("/profile")
 def user_profile():
-    print("You reached here.")
-    if "user_id" in session:
-        print("You are not logged in!")
-        redirect(url_for("login"))
+    try:
+        if "user_id" not in session:
+            raise Exception("You are not logged in.")
+    
+    except Exception as error:
+        return render_template("login.html", error=str(error))
+
 
     USER_ID = session["user_id"]
     _username, _email, _tagged_post = dpn.get_user_details(USER_ID)
