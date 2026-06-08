@@ -39,9 +39,7 @@ def get_user_details(_user_id: int):
         print("Invalid argument")
         return
     
-    user_details = db.session.execute(
-        db.session.query(database.User).filter_by(user_id = _user_id).first()
-    )
+    user_details = db.session.query(database.User).filter_by(user_id = _user_id).first() 
 
     if not user_details: 
         print("Error: UserID does not exist")
