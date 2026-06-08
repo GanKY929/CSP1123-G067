@@ -78,8 +78,14 @@ def login():
 
         except Exception as error:
             return render_template("login.html", error=str(error), username=username)
- 
 
+
+@app.route("/logout")
+def logout():
+    session.pop("username")
+    session.pop("user_id")
+
+    return render_template("index.html")
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -239,7 +245,6 @@ def user_profile():
     try:
         if "user_id" not in session:
             raise Exception("You are not logged in.")    
-
     except Exception as error:
         return render_template("login.html", error=str(error))
 
