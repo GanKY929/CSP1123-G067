@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 virtual/
 config.py
+README.md
 
 #database
 instance/
