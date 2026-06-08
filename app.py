@@ -13,8 +13,6 @@ app.config["SECRET_KEY"] = config.secret_key
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 db.init_app(app)
 
-
-
 with app.app_context():
     db.create_all()
 
@@ -73,10 +71,19 @@ def login():
                 raise Exception("Account not verified. Please check your email for the OTP.")
 
             session["username"] = db_user.username
+            session["user_id"] = db_user.user_id 
             return redirect(url_for("index"))
 
         except Exception as error:
             return render_template("login.html", error=str(error), username=username)
+
+
+@app.route("/logout")
+def logout():
+    session.pop("username")
+    session.pop("user_id")
+
+    return render_template("index.html")
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -230,6 +237,23 @@ def resetPass():
     return redirect(url_for("login", success="Password reset successfully! You can now log in."))
 
 
+@app.route("/profile")
+def user_profile():
+    try:
+        if "user_id" not in session:
+            raise Exception("You are not logged in.")    
+    except Exception as error:
+        return render_template("login.html", error=str(error))
+
+    USER_ID = session["user_id"]
+    _username, _email, _tagged_post = dpn.get_user_details(USER_ID)
+
+    return render_template(
+        "profile.html",
+        username = _username,
+        email = _email,
+        tagged_post = _tagged_post
+    )
 
 @app.route("/contact")
 def contact():
