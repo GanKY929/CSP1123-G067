@@ -12,10 +12,6 @@ app.config["SECRET_KEY"] = config.secret_key
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 db.init_app(app)
 
-app.config["SECRET_KEY"] = config.secret_key
-
-
-
 with app.app_context():
     db.create_all()
 
