@@ -238,11 +238,10 @@ def resetPass():
 def user_profile():
     try:
         if "user_id" not in session:
-            raise Exception("You are not logged in.")
-    
+            raise Exception("You are not logged in.")    
+
     except Exception as error:
         return render_template("login.html", error=str(error))
-
 
     USER_ID = session["user_id"]
     _username, _email, _tagged_post = dpn.get_user_details(USER_ID)
