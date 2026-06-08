@@ -239,8 +239,12 @@ def resetPass():
 
 @app.route("/profile")
 def user_profile():
-    USER_ID = 1 #Temporary User_ID for testing
+    print("You reached here.")
+    if "user_id" in session:
+        print("You are not logged in!")
+        redirect(url_for("login"))
 
+    USER_ID = session["user_id"]
     _username, _email, _tagged_post = dpn.get_user_details(USER_ID)
 
     return render_template(
