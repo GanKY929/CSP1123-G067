@@ -27,7 +27,10 @@
 </header>
 
 <div class="login-center">
+{% include "flash.html" %}
+  <!-- FORGOT -->
   <div class="login-box">
+    <form action="{{ url_for('forgotPass') }}" method="POST">
     <h2>FORGOT?</h2>
     <p class="sub-text">Enter your email and we'll send your username and a password reset link.</p>
 
@@ -44,9 +47,15 @@
       <button class="btn-main" type="submit">SEND RESET EMAIL</button>
     </form>
 
+    
+    <label>Email address</label>
+    <input type="email" id="f-email" placeholder="Enter your email" name="email" required/>
+    <button class="btn-main" type="submit">SEND RESET EMAIL</button>
+    
     <div class="sub-links">
-      <a href="{{ url_for('login') }}" class="btn-link">← Back to login</a>
-    </div>
+        <a href="{{ url_for('login') }}" class="btn-link">← Back to login</a>
+      </div>
+    </form>
   </div>
 </div>
 
