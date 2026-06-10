@@ -134,9 +134,8 @@ th{
     background-color: #444444;
     color: #f8f5f3;
 }
-p{
-    padding-top: 15px;
-    padding-bottom: 100px;
+p {
+    margin-bottom: 15px;
 }
 
 .posts-grid {

@@ -51,7 +51,8 @@ def send_otp_email(user_email, otp_code):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    success = request.args.get("success")
+    return render_template("index.html", success=success)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -84,8 +85,8 @@ def login():
 def logout():
     session.pop("username")
     session.pop("user_id")
-
-    return render_template("index.html")
+    success = "Logged out successfully!"
+    return redirect(url_for("index", success=success))
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -243,8 +244,6 @@ def resetPass():
 @app.route("/profile")
 def user_profile():
     try:
-        if TypeError:
-             raise Exception("You are not logged in.")
         if "user_id" not in session:
             raise Exception("You are not logged in.")    
     except Exception as error:
@@ -260,9 +259,30 @@ def user_profile():
         tagged_post = _tagged_post
     )
 
-@app.route("/contact")
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
-    return render_template("contact.html")
+    if request.method == "GET":
+        username = request.args.get("username")
+        date = datetime.now().strftime("%Y-%m-%d")
+        email = request.args.get("email")
+        return render_template("contact.html", name=username, email=email, date=date)
+    
+    date = datetime.now()
+    username = request.form.get("name")
+    email = request.form.get("email")
+    comment = request.form.get("comment")
+
+    msg = MIMEText(f"Username:{username}\n\n{comment}")
+    msg["Subject"] = f"User Feedback : {date}"
+    msg["From"] = email
+    msg["To"] = config.smtp_email
+
+    with smtplib.SMTP(config.smtp_server, config.smtp_port) as server:
+        server.starttls()
+        server.login(config.smtp_email, config.smtp_password)
+        server.send_message(msg)
+    success="Thanks for your comment <3"
+    return render_template("contact.html", success=success)
 
 if __name__ == "__main__":
     app.run(debug=True)
