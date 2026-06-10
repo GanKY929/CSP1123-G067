@@ -173,3 +173,88 @@ p{
     padding-top: 15px;
     padding-bottom: 100px;
 }
+@media (max-width: 768px) {
+
+    header h1 {
+        font-size: 50px;
+    }
+
+    div.navigationBar {
+        float: none;
+        position: static;
+        width: 100%;
+        height: auto;
+        padding: 10px 20px;
+        box-sizing: border-box;
+    }
+
+    div.navigationBar ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+    }
+
+    div.navigationBar ul li a {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    div.content {
+        margin-left: 16px;
+        margin-right: 16px;
+        margin-top: 20px;
+    }
+
+    #task {
+        margin-left: 16px;
+        margin-right: 16px;
+        position: static;
+        margin-top: 0;
+    }
+
+    #task h2 {
+        font-size: 30px;
+        animation: none;
+    }
+
+    .posts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .post-full {
+        margin: 20px 16px;
+    }
+
+    .login-center {
+        padding: 30px 16px;
+        align-items: flex-start;
+    }
+
+    .login-box {
+        padding: 28px 20px;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    header h1 {
+        font-size: 32px;
+    }
+
+    #subtask {
+        font-size: 24px;
+    }
+
+    .post-card-body h3 {
+        font-size: 16px;
+    }
+
+    .sub-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+}

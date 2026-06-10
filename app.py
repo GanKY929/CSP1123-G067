@@ -243,6 +243,8 @@ def resetPass():
 @app.route("/profile")
 def user_profile():
     try:
+        if TypeError:
+             raise Exception("You are not logged in.")
         if "user_id" not in session:
             raise Exception("You are not logged in.")    
     except Exception as error:
