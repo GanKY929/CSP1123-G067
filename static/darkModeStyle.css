@@ -20,21 +20,33 @@ font-size: 16px;
     display: none;
 }
 header{
-height: 150px;
 border: 0;
 background-color:transparent;
 display: block;
 z-index: 3;
 flex-direction: column;
 justify-content: center;
-position: sticky;
+position: relative;
 top: 0;
 }
 header h1{
 color: #f8f5f3;
 padding: 5px;
-font-size: 150px;
+font-size: 120px;
 text-align: center;
+margin-bottom: 0;
+}
+.contact-header{
+    background-color: transparent;
+    color: #f8f5f3;
+    animation: whiteToDark;
+    animation-duration: 2s;
+    padding: 20px;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
 }
 @keyframes moveDownToUp {
     from {top: 150px;}
@@ -45,7 +57,7 @@ background-color: transparent;
 color: #f8f5f3;
 margin-left: 28px;
 margin-right: 330px;
-margin-top: 450px;
+margin-top: 0;
 padding: 0;
 position: relative;
 animation: whiteToDark;
@@ -56,14 +68,14 @@ z-index: 0;
 #task{
 height: 55px;
 position: sticky;
-top: 200px;
+top: 0;
 border: #333333;
 background-color: #f8f5f3;
 display: block;
 z-index: 2;
 margin-left: 28px;
 margin-right: 330px;
-margin-top: -400px;
+margin-top: auto;
 padding: 10px;
 padding-bottom: 0;
 overflow: hidden;
@@ -92,13 +104,15 @@ padding: 10px;
 color: #f8f5f3;
 background-color: #333333;
 font-size: 35px;
-margin-bottom: 35px;
+position: sticky;
+top: 65px
 }
 div.navigationBar{
+z-index: 3;
 float: right;
 padding: 50px;
-position: fixed;
-top: 200px;
+position: sticky;
+top: 0;
 right: 0;
 width: 230px;
 height: 550px;

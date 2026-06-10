@@ -5,8 +5,7 @@ from datetime import datetime, timedelta
 import database, config
 from urllib.parse import urlparse
 from database import db
-
-
+import data_storage as dpn #abbrev datapipeline
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = config.secret_key
@@ -16,7 +15,11 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
+def checkUsername(username):
+    return database.User.query.filter_by(username=username).first()
 
+def checkEmail(email):
+    return database.User.query.filter_by(email=email).first()
 
 #Sub-functions
 def create_otp(username):
@@ -44,7 +47,6 @@ def send_otp_email(user_email, otp_code):
         server.starttls()
         server.login(config.smtp_email, config.smtp_password)
         server.send_message(msg)
-
 
 
 @app.route("/")
@@ -208,6 +210,7 @@ def forgotPass():
 
 
 
+
 @app.route("/resetPass", methods=["GET", "POST"])
 def resetPass():
     email = request.args.get("email") or request.form.get("email")
@@ -258,8 +261,6 @@ def user_profile():
 @app.route("/contact")
 def contact():
     return render_template("contact.html")
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)
