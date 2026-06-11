@@ -245,6 +245,7 @@ def user_profile():
     try:
         if "user_id" not in session:
             raise Exception("You are not logged in.")    
+    
     except Exception as error:
         return render_template("login.html", error=str(error))
 

@@ -20,8 +20,7 @@ def get_post_details(_post_id: int)-> str:
         print("Invalid argument")
         return
     
-    post_returned = db.session.query(database.Post).filter_by(post_id = _post_id).first()
-    
+    post_returned = db.session.query(database.Post).filter_by(post_id = _post_id).first()    
 
     if not post_returned:
         print("Error: PostID does not exist")
