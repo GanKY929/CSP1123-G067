@@ -20,21 +20,33 @@ font-size: 16px;
     display: none;
 }
 header{
-height: 150px;
 border: 0;
 background-color:transparent;
 display: block;
 z-index: 3;
 flex-direction: column;
 justify-content: center;
-position: sticky;
+position: relative;
 top: 0;
 }
 header h1{
 color: #f8f5f3;
 padding: 5px;
-font-size: 150px;
+font-size: 120px;
 text-align: center;
+margin-bottom: 0;
+}
+.contact-header{
+    background-color: transparent;
+    color: #f8f5f3;
+    animation: whiteToDark;
+    animation-duration: 2s;
+    padding: 20px;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
 }
 @keyframes moveDownToUp {
     from {top: 150px;}
@@ -45,7 +57,7 @@ background-color: transparent;
 color: #f8f5f3;
 margin-left: 28px;
 margin-right: 330px;
-margin-top: 450px;
+margin-top: 0;
 padding: 0;
 position: relative;
 animation: whiteToDark;
@@ -56,14 +68,14 @@ z-index: 0;
 #task{
 height: 55px;
 position: sticky;
-top: 200px;
+top: 0;
 border: #333333;
 background-color: #f8f5f3;
 display: block;
 z-index: 2;
 margin-left: 28px;
 margin-right: 330px;
-margin-top: -400px;
+margin-top: auto;
 padding: 10px;
 padding-bottom: 0;
 overflow: hidden;
@@ -92,13 +104,15 @@ padding: 10px;
 color: #f8f5f3;
 background-color: #333333;
 font-size: 35px;
-margin-bottom: 35px;
+position: sticky;
+top: 65px
 }
 div.navigationBar{
+z-index: 3;
 float: right;
 padding: 50px;
-position: fixed;
-top: 200px;
+position: sticky;
+top: 0;
 right: 0;
 width: 230px;
 height: 550px;
@@ -158,4 +172,89 @@ th{
 p{
     padding-top: 15px;
     padding-bottom: 100px;
+}
+@media (max-width: 768px) {
+
+    header h1 {
+        font-size: 50px;
+    }
+
+    div.navigationBar {
+        float: none;
+        position: static;
+        width: 100%;
+        height: auto;
+        padding: 10px 20px;
+        box-sizing: border-box;
+    }
+
+    div.navigationBar ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+    }
+
+    div.navigationBar ul li a {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    div.content {
+        margin-left: 16px;
+        margin-right: 16px;
+        margin-top: 20px;
+    }
+
+    #task {
+        margin-left: 16px;
+        margin-right: 16px;
+        position: static;
+        margin-top: 0;
+    }
+
+    #task h2 {
+        font-size: 30px;
+        animation: none;
+    }
+
+    .posts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .post-full {
+        margin: 20px 16px;
+    }
+
+    .login-center {
+        padding: 30px 16px;
+        align-items: flex-start;
+    }
+
+    .login-box {
+        padding: 28px 20px;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    header h1 {
+        font-size: 32px;
+    }
+
+    #subtask {
+        font-size: 24px;
+    }
+
+    .post-card-body h3 {
+        font-size: 16px;
+    }
+
+    .sub-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+
 }

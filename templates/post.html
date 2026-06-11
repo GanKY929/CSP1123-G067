@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 <title>MMU InfoHUB – All Posts</title>
-<link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="style.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -12,39 +12,67 @@
 
 <div class="navigationBar">
 <ul><br>
-    <li><a href="/">HOME</a></li><br>
-    <li><a href="/profile">PROFILE</a></li><br>
-    <li><a href="#">QUEST BOARD</a></li><br>
-    <li><a href="/contact">CONTACT</a></li><br>
-    <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project G067</li>
+    <li><a href="IT-PROJECT.html">HOME</a></li><br>
+    <li><a href="learningresources.html">LEARNING RESOURCES</a></li><br>
+    <li><a href="quest.html">QUEST BOARD</a></li><br>
+    <li><a href="contact.html">CONTACT</a></li><br>
+    <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project 2610 G067</li>
 </ul>
 </div>
 
 <div id="task"><h2>ALL POSTS</h2></div>
 
 <div class="content">
+
     <div class="feed">
 
-        {% for post in posts %}
-        <div class="feed-card" onclick="window.location.href='/post/{{ post.post_id }}'">
+        <div class="feed-card" onclick="window.location.href='post.html?id='">
             <div class="feed-card-img">
-                <img src="{{ post.image_path or '' }}" alt="{{ post.post_title }}" />
+                <img src="" alt="" />
             </div>
             <div class="feed-card-body">
-                <h3>{{ post.post_title }}</h3>
+                <h3></h3>
                 <p class="feed-meta">
-                    <span class="feed-date">{{ post.created_at.strftime('%d %b %Y') if post.created_at else '' }}</span>
-                    <span class="feed-author">{{ post.author_username }}</span>
-                    <span class="feed-comments">💬 {{ post.comment_count }}</span>
+                    <span class="feed-date"></span>
+                    <span class="feed-author"></span>
+                    <span class="feed-comments">💬 </span>
                 </p>
-                <p class="feed-excerpt">{{ post.post_content[:120] }}...</p>
+                <p class="feed-excerpt"></p>
             </div>
         </div>
-        {% else %}
-        <p>No posts yet.</p>
-        {% endfor %}
+
+        <div class="feed-card" onclick="window.location.href='post.html?id='">
+            <div class="feed-card-img">
+                <img src="" alt="" />
+            </div>
+            <div class="feed-card-body">
+                <h3></h3>
+                <p class="feed-meta">
+                    <span class="feed-date"></span>
+                    <span class="feed-author"></span>
+                    <span class="feed-comments">💬 </span>
+                </p>
+                <p class="feed-excerpt"></p>
+            </div>
+        </div>
+
+        <div class="feed-card" onclick="window.location.href='post.html?id='">
+            <div class="feed-card-img">
+                <img src="" alt="" />
+            </div>
+            <div class="feed-card-body">
+                <h3></h3>
+                <p class="feed-meta">
+                    <span class="feed-date"></span>
+                    <span class="feed-author"></span>
+                    <span class="feed-comments">💬 </span>
+                </p>
+                <p class="feed-excerpt"></p>
+            </div>
+        </div>
 
     </div>
+
 </div>
 
 </body>
