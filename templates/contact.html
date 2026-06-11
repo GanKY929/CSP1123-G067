@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MMU InfoHUB – Forgot Password</title>
+  <title>MMU InfoHUB – contact</title>
     <title>Contact</title>
     <link rel="stylesheet" href="{{url_for('static', filename='darkModeStyle.css')}}">
 <style>
@@ -12,7 +12,7 @@ form ,label,input,u,form h1,textarea{
     animation-duration: 2s;
 }
 form{
-    padding: 150px;
+    padding: 50px;
 }
 label,input,textarea{
     font-size: large;
@@ -32,6 +32,13 @@ input,textarea{
 }
 input:focus,textarea:focus{
     outline: none;
+}
+div.inputContainer{
+    background-color: transparent;
+    animation: none;
+    max-width: 45%;
+    padding: 10px;
+    display: inline-block;
 }
 h4{
     background-color: #f8f5f3;
@@ -66,16 +73,16 @@ div.credit ul{
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <body>
     <header>
-        <h1>REPORT ANY ISSUES</h1>
+        <h1 class="contact-header">REPORT ANY ISSUES</h1>
     </header>
 
 <div class="navigationBar">
 <ul><br>
-<li><a href="IT-PROJECT.html">HOME</a></li><br>
-<li><a href="learningresources.html">LEARNING RESOURCES</a></li><br>
-<li><a href="quest.html">QUEST BOARD</a></li><br>
-<li><a href="contact.html">CONTACT</a></li><br>
-<li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project G067</li>
+<li><a href="/">HOME</a></li><br>
+<li><a href="#">LEARNING RESOURCES</a></li><br>
+<li><a href="#">QUEST BOARD</a></li><br>
+<li><a href="#">CONTACT</a></li><br>
+<li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project 2610 G067</li>
 </ul>
 </div>
 
@@ -86,41 +93,47 @@ div.credit ul{
 <div class="content">
     <h2 id="subtask">FILL UP YOUR FORM HERE</h2>
 
-<form action="https://formsubmit.co/email.com" method="POST">
-    <h1 style="text-align: center;">FEEDBACK FORM</h1><br><br>
-    <label for="info"><u>PERSONAL INFORMATION</u></label><br><br>
+<form action="{{ url_for('contact')}}" method="POST">
+<h1 style="text-align: center;">FEEDBACK FORM</h1><br><br>
+<label for="info"><u>PERSONAL INFORMATION</u></label><br><br>
+
+<div class="inputContainer">
 <label for="name">NAME :</label>
-<input type="text" name="name" id="Name">
+<input type="text" name="name" id="name" required>
+</div>
 
-<input type="date" name="Date" id="date" 
-style="
-float: right;
-margin-right: 50px;">
-<label for="email" style="float: right;">DATE :</label><br><br><br>
+<div class="inputContainer">
+<label for="date">DATE :</label>
+<label>{{ date }}</label>
+</div>
 
+<br>
+<div class="inputContainer">
 <label for="email">EMAIL :</label>
-<input type="email" name="Email" id="email"><br><br><br><br>
+<input type="email" name="email" id="email"><br><br><br><br>
+</div>
 
+<div class="inputContainer"
+style="display: block; max-width: 100%; width: 100%;">
 <label for="details"><u>COMMENT</u></label><br><br>
-<textarea id="details" name="Comment"
+<textarea id="details" name="comment"
 style="
-resize: vertical;
-width: 700px;
 min-height: 200px;
-margin-left: 15px;" >
+width: 100%;
+resize: vertical;">
 </textarea><br><br><br>
+</div>
 
 <button type="submit" 
 style="
-margin-left: 375px;
+margin-left: 45%;
 padding: 5px 15px 5px 15px ;
 background-color: #333333;
 color: #f8f5f3;
 ">SUBMIT</button>
 </form>
 
-
-
+</div>
 </body>
 </html>
 

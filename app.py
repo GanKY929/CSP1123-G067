@@ -5,20 +5,21 @@ from datetime import datetime, timedelta
 import database, config
 from urllib.parse import urlparse
 from database import db
-
-
+import data_storage as dpn #abbrev datapipeline
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = config.secret_key
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 db.init_app(app)
 
-
-
 with app.app_context():
     db.create_all()
 
+def checkUsername(username):
+    return database.User.query.filter_by(username=username).first()
 
+def checkEmail(email):
+    return database.User.query.filter_by(email=email).first()
 
 #Sub-functions
 def create_otp(username):
@@ -48,10 +49,10 @@ def send_otp_email(user_email, otp_code):
         server.send_message(msg)
 
 
-
 @app.route("/")
 def index():
-    return render_template("index.html")
+    success = request.args.get("success")
+    return render_template("index.html", success=success)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -73,10 +74,19 @@ def login():
                 raise Exception("Account not verified. Please check your email for the OTP.")
 
             session["username"] = db_user.username
+            session["user_id"] = db_user.user_id 
             return redirect(url_for("index"))
 
         except Exception as error:
             return render_template("login.html", error=str(error), username=username)
+
+
+@app.route("/logout")
+def logout():
+    session.pop("username")
+    session.pop("user_id")
+    success = "Logged out successfully!"
+    return redirect(url_for("index", success=success))
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -201,6 +211,7 @@ def forgotPass():
 
 
 
+
 @app.route("/resetPass", methods=["GET", "POST"])
 def resetPass():
     email = request.args.get("email") or request.form.get("email")
@@ -230,12 +241,48 @@ def resetPass():
     return redirect(url_for("login", success="Password reset successfully! You can now log in."))
 
 
+@app.route("/profile")
+def user_profile():
+    try:
+        if "user_id" not in session:
+            raise Exception("You are not logged in.")    
+    except Exception as error:
+        return render_template("login.html", error=str(error))
 
-@app.route("/contact")
+    USER_ID = session["user_id"]
+    _username, _email, _tagged_post = dpn.get_user_details(USER_ID)
+
+    return render_template(
+        "profile.html",
+        username = _username,
+        email = _email,
+        tagged_post = _tagged_post
+    )
+
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
-    return render_template("contact.html")
+    if request.method == "GET":
+        username = request.args.get("username")
+        date = datetime.now().strftime("%Y-%m-%d")
+        email = request.args.get("email")
+        return render_template("contact.html", name=username, email=email, date=date)
+    
+    date = datetime.now()
+    username = request.form.get("name")
+    email = request.form.get("email")
+    comment = request.form.get("comment")
 
+    msg = MIMEText(f"Username:{username}\n\n{comment}")
+    msg["Subject"] = f"User Feedback : {date}"
+    msg["From"] = email
+    msg["To"] = config.smtp_email
 
+    with smtplib.SMTP(config.smtp_server, config.smtp_port) as server:
+        server.starttls()
+        server.login(config.smtp_email, config.smtp_password)
+        server.send_message(msg)
+    success="Thanks for your comment <3"
+    return render_template("contact.html", success=success)
 
 if __name__ == "__main__":
     app.run(debug=True)
