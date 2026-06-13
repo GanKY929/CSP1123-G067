@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 <title>MMU InfoHUB – Admin</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="/static/style.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
     .admin-wrapper {
@@ -167,10 +167,10 @@
 
 <div class="navigationBar">
 <ul><br>
-    <li><a href="index.html">HOME</a></li><br>
-    <li><a href="board.html">BOARD</a></li><br>
-    <li><a href="admin.html">ADMIN</a></li><br>
-    <li><a href="login.html">LOGOUT</a></li><br>
+    <li><a href="/">HOME</a></li><br>
+    <li><a href="#">BOARD</a></li><br>
+    <li><a href="/profile">PROFILE</a></li><br>
+    <li><a href="/logout">LOGOUT</a></li><br>
     <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project G067</li>
 </ul>
 </div>
@@ -179,25 +179,29 @@
 
 <div class="admin-wrapper">
 
+    {% set gmail_users = users | selectattr('email', 'search', 'gmail.com') | list %}
+
     <!-- ALERT BANNER -->
+    {% if gmail_users %}
     <div class="alert-banner">
         <div class="alert-dot"></div>
-        <p>Some users have not replaced their Gmail with an MMU email yet.</p>
+        <p>{{ gmail_users | length }} user(s) have not replaced their Gmail with an MMU email yet.</p>
     </div>
+    {% endif %}
 
     <!-- OVERVIEW -->
     <div class="section-title">OVERVIEW</div>
     <div class="stat-row">
         <div class="stat-card">
-            <p class="stat-number">—</p>
+            <p class="stat-number">{{ users | length }}</p>
             <p class="stat-label">Total Users</p>
         </div>
         <div class="stat-card">
-            <p class="stat-number">—</p>
+            <p class="stat-number">{{ users | selectattr('verified', 'equalto', True) | list | length }}</p>
             <p class="stat-label">Verified</p>
         </div>
-        <div class="stat-card alert">
-            <p class="stat-number">—</p>
+        <div class="stat-card {% if gmail_users %}alert{% endif %}">
+            <p class="stat-number">{{ gmail_users | length }}</p>
             <p class="stat-label">Pending MMU Email</p>
         </div>
     </div>
@@ -213,36 +217,36 @@
             <th class="hide-mobile">EMAIL TYPE</th>
             <th>ACTIONS</th>
         </tr>
+        {% for user in users %}
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>{{ user.user_id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
             <td class="hide-mobile">
+                {% if user.verified %}
                 <span class="badge verified">VERIFIED</span>
-            </td>
-            <td class="hide-mobile">
-                <span class="badge mmu">MMU EMAIL</span>
-            </td>
-            <td>
-                <button class="btn-action">VIEW</button>
-                <button class="btn-action danger">DELETE</button>
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="hide-mobile">
+                {% else %}
                 <span class="badge unverified">UNVERIFIED</span>
+                {% endif %}
             </td>
             <td class="hide-mobile">
+                {% if 'mmu.edu.my' in user.email %}
+                <span class="badge mmu">MMU EMAIL</span>
+                {% elif 'gmail.com' in user.email %}
                 <span class="badge gmail">GMAIL — PENDING</span>
+                {% else %}
+                <span class="badge other">OTHER</span>
+                {% endif %}
             </td>
             <td>
-                <button class="btn-action">VIEW</button>
-                <button class="btn-action danger">DELETE</button>
+                <form method="POST" action="/delete_user/{{ user.user_id }}" style="display:inline;" onsubmit="return confirm('Delete this user?')">
+                    <button type="submit" class="btn-action danger">DELETE</button>
+                </form>
             </td>
         </tr>
+        {% else %}
+        <tr><td colspan="6">No users yet.</td></tr>
+        {% endfor %}
     </table>
 
     <!-- NEW REGISTRATIONS -->
@@ -255,26 +259,34 @@
             <th>OTP STATUS</th>
             <th>ACTIONS</th>
         </tr>
+        {% for user in users if not user.verified %}
         <tr>
-            <td></td>
-            <td></td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
             <td class="hide-mobile">
+                {% if 'mmu.edu.my' in user.email %}
+                <span class="badge mmu">MMU EMAIL</span>
+                {% elif 'gmail.com' in user.email %}
                 <span class="badge gmail">GMAIL — PENDING</span>
+                {% else %}
+                <span class="badge other">OTHER</span>
+                {% endif %}
             </td>
             <td>
                 <span class="badge unverified">OTP PENDING</span>
             </td>
             <td>
-                <button class="btn-action danger">DELETE</button>
+                <form method="POST" action="/delete_user/{{ user.user_id }}" style="display:inline;" onsubmit="return confirm('Delete this user?')">
+                    <button type="submit" class="btn-action danger">DELETE</button>
+                </form>
             </td>
         </tr>
+        {% else %}
+        <tr><td colspan="5">No pending registrations.</td></tr>
+        {% endfor %}
     </table>
 
 </div>
 
 </body>
 </html>
-
-<!-- backend guy: populate stat numbers and table rows from db -->
-<!-- delete buttons: POST to /delete_user/id -->
-<!-- view button: link to /user/id -->
