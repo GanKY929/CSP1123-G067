@@ -177,9 +177,7 @@
 
 <div id="task"><h2>ADMIN</h2></div>
 
-<div class="admin-wrapper">
-
-    {% set gmail_users = users | selectattr('email', 'search', 'gmail.com') | list %}
+<div class="admin-wrapper"> 
 
     <!-- ALERT BANNER -->
     {% if gmail_users %}
@@ -197,7 +195,7 @@
             <p class="stat-label">Total Users</p>
         </div>
         <div class="stat-card">
-            <p class="stat-number">{{ users | selectattr('verified', 'equalto', True) | list | length }}</p>
+            <p class="stat-number">{{ users | length }}</p>
             <p class="stat-label">Verified</p>
         </div>
         <div class="stat-card {% if gmail_users %}alert{% endif %}">
