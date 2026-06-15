@@ -53,6 +53,10 @@ def send_otp_email(user_email, otp_code):
 @app.route("/")
 def index():
     success = request.args.get("success")
+
+    if ("username" in session) and (session["username"] == "Mithirilz"):
+        return redirect(url_for("admin"))
+
     return render_template("index.html", success=success)
 
 @app.route("/login", methods=["GET", "POST"])
