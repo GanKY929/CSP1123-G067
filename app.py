@@ -80,6 +80,7 @@ def login():
 
             session["username"] = db_user.username
             session["user_id"] = db_user.user_id 
+
             return redirect(url_for("index"))
 
         except Exception as error:
@@ -244,6 +245,20 @@ def resetPass():
     db.session.commit()
 
     return redirect(url_for("login", success="Password reset successfully! You can now log in."))
+
+@app.route("/admin")
+def admin():
+    user_amount = db.session.query(database.User).count()
+    all_users = db.session.query(database.User.email).all()
+    _users = [] 
+    
+    endmin.remove_user()
+
+    for tuple_usernames in all_users:
+        print(tuple_usernames[0])
+        _users.append(tuple_usernames[0])
+
+    return render_template("Admin.html", gmail_users=_users)
 
 
 @app.route("/profile")
