@@ -94,7 +94,7 @@ div.credit ul{
     <h2 id="subtask">FILL UP YOUR FORM HERE</h2>
 
 <form action="{{ url_for('contact')}}" method="POST">
-<h1 style="text-align: center;">FEEDBACK FORM</h1><br><br>
+<h1 style="text-align: center;">FEEDBACK FORM</h1><br>{% include 'flash.html' %}<br>
 <label for="info"><u>PERSONAL INFORMATION</u></label><br><br>
 
 <div class="inputContainer">
