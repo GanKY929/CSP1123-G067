@@ -248,17 +248,12 @@ def resetPass():
 
 @app.route("/admin")
 def admin():
-    user_amount = db.session.query(database.User).count()
-    all_users = db.session.query(database.User.email).all()
-    _users = [] 
+    # user_amount = db.session.query(database.User).count()
+    # all_users = db.session.query(database.User).filter_by(verified = True)                             
     
-    endmin.remove_user()
+    # print(all_users)
 
-    for tuple_usernames in all_users:
-        print(tuple_usernames[0])
-        _users.append(tuple_usernames[0])
-
-    return render_template("Admin.html", gmail_users=_users)
+    return render_template("Admin.html", gmail_users = ["testing@gmail.com"], users = ["testing@gmail.com"]) #<- hardcoded for now
 
 
 @app.route("/profile")
