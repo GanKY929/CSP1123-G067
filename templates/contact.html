@@ -99,7 +99,11 @@ div.credit ul{
 
 <div class="inputContainer">
 <label for="name">NAME :</label>
-<input type="text" name="name" id="name" required>
+{% if 'user_id' not in session %}
+<input type="text" name="name" id="name" required autocomplete="username">
+{% else %}
+<label>{{ session['username'] }}</label>
+{% endif %}
 </div>
 
 <div class="inputContainer">
@@ -110,7 +114,11 @@ div.credit ul{
 <br>
 <div class="inputContainer">
 <label for="email">EMAIL :</label>
-<input type="email" name="email" id="email"><br><br><br><br>
+{% if 'user_id' not in session %}
+<input type="email" name="email" id="email" required autocomplete="email"><br><br><br><br>
+{% else %}
+<label>{{ session['email'] }}</label>
+{% endif %}
 </div>
 
 <div class="inputContainer"
