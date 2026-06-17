@@ -7,7 +7,6 @@ from database import db
 import random, smtplib
 import database, config
 import data_storage as dpn #abbrev datapipeline
-import admin_commands as endmin
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = config.secret_key
