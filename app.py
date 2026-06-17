@@ -51,13 +51,32 @@ def send_otp_email(user_email, otp_code):
 
 
 @app.route("/")
-def index():
+def index(): 
     success = request.args.get("success")
-
+    
     if ("username" in session) and (session["username"] == "Mithirilz"):
         return redirect(url_for("admin"))
 
-    return render_template("index.html", success=success)
+    post_data = db.session.execute(select(database.Post))
+
+    if not post_data:
+        print("There is no data in postings")
+        return render_template("index.html", success=success)
+
+    _post_list = []
+
+    for posts in post_data.fetchall():
+        post_dict = {
+            "post_id" : int(posts.post_id),
+            "post_title" : str(posts.post_title),
+            "post_content" : str(posts.post_content),
+            "post_owner" : str(posts.post_owner)
+        }
+
+        _post_list.append(post_dict)
+    
+    return render_template("index.html", success=success, posts=_post_list)
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
