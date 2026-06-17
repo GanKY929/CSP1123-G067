@@ -1,3 +1,5 @@
+from copy import error
+
 from flask import Flask, render_template, request, redirect, url_for, session
 import random, smtplib
 from email.mime.text import MIMEText
@@ -75,6 +77,8 @@ def login():
 
             session["username"] = db_user.username
             session["user_id"] = db_user.user_id 
+            session["email"] = db_user.email
+            session["display_name"] = db_user.display_name
             return redirect(url_for("index"))
 
         except Exception as error:
@@ -85,6 +89,8 @@ def login():
 def logout():
     session.pop("username")
     session.pop("user_id")
+    session.pop("email")
+    session.pop("display_name")
     success = "Logged out successfully!"
     return redirect(url_for("index", success=success))
 
@@ -94,10 +100,10 @@ def signup():
     if request.method == "GET":
         return render_template("signup.html")
     
-    username = request.form.get("username")
-    email = request.form.get("email")
-    password = request.form.get("password")
-    confirmPassword = request.form.get("confirmPassword")
+    username: str = request.form.get("username")
+    email: str = request.form.get("email")
+    password: str = request.form.get("password")
+    confirmPassword: str = request.form.get("confirmPassword")
 
     try:
         if not all([username, email, password, confirmPassword]):
@@ -135,9 +141,9 @@ def signup():
 
 @app.route("/otp", methods=["GET", "POST"])
 def otp():
-    email = request.args.get("email") or request.form.get("email")
-    purpose = request.args.get("purpose") or request.form.get("purpose", "verify")
-    entered_otp = request.form.get("otp")
+    email: str = request.args.get("email") or request.form.get("email")
+    purpose: str = request.args.get("purpose") or request.form.get("purpose", "verify")
+    entered_otp: str = request.form.get("otp")
     db_user = db.session.query(database.User).filter_by(email=email).first()
 
     if not email:
@@ -176,7 +182,7 @@ def otp():
 
 @app.route("/resend_otp", methods=["GET", "POST"])
 def resend_otp():
-    email = request.form.get("email") or request.args.get("email")
+    email: str = request.form.get("email") or request.args.get("email")
     if not email:
         return render_template("login.html", error="Missing email")
 
@@ -198,7 +204,7 @@ def forgotPass():
     if request.method == "GET":
         return render_template("forgotPass.html")
 
-    email = request.form.get("email")
+    email: str = request.form.get("email")
     db_user = db.session.query(database.User).filter_by(email=email).first()
 
     if not db_user:
@@ -214,7 +220,7 @@ def forgotPass():
 
 @app.route("/resetPass", methods=["GET", "POST"])
 def resetPass():
-    email = request.args.get("email") or request.form.get("email")
+    email: str = request.args.get("email") or request.form.get("email")
     if not email:
         return redirect(url_for("forgotPass"))
 
@@ -241,31 +247,49 @@ def resetPass():
     return redirect(url_for("login", success="Password reset successfully! You can now log in."))
 
 
-@app.route("/profile")
+@app.route("/profile", methods=["GET", "POST"])
 def user_profile():
+    if request.method == "GET":
+        try:
+            if "user_id" not in session:
+                raise Exception("You are not logged in.")    
+        except Exception as error:
+            return render_template("login.html", error=str(error))
+
+        user_id = session["user_id"]
+        username = session["username"]
+        email = session["email"]
+        display_name = db.session.query(database.User).filter_by(user_id=user_id).first().display_name
+        _tagged_post = dpn.get_user_details(user_id)
+
+        return render_template(
+            "profile.html",
+            username=username,
+            email=email,
+            display_name=display_name,
+            tagged_post = _tagged_post
+        )
+
+@app.route("/edit_display_name", methods=["GET", "POST"])
+def display_name():
+    if request.method == "GET":
+        return redirect(url_for("profile"))
+    display_name: str = request.form.get("display_name")
     try:
-        if "user_id" not in session:
-            raise Exception("You are not logged in.")    
+        if db.session.query(database.User).filter_by(display_name=display_name).first():
+            raise Exception("Name already exists")
     except Exception as error:
-        return render_template("login.html", error=str(error))
-
-    USER_ID = session["user_id"]
-    _username, _email, _tagged_post = dpn.get_user_details(USER_ID)
-
-    return render_template(
-        "profile.html",
-        username = _username,
-        email = _email,
-        tagged_post = _tagged_post
-    )
+        return render_template("profile.html", error=str(error), username=session["username"])
+    
+    db.session.query(database.User).filter_by(user_id=session["user_id"]).update({"display_name": display_name})
+    db.session.commit()
+    session["display_name"] = display_name
+    return redirect(url_for("user_profile", success="Name updated successfully!"))
 
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
     if request.method == "GET":
-        username = request.args.get("username")
-        date = datetime.now().strftime("%Y-%m-%d")
-        email = request.args.get("email")
-        return render_template("contact.html", name=username, email=email, date=date)
+        return render_template("contact.html",name=session.get("username"), date=datetime.now().strftime("%Y-%m-%d"), email=session.get("email"))
     
     date = datetime.now()
     username = request.form.get("name")

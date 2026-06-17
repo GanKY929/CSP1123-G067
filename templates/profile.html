@@ -152,6 +152,24 @@
     .history-tabs { flex-wrap: wrap; }
     .history-row { flex-direction: column; }
   }
+  #hidden-block {
+    display: none;
+    padding: 15px;
+    background-color: #f8f5f3;
+  }
+  #edit-toggle-btn {
+    font-size: 12px;
+    background-color: #f8f5f3;
+    color: #2980b9;
+    cursor: pointer;
+  }
+  .toggle-checkbox:checked ~ #hidden-block {
+  display: inline-block;
+  }
+  #edit-toggle-btn :hover{
+    text-decoration: underline;
+  }
+  
 </style>
 </head>
 <body>
@@ -171,14 +189,34 @@
 </div>
 
 <div id="task"><h2>PROFILE</h2></div>
-
+{% include 'flash.html' %}
 <div class="profile-wrapper">
 
     <!-- PROFILE HEADER -->
     <div class="profile-header">
         <div class="profile-avatar">{{ username[0].upper() }}</div>
         <div class="profile-details">
-            <h2>{{ username }}</h2>
+            <h2>
+              {% if display_name %}
+              {{ display_name }} 
+              {% else %}
+              {{ username }}
+              {% endif %}
+              <input type="checkbox" id="click-trigger" class="toggle-checkbox" style="display: none;">
+              <label for="click-trigger" id="edit-toggle-btn">( Edit )</label>
+              <div id="hidden-block">
+                <form method="POST" action="/edit_display_name">
+                  <input type="text" name="display_name" placeholder="Enter display name" required>
+                  <button type="submit">Save</button>
+                </form>
+              </div>
+              </h2>
+              {% if display_name != username %}
+              <p>username: {{ username }}</p>
+              {% else %}
+              <!-- if display name is same as username, do not show username again -->
+              {% endif %}
+            
             <p>{{ email }}</p>
             {% if 'mmu.edu.my' in email %}
             <span class="email-badge mmu">MMU EMAIL</span>
