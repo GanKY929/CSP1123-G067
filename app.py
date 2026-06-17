@@ -295,10 +295,6 @@ def admin():
     return render_template("Admin.html", users = _gmail_users)
 
 
-@app.route("/delete_user/<int:user_id>")
-def remove_user(user_id: int):
-    return render_template("Admin.html")
-
 @app.route("/profile")
 def user_profile():
     try:
