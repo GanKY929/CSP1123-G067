@@ -15,7 +15,7 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
-
+    
 def checkUsername(username):
     return database.User.query.filter_by(username=username).first()
 
@@ -137,8 +137,6 @@ def signup():
         return render_template("signup.html", error=str(error))
 
 
-
-
 @app.route("/otp", methods=["GET", "POST"])
 def otp():
     email = request.args.get("email") or request.form.get("email")
@@ -198,7 +196,6 @@ def resend_otp():
     return render_template("otp.html", success="OTP resent successfully.", email=email)
 
 
-
 @app.route("/forgotPass", methods=["GET", "POST"])
 def forgotPass():
     if request.method == "GET":
@@ -214,8 +211,6 @@ def forgotPass():
     send_otp_email(email, otp_code)
 
     return redirect(url_for("otp", email=email, purpose="reset"))
-
-
 
 
 @app.route("/resetPass", methods=["GET", "POST"])
