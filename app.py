@@ -108,8 +108,7 @@ def login():
 
 @app.route("/logout")
 def logout():
-    session.pop("username")
-    session.pop("user_id")
+    session.clear()
     success = "Logged out successfully!"
     return redirect(url_for("index", success=success))
 
