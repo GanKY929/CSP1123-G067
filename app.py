@@ -259,21 +259,51 @@ def resetPass():
 
     return redirect(url_for("login", success="Password reset successfully! You can now log in."))
 
-@app.route("/admin")
+
+@app.route("/admin", methods = ["GET", "POST"])
 def admin():
-    # user_amount = db.session.query(database.User).count()
-    # all_users = db.session.query(database.User).filter_by(verified = True)                             
+    if ("username" not in session) or (session["username"] != "Mithirilz"):
+        abort(404)
     
-    # print(all_users)
+    if request.method == "POST":
+        _user_id = request.args.get("user_id")
+        user_to_delete = db.session.get(database.User, _user_id)
+        db.session.delete(user_to_delete) 
+        db.session.commit()
 
-    return render_template("Admin.html", gmail_users = ["testing@gmail.com"], users = ["testing@gmail.com"]) #<- hardcoded for now
+        return redirect(url_for("admin"))
 
+    _gmail_users = []
+    user_list = []
+
+    users = db.session.execute(select(database.User).order_by(database.User.username)).scalars()
+
+    for _user in users:
+        user_dict = {
+            "user_id" : int(_user.user_id),
+            "email" : str(_user.email),
+            "username" : str(_user.username),
+            "verified" : bool(_user.verified)
+        }
+
+        if str(_user.email).find("@gmail.com"):
+            _gmail_users.append(user_dict)
+        
+        else:
+            user_list.append(user_dict)
+        
+    return render_template("Admin.html", users = _gmail_users)
+
+
+@app.route("/delete_user/<int:user_id>")
+def remove_user(user_id: int):
+    return render_template("Admin.html")
 
 @app.route("/profile")
 def user_profile():
     try:
         if "user_id" not in session:
-            raise Exception("You are not logged in.")    
+            raise Exception("You are not logged in.")
     
     except Exception as error:
         return render_template("login.html", error=str(error))
