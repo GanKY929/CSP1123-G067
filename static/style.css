@@ -354,7 +354,11 @@ p {
         font-size: 30px;
         animation: none;
     }
-
+    #subtask {
+        font-size: 24px;
+        animation: none;
+        position: static;
+    }
     .posts-grid {
         grid-template-columns: 1fr;
     }
