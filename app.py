@@ -314,6 +314,7 @@ def user_profile():
         tagged_post = _tagged_post
     )
 
+
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
     if request.method == "GET":
