@@ -1,1 +1,232 @@
+<!DOCTYPE html>
+<head>
+<title>MMU InfoHUB – Post</title>
+<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  .post-page {
+    margin: 30px 28px;
+    margin-right: 330px;
+    margin-top: 470px;
+  }
 
+  /* POST HEADER CARD */
+  .post-card-main {
+    border: solid #333333;
+    background-color: #f8f5f3;
+    margin-bottom: 24px;
+  }
+
+  .post-card-top {
+    padding: 24px 28px 0 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .post-author-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: #333333;
+    color: #f8f5f3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .post-author-meta p {
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+    color: #888;
+  }
+
+  .post-author-meta .author-name {
+    font-weight: 700;
+    color: #333333;
+  }
+
+  .post-card-main h2 {
+    font-size: 34px;
+    color: #333333;
+    padding: 18px 28px 0 28px;
+    margin: 0;
+    background: transparent;
+    height: auto;
+    position: static;
+    display: block;
+    animation: none;
+    line-height: 1.15;
+  }
+
+  .post-image-area {
+    margin: 20px 28px 0 28px;
+    border: solid #333333;
+    background-color: #e0e0e0;
+    min-height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .post-image-area img {
+    width: 100%;
+    max-height: 520px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .post-card-main > p.post-body-text {
+    padding: 20px 28px 0 28px;
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.7;
+    color: #333333;
+  }
+
+  /* REACTION BAR — YouTube-style pill */
+  .reaction-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 24px 28px;
+    flex-wrap: wrap;
+  }
+
+  .like-dislike-pill {
+    display: flex;
+    border: solid #333333;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .like-dislike-pill button {
+    background-color: #f8f5f3;
+    border: none;
+    color: #333333;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    padding: 10px 20px;
+    cursor: pointer;
+    width: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .like-dislike-pill button:first-child {
+    border-right: solid #333333;
+  }
+
+  .like-dislike-pill button:hover {
+    background-color: #333333;
+    color: #f8f5f3;
+  }
+
+  .like-dislike-pill button.active {
+    background-color: #333333;
+    color: #f8f5f3;
+  }
+
+  .reaction-btn {
+    border: solid #333333;
+    border-radius: 999px;
+    background-color: #f8f5f3;
+    color: #333333;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    padding: 10px 20px;
+    cursor: pointer;
+    width: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .reaction-btn:hover {
+    background-color: #333333;
+    color: #f8f5f3;
+  }
+
+  /* COMMENT INPUT */
+  .comment-input-block {
+    border: solid #333333;
+    background-color: #f8f5f3;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+  }
+
+.like-dislike-pill {
+  display: flex;
+  border: solid #333333;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.like-dislike-pill button {
+  background-color: #333333;
+  border: none;
+  color: #f8f5f3;
+  font-size: 14px;
+  font-family: inherit;
+  font-weight: 600;
+  padding: 10px 20px;
+  cursor: pointer;
+  width: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.like-dislike-pill button:first-child {
+  border-right: solid #f8f5f3;
+}
+
+.like-dislike-pill button:first-child:hover,
+.like-dislike-pill button:first-child.active {
+  background-color: #27ae60;
+}
+
+.like-dislike-pill button:last-child:hover,
+.like-dislike-pill button:last-child.active {
+  background-color: #c0392b;
+}
+
+.comment-reactions button {
+  background: #333333;
+  border: none;
+  color: #f8f5f3;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 6px 12px;
+  width: auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+}
+
+.comment-reactions button:first-child:hover,
+.comment-reactions button:first-child.active {
+  background-color: #27ae60;
+  color: #f8f5f3;
+}
+
+.comment-reactions button:nth-child(2):hover,
+.comment-reactions button:nth-child(2).active {
+  background-color: #c0392b;
+  color: #f8f5f3;
+}
+
+.comment-reactions button:last-child:hover {
+  background-color: #888888;
+  color: #f8f5f3;
+}
