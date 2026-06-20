@@ -1,7 +1,9 @@
 from database import db
+from sqlalchemy import select
 import database
 
-def save_post_details(_post_title: str, _post_content:str, _post_owner: int):
+
+def save_post_details(_post_title: str, _post_content: str, _post_owner: int):
     if not _post_title or not _post_content or not _post_owner:
         print("Invalid arguments")
         return        
