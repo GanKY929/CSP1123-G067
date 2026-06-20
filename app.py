@@ -321,6 +321,7 @@ def user_profile():
             tagged_post = _tagged_post
         )
 
+
 @app.route("/edit_display_name", methods=["GET", "POST"])
 def display_name():
     if request.method == "GET":
@@ -360,6 +361,7 @@ def contact():
         server.send_message(msg)
     success="Thanks for your comment <3"
     return render_template("contact.html", success=success)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
