@@ -136,6 +136,7 @@ th{
 }
 p {
     margin-bottom: 15px;
+    background-color: transparent;
 }
 
 .posts-grid {
@@ -353,7 +354,11 @@ p {
         font-size: 30px;
         animation: none;
     }
-
+    #subtask {
+        font-size: 24px;
+        animation: none;
+        position: static;
+    }
     .posts-grid {
         grid-template-columns: 1fr;
     }
