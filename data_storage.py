@@ -17,23 +17,31 @@ def save_post_details(_post_title: str, _post_content: str, _post_owner: int):
     db.session.add(new_post)
     db.session.commit()
 
-def get_post_details(_post_id: int)-> str:
-    if not _post_id:
+
+def get_posts_details(first_post_id: int, last_post_id: int):
+    if not first_post_id or not last_post_id:
         print("Invalid argument")
         return
-    
-    post_returned = db.session.query(database.Post).filter_by(post_id = _post_id).first()    
+   
+    posts = []
 
-    if not post_returned:
-        print("Error: PostID does not exist")
-        return
-    
-    _post_title = post_returned.post_title
-    _post_owner = post_returned.post_owner
-    _post_content = post_returned.post_content
+    for post_id in range(first_post_id, last_post_id+1):
+        post_details = db.session.execute(
+            select(database.Post).filter_by(post_id)
+        )
 
-    return _post_title, _post_owner, _post_content
-    
+        post_dict = {
+            "post_id" : post_details.post_id,
+            "post_title" : post_details.title,
+            "post_content" : post_details.content,
+            "post_owner" : post_details.owner
+        }
+
+        posts.append(post_dict)
+
+    return posts
+
+
 def get_user_details(_user_id: int):
     if not _user_id:
         print("Invalid argument")
