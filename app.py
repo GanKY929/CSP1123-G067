@@ -72,6 +72,16 @@ def index():
     return render_template("index.html", success=success, posts=post_data)
 
 
+@app.route("/post/")
+def post():
+    return render_template("post.html")
+
+
+@app.route("/post/postlayout")
+def post_layout():
+    return render_template("postlayout.html") 
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
