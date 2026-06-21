@@ -57,6 +57,9 @@ def index():
     
     if ("username" in session) and (session["username"] == "Mithirilz"):
         return redirect(url_for("admin"))
+    
+    return render_template("index.html", success=success)
+
 
     post_count = db.session.query(database.Post).count() 
 
