@@ -58,25 +58,18 @@ def index():
     if ("username" in session) and (session["username"] == "Mithirilz"):
         return redirect(url_for("admin"))
 
-    post_data = db.session.execute(select(database.Post))
+    post_count = db.session.query(database.Post).count() 
 
-    if not post_data:
+    first_post_id = post_count - (post_count-1)
+    last_post_id = post_count
+
+    post_data = dpn.get_posts_details(first_post_id, last_post_id)
+
+    if post_data == 0:
         print("There is no data in postings")
         return render_template("index.html", success=success)
 
-    _post_list = []
-
-    for posts in post_data.fetchall():
-        post_dict = {
-            "post_id" : int(posts.post_id),
-            "post_title" : str(posts.post_title),
-            "post_content" : str(posts.post_content),
-            "post_owner" : str(posts.post_owner)
-        }
-
-        _post_list.append(post_dict)
-    
-    return render_template("index.html", success=success, posts=_post_list)
+    return render_template("index.html", success=success, posts=post_data)
 
 
 @app.route("/login", methods=["GET", "POST"])
