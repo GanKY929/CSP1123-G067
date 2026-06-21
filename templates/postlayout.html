@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
-<title>MMU InfoHUB – Post</title>
-<link rel="stylesheet" href="style.css">
+<title>MMU InfoHUB – {{ post.post_title }}</title>
+<link rel="stylesheet" href="/static/style.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   .post-page {
@@ -10,7 +10,6 @@
     margin-top: 470px;
   }
 
-  /* POST HEADER CARD */
   .post-card-main {
     border: solid #333333;
     background-color: #f8f5f3;
@@ -89,7 +88,6 @@
     color: #333333;
   }
 
-  /* REACTION BAR — YouTube-style pill */
   .reaction-bar {
     display: flex;
     align-items: center;
@@ -155,7 +153,6 @@
     color: #f8f5f3;
   }
 
-  /* COMMENT INPUT */
   .comment-input-block {
     border: solid #333333;
     background-color: #f8f5f3;
@@ -210,7 +207,6 @@
 
   .comment-input-row button:hover { opacity: 0.85; }
 
-  /* COMMENTS */
   .comments-section-title {
     font-size: 13px;
     font-weight: 700;
@@ -344,10 +340,10 @@
 
 <div class="navigationBar">
 <ul><br>
-    <li><a href="IT-PROJECT.html">HOME</a></li><br>
-    <li><a href="learningresources.html">LEARNING RESOURCES</a></li><br>
-    <li><a href="quest.html">QUEST BOARD</a></li><br>
-    <li><a href="contact.html">CONTACT</a></li><br>
+    <li><a href="{{ url_for('index') }}">HOME</a></li><br>
+    <li><a href="#">LEARNING RESOURCES</a></li><br>
+    <li><a href="#">QUEST BOARD</a></li><br>
+    <li><a href="{{ url_for('contact') }}">CONTACT</a></li><br>
     <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project 2610 G067</li>
 </ul>
 </div>
@@ -360,28 +356,30 @@
     <div class="post-card-main">
 
         <div class="post-card-top">
-            <div class="post-author-avatar"></div>
+            <div class="post-author-avatar">{{ post.author_username[0].upper() }}</div>
             <div class="post-author-meta">
-                <p class="author-name"></p>
-                <p class="post-date"></p>
+                <p class="author-name">{{ post.author_username }}</p>
+                <p class="post-date">{{ post.created_at.strftime('%d %b %Y') if post.created_at else '' }}</p>
             </div>
         </div>
 
-        <h2></h2>
+        <h2>{{ post.post_title }}</h2>
 
+        {% if post.image_path %}
         <div class="post-image-area">
-            <img src="" alt="" />
+            <img src="{{ post.image_path }}" alt="{{ post.post_title }}" />
         </div>
+        {% endif %}
 
-        <p class="post-body-text"></p>
+        <p class="post-body-text">{{ post.post_content }}</p>
 
         <!-- REACTION BAR -->
         <div class="reaction-bar">
             <div class="like-dislike-pill">
-                <button onclick="toggleLike(this)">👍 <span class="like-count">0</span></button>
+                <button onclick="toggleLike(this)">👍 <span class="like-count">{{ post.like_count or 0 }}</span></button>
                 <button onclick="toggleDislike(this)">👎</button>
             </div>
-            <button class="reaction-btn">💬 <span class="comment-count">0</span> Comments</button>
+            <button class="reaction-btn">💬 <span class="comment-count">{{ comments|length }}</span> Comments</button>
             <button class="reaction-btn">↗ Share</button>
         </div>
 
@@ -390,10 +388,12 @@
     <!-- COMMENT INPUT -->
     <div class="comment-input-block">
         <p class="section-label">JOIN THE DISCUSSION</p>
-        <div class="comment-input-row">
-            <textarea placeholder="Write a comment..."></textarea>
-            <button>POST</button>
-        </div>
+        <form method="POST" action="{{ url_for('add_comment', post_id=post.post_id) }}">
+            <div class="comment-input-row">
+                <textarea name="comment_text" placeholder="Write a comment..."></textarea>
+                <button type="submit">POST</button>
+            </div>
+        </form>
     </div>
 
     <!-- COMMENTS -->
@@ -401,45 +401,39 @@
 
     <div class="comment-thread">
 
+        {% for comment in comments %}
         <div class="comment-block">
-            <div class="comment-avatar"></div>
+            <div class="comment-avatar">{{ comment.author_username[0].upper() }}</div>
             <div class="comment-body">
-                <p class="comment-user"><span></span></p>
-                <p class="comment-text"></p>
+                <p class="comment-user">{{ comment.author_username }} <span>{{ comment.created_at.strftime('%d %b %Y') if comment.created_at else '' }}</span></p>
+                <p class="comment-text">{{ comment.comment_text }}</p>
                 <div class="comment-reactions">
-                    <button onclick="toggleLike(this)">👍 <span class="like-count">0</span></button>
+                    <button onclick="toggleLike(this)">👍 <span class="like-count">{{ comment.like_count or 0 }}</span></button>
                     <button onclick="toggleDislike(this)">👎</button>
                     <button>Reply</button>
                 </div>
 
-                <!-- REPLY -->
+                {% if comment.replies %}
                 <div class="reply-thread">
+                    {% for reply in comment.replies %}
                     <div class="comment-body">
-                        <p class="comment-user"><span></span></p>
-                        <p class="comment-text"></p>
+                        <p class="comment-user">{{ reply.author_username }} <span>{{ reply.created_at.strftime('%d %b %Y') if reply.created_at else '' }}</span></p>
+                        <p class="comment-text">{{ reply.comment_text }}</p>
                         <div class="comment-reactions">
-                            <button onclick="toggleLike(this)">👍 <span class="like-count">0</span></button>
+                            <button onclick="toggleLike(this)">👍 <span class="like-count">{{ reply.like_count or 0 }}</span></button>
                             <button onclick="toggleDislike(this)">👎</button>
                             <button>Reply</button>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
+                {% endif %}
 
             </div>
         </div>
-
-        <div class="comment-block">
-            <div class="comment-avatar"></div>
-            <div class="comment-body">
-                <p class="comment-user"><span></span></p>
-                <p class="comment-text"></p>
-                <div class="comment-reactions">
-                    <button onclick="toggleLike(this)">👍 <span class="like-count">0</span></button>
-                    <button onclick="toggleDislike(this)">👎</button>
-                    <button>Reply</button>
-                </div>
-            </div>
-        </div>
+        {% else %}
+        <p style="padding:16px;border:solid #333333;background:#f8f5f3;color:#888;">No comments yet. Be the first!</p>
+        {% endfor %}
 
     </div>
 

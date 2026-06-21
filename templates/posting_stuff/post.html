@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<head>
+<title>MMU InfoHUB – All Posts</title>
+<link rel="stylesheet" href="/static/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<header>
+    <h1>MMU InfoHUB</h1>
+</header>
+
+<div class="navigationBar">
+<ul><br>
+    <li><a href="{{ url_for('index') }}">HOME</a></li><br>
+    <li><a href="#">LEARNING RESOURCES</a></li><br>
+    <li><a href="#">QUEST BOARD</a></li><br>
+    <li><a href="{{ url_for('contact') }}">CONTACT</a></li><br>
+    <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project 2610 G067</li>
+</ul>
+</div>
+
+<div id="task"><h2>ALL POSTS</h2></div>
+
+<div class="content">
+
+    <div class="feed">
+
+        {% for post in posts %}
+        <div class="feed-card" onclick="window.location.href='{{ url_for('postlayout', post_id=post.post_id) }}'">
+            <div class="feed-card-img">
+                <img src="{{ post.image_path or '' }}" alt="{{ post.post_title }}" />
+            </div>
+            <div class="feed-card-body">
+                <h3>{{ post.post_title }}</h3>
+                <p class="feed-meta">
+                    <span class="feed-date">{{ post.created_at.strftime('%d %b %Y') if post.created_at else '' }}</span>
+                    <span class="feed-author">{{ post.author_username }}</span>
+                    <span class="feed-comments">💬 {{ post.comment_count }}</span>
+                </p>
+                <p class="feed-excerpt">{{ post.post_content[:120] }}...</p>
+            </div>
+        </div>
+        {% else %}
+        <p>No posts yet.</p>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
