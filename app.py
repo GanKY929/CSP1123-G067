@@ -257,20 +257,23 @@ def resetPass():
 
 
 @app.route("/admin", methods = ["GET", "POST"])
-def admin():
-    if ("username" not in session) or (session["username"] != "Mithirilz"):
+def admin(): 
+    if not user_is_admin():
         abort(404)
-    
-    if request.method == "POST":
+
+    if request.method == "POST" and not user_is_admin():
         _user_id = request.args.get("user_id")
         user_to_delete = db.session.get(database.User, _user_id)
         db.session.delete(user_to_delete) 
         db.session.commit()
 
-        return redirect(url_for("admin"))
+        return redirect(url_for("admin"))    
+    
+    elif not user_is_admin():
+        abort(404)
 
-    _gmail_users = []
     user_list = []
+    _gmail_users = []
 
     users = db.session.execute(select(database.User).order_by(database.User.username)).scalars()
 
@@ -290,6 +293,12 @@ def admin():
         
     return render_template("Admin.html", users = _gmail_users)
 
+
+def user_is_admin() -> bool:
+    if ("username" in session) and (session["username"] == "Mithirilz"):
+        return True
+    
+    return False
 
 @app.route("/profile", methods=["GET", "POST"])
 def user_profile():
