@@ -126,7 +126,7 @@ def signup():
             username=username,
             email=email,
             password=hashed_pw,
-            tagged_post="test",
+            tagged_post="0",
         )
         db.session.add(new_user)
         db.session.commit()
