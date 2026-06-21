@@ -61,27 +61,24 @@ def index():
     return render_template("index.html", success=success)
 
 
+@app.route("/post/")
+def post():
     post_count = db.session.query(database.Post).count() 
+
+    if post_count == 0:
+        print("No posts in the database")
+        return render_template("post.html")
 
     first_post_id = post_count - (post_count-1)
     last_post_id = post_count
 
     post_data = dpn.get_posts_details(first_post_id, last_post_id)
 
-    if post_data == 0:
-        print("There is no data in postings")
-        return render_template("index.html", success=success)
-
-    return render_template("index.html", success=success, posts=post_data)
-
-
-@app.route("/post/")
-def post():
-    return render_template("post.html")
+    return render_template("post.html", posts=post_data)
 
 
 @app.route("/post/postlayout")
-def post_layout():
+def postlayout():
     return render_template("postlayout.html") 
 
 
