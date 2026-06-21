@@ -2,11 +2,10 @@ from flask import Flask, render_template, request, redirect, url_for, session, a
 from sqlalchemy import select
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta
-import database, config, os
+import database, config, os, random, smtplib, threading
 from urllib.parse import urlparse
 from database import db
 from copy import error
-import random, smtplib
 import database, config
 import data_storage as dpn #abbrev datapipeline
 
@@ -42,18 +41,27 @@ def create_otp(username):
     db.session.commit()
     return otp_code
 
-
 def send_otp_email(user_email, otp_code):
-    msg = MIMEText(f"Your OTP code is {otp_code}\n\nThis code will expire in 5 minutes.")
-    msg["Subject"] = f"MMUinfo; OTP Verification"
+    subject = "MMUinfo; OTP Verification"
+    body = f"Your OTP code is {otp_code}\n\nThis code will expire in 5 minutes."
+    send_email_async(user_email, subject, body)
+
+def send_email_async(user_email, subject, body):
+    msg = MIMEText(body)
+    msg["Subject"] = subject
     msg["From"] = config.smtp_email
     msg["To"] = user_email
 
-    with smtplib.SMTP(config.smtp_server, config.smtp_port) as server:
-        server.starttls()
-        server.login(config.smtp_email, config.smtp_password)
-        server.send_message(msg)
+    def send_email():
+        try:
+            with smtplib.SMTP(config.smtp_server, config.smtp_port, timeout=10) as server:
+                server.starttls()
+                server.login(config.smtp_email, config.smtp_password)
+                server.send_message(msg)
+        except Exception as e:
+            print(f"Failed to send email: {e}")
 
+    threading.Thread(target=send_email).start()
 
 @app.route("/")
 def index(): 
@@ -363,23 +371,26 @@ def display_name():
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
     if request.method == "GET":
-        return render_template("contact.html",name=session.get("username"), date=datetime.now().strftime("%Y-%m-%d"), email=session.get("email"))
-    
+        if request.method == "GET":
+            return render_template(
+            "contact.html",
+            name=session.get("username"),
+            date=datetime.now().strftime("%Y-%m-%d"),
+            email=session.get("email")
+        )
     date = datetime.now()
     username = request.form.get("name")
     email = request.form.get("email")
     comment = request.form.get("comment")
 
-    msg = MIMEText(f"Username:{username}\n\n{comment}")
-    msg["Subject"] = f"User Feedback : {date}"
+    msg = MIMEText(f"Username: {username}\n\n{comment}")
+    msg["Subject"] = f"User Feedback : {date.strftime('%Y-%m-%d %H:%M:%S')}"
     msg["From"] = email
     msg["To"] = config.smtp_email
 
-    with smtplib.SMTP(config.smtp_server, config.smtp_port) as server:
-        server.starttls()
-        server.login(config.smtp_email, config.smtp_password)
-        server.send_message(msg)
-    success="Thanks for your comment <3"
+    send_email_async(msg)
+
+    success = "Thanks for your comment <3"
     return render_template("contact.html", success=success)
 
 
