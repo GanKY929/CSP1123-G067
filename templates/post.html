@@ -1,8 +1,336 @@
 <!DOCTYPE html>
 <head>
-<title>MMU InfoHUB – All Posts</title>
-<link rel="stylesheet" href="style.css">
+<title>MMU InfoHUB – {{ post.post_title }}</title>
+<link rel="stylesheet" href="/static/style.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  .post-page {
+    margin: 30px 28px;
+    margin-right: 330px;
+    margin-top: 470px;
+  }
+
+  .post-card-main {
+    border: solid #333333;
+    background-color: #f8f5f3;
+    margin-bottom: 24px;
+  }
+
+  .post-card-top {
+    padding: 24px 28px 0 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .post-author-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: #333333;
+    color: #f8f5f3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .post-author-meta p {
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+    color: #888;
+  }
+
+  .post-author-meta .author-name {
+    font-weight: 700;
+    color: #333333;
+  }
+
+  .post-card-main h2 {
+    font-size: 34px;
+    color: #333333;
+    padding: 18px 28px 0 28px;
+    margin: 0;
+    background: transparent;
+    height: auto;
+    position: static;
+    display: block;
+    animation: none;
+    line-height: 1.15;
+  }
+
+  .post-image-area {
+    margin: 20px 28px 0 28px;
+    border: solid #333333;
+    background-color: #e0e0e0;
+    min-height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .post-image-area img {
+    width: 100%;
+    max-height: 520px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .post-card-main > p.post-body-text {
+    padding: 20px 28px 0 28px;
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.7;
+    color: #333333;
+  }
+
+  .reaction-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 24px 28px;
+    flex-wrap: wrap;
+  }
+
+  .like-dislike-pill {
+    display: flex;
+    border: solid #333333;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .like-dislike-pill button {
+    background-color: #333333;
+    border: none;
+    color: #f8f5f3;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    padding: 10px 20px;
+    cursor: pointer;
+    width: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .like-dislike-pill button:first-child {
+    border-right: solid #f8f5f3;
+  }
+
+  .like-dislike-pill button:first-child:hover,
+  .like-dislike-pill button:first-child.active {
+    background-color: #27ae60;
+  }
+
+  .like-dislike-pill button:last-child:hover,
+  .like-dislike-pill button:last-child.active {
+    background-color: #c0392b;
+  }
+
+  .reaction-btn {
+    border: solid #333333;
+    border-radius: 999px;
+    background-color: #f8f5f3;
+    color: #333333;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    padding: 10px 20px;
+    cursor: pointer;
+    width: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .reaction-btn:hover {
+    background-color: #333333;
+    color: #f8f5f3;
+  }
+
+  .comment-input-block {
+    border: solid #333333;
+    background-color: #f8f5f3;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+  }
+
+  .comment-input-block .section-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #333333;
+    margin-bottom: 14px;
+  }
+
+  .comment-input-row {
+    display: flex;
+    gap: 12px;
+  }
+
+  .comment-input-row textarea {
+    flex: 1;
+    padding: 12px 14px;
+    background: #ffffff;
+    border: solid #333333;
+    color: #333333;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    resize: vertical;
+    min-height: 50px;
+  }
+
+  .comment-input-row textarea:focus {
+    background: #333333;
+    color: #f8f5f3;
+  }
+
+  .comment-input-row button {
+    border: solid #333333;
+    background-color: #333333;
+    color: #f8f5f3;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    padding: 0 24px;
+    cursor: pointer;
+    width: auto;
+    letter-spacing: 0.03em;
+  }
+
+  .comment-input-row button:hover { opacity: 0.85; }
+
+  .comments-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background-color: #333333;
+    color: #f8f5f3;
+    display: inline-block;
+    padding: 4px 14px;
+    margin-bottom: 18px;
+  }
+
+  .comment-thread {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .comment-block {
+    display: flex;
+    gap: 14px;
+    border: solid #333333;
+    border-top: none;
+    padding: 16px 20px;
+    background-color: #f8f5f3;
+  }
+
+  .comment-thread .comment-block:first-child {
+    border-top: solid #333333;
+  }
+
+  .comment-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #333333;
+    color: #f8f5f3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .comment-body { flex: 1; }
+
+  .comment-body .comment-user {
+    font-size: 13px;
+    font-weight: 700;
+    color: #333333;
+    padding: 0;
+    margin: 0 0 4px 0;
+  }
+
+  .comment-body .comment-user span {
+    font-weight: 400;
+    color: #888;
+    margin-left: 6px;
+  }
+
+  .comment-body .comment-text {
+    font-size: 15px;
+    color: #333333;
+    line-height: 1.5;
+    padding: 0;
+    margin: 0 0 10px 0;
+  }
+
+  .comment-reactions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .comment-reactions button {
+    background: #333333;
+    border: none;
+    color: #f8f5f3;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 6px 12px;
+    width: auto;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 500;
+    border-radius: 999px;
+  }
+
+  .comment-reactions button:first-child:hover,
+  .comment-reactions button:first-child.active {
+    background-color: #27ae60;
+  }
+
+  .comment-reactions button:nth-child(2):hover,
+  .comment-reactions button:nth-child(2).active {
+    background-color: #c0392b;
+  }
+
+  .comment-reactions button:last-child:hover {
+    background-color: #888888;
+  }
+
+  .reply-thread {
+    margin-top: 14px;
+    margin-left: 18px;
+    border-left: 2px solid #ccc;
+    padding-left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  @media (max-width: 768px) {
+    .post-page { margin: 16px; margin-top: 20px; }
+    .post-card-top, .post-card-main h2, .post-image-area, .post-card-main > p.post-body-text {
+      margin-left: 16px; margin-right: 16px; padding-left: 0; padding-right: 0;
+    }
+    .reaction-bar { padding: 24px 16px; }
+    .reply-thread { margin-left: 10px; padding-left: 12px; }
+  }
+</style>
 </head>
 <body>
 
@@ -12,68 +340,124 @@
 
 <div class="navigationBar">
 <ul><br>
-    <li><a href="IT-PROJECT.html">HOME</a></li><br>
-    <li><a href="learningresources.html">LEARNING RESOURCES</a></li><br>
-    <li><a href="quest.html">QUEST BOARD</a></li><br>
-    <li><a href="contact.html">CONTACT</a></li><br>
+    <li><a href="{{ url_for('index') }}">HOME</a></li><br>
+    <li><a href="#">LEARNING RESOURCES</a></li><br>
+    <li><a href="#">QUEST BOARD</a></li><br>
+    <li><a href="{{ url_for('contact') }}">CONTACT</a></li><br>
     <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project 2610 G067</li>
 </ul>
 </div>
 
-<div id="task"><h2>ALL POSTS</h2></div>
+<div id="task"><h2>POST</h2></div>
 
-<div class="content">
+<div class="post-page">
 
-    <div class="feed">
+    <!-- POST CARD -->
+    <div class="post-card-main">
 
-        <div class="feed-card" onclick="window.location.href='postlayout.html?id='">
-            <div class="feed-card-img">
-                <img src="" alt="" />
-            </div>
-            <div class="feed-card-body">
-                <h3></h3>
-                <p class="feed-meta">
-                    <span class="feed-date"></span>
-                    <span class="feed-author"></span>
-                    <span class="feed-comments">💬 </span>
-                </p>
-                <p class="feed-excerpt"></p>
+        <div class="post-card-top">
+            <div class="post-author-avatar">{{ post.author_username[0].upper() }}</div>
+            <div class="post-author-meta">
+                <p class="author-name">{{ post.author_username }}</p>
+                <p class="post-date">{{ post.created_at.strftime('%d %b %Y') if post.created_at else '' }}</p>
             </div>
         </div>
 
-        <div class="feed-card" onclick="window.location.href='postlayout.html?id='">
-            <div class="feed-card-img">
-                <img src="" alt="" />
-            </div>
-            <div class="feed-card-body">
-                <h3></h3>
-                <p class="feed-meta">
-                    <span class="feed-date"></span>
-                    <span class="feed-author"></span>
-                    <span class="feed-comments">💬 </span>
-                </p>
-                <p class="feed-excerpt"></p>
-            </div>
-        </div>
+        <h2>{{ post.post_title }}</h2>
 
-        <div class="feed-card" onclick="window.location.href='postlayout.html?id='">
-            <div class="feed-card-img">
-                <img src="" alt="" />
+        {% if post.image_path %}
+        <div class="post-image-area">
+            <img src="{{ post.image_path }}" alt="{{ post.post_title }}" />
+        </div>
+        {% endif %}
+
+        <p class="post-body-text">{{ post.post_content }}</p>
+
+        <!-- REACTION BAR -->
+        <div class="reaction-bar">
+            <div class="like-dislike-pill">
+                <button onclick="toggleLike(this)">👍 <span class="like-count">{{ post.like_count or 0 }}</span></button>
+                <button onclick="toggleDislike(this)">👎</button>
             </div>
-            <div class="feed-card-body">
-                <h3></h3>
-                <p class="feed-meta">
-                    <span class="feed-date"></span>
-                    <span class="feed-author"></span>
-                    <span class="feed-comments">💬 </span>
-                </p>
-                <p class="feed-excerpt"></p>
-            </div>
+            <button class="reaction-btn">💬 <span class="comment-count">{{ comments|length }}</span> Comments</button>
+            <button class="reaction-btn">↗ Share</button>
         </div>
 
     </div>
 
+    <!-- COMMENT INPUT -->
+    <div class="comment-input-block">
+        <p class="section-label">JOIN THE DISCUSSION</p>
+        <form method="POST" action="{{ url_for('add_comment', post_id=post.post_id) }}">
+            <div class="comment-input-row">
+                <textarea name="comment_text" placeholder="Write a comment..."></textarea>
+                <button type="submit">POST</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- COMMENTS -->
+    <p class="comments-section-title">COMMENTS</p>
+
+    <div class="comment-thread">
+
+        {% for comment in comments %}
+        <div class="comment-block">
+            <div class="comment-avatar">{{ comment.author_username[0].upper() }}</div>
+            <div class="comment-body">
+                <p class="comment-user">{{ comment.author_username }} <span>{{ comment.created_at.strftime('%d %b %Y') if comment.created_at else '' }}</span></p>
+                <p class="comment-text">{{ comment.comment_text }}</p>
+                <div class="comment-reactions">
+                    <button onclick="toggleLike(this)">👍 <span class="like-count">{{ comment.like_count or 0 }}</span></button>
+                    <button onclick="toggleDislike(this)">👎</button>
+                    <button>Reply</button>
+                </div>
+
+                {% if comment.replies %}
+                <div class="reply-thread">
+                    {% for reply in comment.replies %}
+                    <div class="comment-body">
+                        <p class="comment-user">{{ reply.author_username }} <span>{{ reply.created_at.strftime('%d %b %Y') if reply.created_at else '' }}</span></p>
+                        <p class="comment-text">{{ reply.comment_text }}</p>
+                        <div class="comment-reactions">
+                            <button onclick="toggleLike(this)">👍 <span class="like-count">{{ reply.like_count or 0 }}</span></button>
+                            <button onclick="toggleDislike(this)">👎</button>
+                            <button>Reply</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+        {% else %}
+        <p style="padding:16px;border:solid #333333;background:#f8f5f3;color:#888;">No comments yet. Be the first!</p>
+        {% endfor %}
+
+    </div>
+
 </div>
+
+<script>
+  function toggleLike(btn) {
+    var pill = btn.closest('.like-dislike-pill, .comment-reactions');
+    var dislikeBtn = pill.querySelector('button:nth-child(2)');
+    btn.classList.toggle('active');
+    if (dislikeBtn && dislikeBtn.classList.contains('active')) {
+      dislikeBtn.classList.remove('active');
+    }
+  }
+
+  function toggleDislike(btn) {
+    var pill = btn.closest('.like-dislike-pill, .comment-reactions');
+    var likeBtn = pill.querySelector('button:nth-child(1)');
+    btn.classList.toggle('active');
+    if (likeBtn && likeBtn.classList.contains('active')) {
+      likeBtn.classList.remove('active');
+    }
+  }
+</script>
 
 </body>
 </html>
