@@ -4,14 +4,17 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import random, smtplib
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta
-import database, config
+import database, config, os
 from urllib.parse import urlparse
 from database import db
 import data_storage as dpn #abbrev datapipeline
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = config.secret_key
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+db_url = os.environ.get("DATABASE_URL") or config.InternalDatabaseURL
+if db_url and db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+app.config["SQLALCHEMY_DATABASE_URI"] = db_url or "sqlite:///project.db"
 db.init_app(app)
 
 with app.app_context():
