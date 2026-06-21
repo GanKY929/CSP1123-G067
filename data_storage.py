@@ -25,16 +25,14 @@ def get_posts_details(first_post_id: int, last_post_id: int):
    
     posts = []
 
-    for post_id in range(first_post_id, last_post_id+1):
-        post_details = db.session.execute(
-            select(database.Post).filter_by(post_id)
-        )
-
+    for _post_id in range(first_post_id, last_post_id+1):
+        post_details = db.session.execute(select(database.Post).where(database.Post.post_id == _post_id)).scalar()
+ 
         post_dict = {
             "post_id" : post_details.post_id,
-            "post_title" : post_details.title,
-            "post_content" : post_details.content,
-            "post_owner" : post_details.owner
+            "post_title" : post_details.post_title,
+            "post_content" : post_details.post_content,
+            "post_owner" : post_details.post_owner
         }
 
         posts.append(post_dict)
