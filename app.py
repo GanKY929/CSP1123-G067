@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, a
 from sqlalchemy import select
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta
-import database, config, os, random, smtplib, threading
+import database, config, os, random, threading, requests
 from urllib.parse import urlparse
 from database import db
 from copy import error
@@ -47,19 +47,22 @@ def send_otp_email(user_email, otp_code):
     send_email_async(user_email, subject, body)
 
 def send_email_async(user_email, subject, body):
-    msg = MIMEText(body)
-    msg["Subject"] = subject
-    msg["From"] = config.smtp_email
-    msg["To"] = user_email
-
     def send_email():
+        FROM_EMAIL = f"noreply@{config.MAILGUN_DOMAIN}"
         try:
-            with smtplib.SMTP(config.smtp_server, config.smtp_port, timeout=10) as server:
-                server.starttls()
-                server.login(config.smtp_email, config.smtp_password)
-                server.send_message(msg)
+            response = requests.post(
+                f"https://api.mailgun.net/v3/{config.MAILGUN_DOMAIN}/messages",
+                auth=("api", config.MAILGUN_API_KEY),
+                data={
+                    "from": FROM_EMAIL,
+                    "to": [user_email],
+                    "subject": subject,
+                    "text": body
+                }
+            )
+            print("Email sent:", response.status_code)
         except Exception as e:
-            print(f"Failed to send email: {e}")
+            print("Failed to send email:", e)
 
     threading.Thread(target=send_email).start()
 
