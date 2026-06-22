@@ -32,6 +32,7 @@ def get_posts_details(first_post_id: int, last_post_id: int):
             "post_id" : post_details.post_id,
             "post_title" : post_details.post_title,
             "post_content" : post_details.post_content,
+            "image_path" : post_details.image_path,
             "post_owner" : post_details.post_owner
         }
 
