@@ -25,8 +25,9 @@
 <div class="content">
 
     <div class="feed">
+
         {% for post in posts %}
-        <div class="feed-card" onclick="window.location.href="{{ url_for('postlayout', post_id=post.post_id) }}">
+        <div class="feed-card" onclick="window.location.href='{{ url_for('postlayout', post_id=post.post_id) }}'">
             <div class="feed-card-img">
                 <img src="{{ post.image_path or '' }}" alt="{{ post.post_title }}" />
             </div>
