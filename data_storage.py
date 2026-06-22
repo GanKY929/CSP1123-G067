@@ -41,6 +41,23 @@ def get_posts_details(first_post_id: int, last_post_id: int):
     return posts
 
 
+def get_post_details(_post_id):
+    if not _post_id:
+        print("Invalid argument")
+        return
+   
+    post_details = db.session.execute(select(database.Post).where(database.Post.post_id == _post_id)).scalar()
+ 
+    post_dict = {
+        "post_id" : post_details.post_id,
+        "post_title" : post_details.post_title,
+        "post_content" : post_details.post_content,
+        "post_owner" : post_details.post_owner
+    }
+
+    return post_dict
+
+
 def get_user_details(_user_id: int):
     if not _user_id:
         print("Invalid argument")
