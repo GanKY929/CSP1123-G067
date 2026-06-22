@@ -23,6 +23,38 @@ def checkUsername(username):
 def checkEmail(email):
     return database.User.query.filter_by(email=email).first()
 
+
+def testing_add_post():
+    new_post = database.Post(
+        post_title = "ToleTole Post",
+        post_content = "ToleTole is a very cute cat",
+        image_path = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgekM9I89hyjp2oDaZQtcQtYHFdVQxHsI7h4z9gfq8JzhxfZTWGgw8BRBm&s=10",
+        post_owner = "Mithirilz"
+    ) 
+
+    db.session.add(new_post)
+    db.session.commit()
+    return
+
+
+def testing_remove_post(): 
+    post_count = db.session.query(database.Post).count() 
+
+    if post_count == 0:
+        print("No posts in the database")
+        return render_template("post.html")
+
+    first_post_id = 1
+    last_post_id = post_count + 1
+
+    for _post_id in range(first_post_id, last_post_id):
+        post_to_delete = db.session.get(database.Post, _post_id) 
+        db.session.delete(post_to_delete)
+        db.session.commit()
+
+    return
+
+
 #Sub-functions
 def create_otp(username):
     otp_code = str(random.randint(100000, 999999))
@@ -58,6 +90,8 @@ def index():
     if ("username" in session) and (session["username"] == "Mithirilz"):
         return redirect(url_for("admin"))
     
+    testing_remove_post()
+
     return render_template("index.html", success=success)
 
 
