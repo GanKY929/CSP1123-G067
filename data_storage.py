@@ -3,7 +3,7 @@ from sqlalchemy import select
 import database
 
 
-def save_post_details(_post_title: str, _post_content: str, _post_image:str, _post_owner: int):
+def save_post_details(_post_title: str, _post_content: str, _image_path: str, _post_owner: int):
     if not _post_title or not _post_content or not _post_owner:
         print("Invalid arguments")
         return        
@@ -11,7 +11,7 @@ def save_post_details(_post_title: str, _post_content: str, _post_image:str, _po
     new_post = database.Post(
         post_title = _post_title,
         post_content = _post_content,
-        post_image = _post_image,
+        image_path = _image_path,
         post_owner = _post_owner
     )
 
