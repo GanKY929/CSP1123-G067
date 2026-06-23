@@ -103,8 +103,8 @@ def post():
         print("No posts in the database")
         return render_template("post.html")
 
-    first_post_id = post_count - (post_count-1)
-    last_post_id = post_count
+    first_post_id = 1 
+    last_post_id = post_count + 1
 
     post_data = dpn.get_posts_details(first_post_id, last_post_id)
 
