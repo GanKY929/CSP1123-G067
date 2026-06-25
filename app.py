@@ -114,7 +114,7 @@ def login():
             if not database.checkPassword(db_user.password, password):
                 raise Exception("Incorrect password.")
             if db_user.verified != True:
-                raise Exception("Account not verified. Please check your email for the OTP.")
+                raise Exception("Account not verified. Please check your email for the OTP. Click Forgot Password to proceed.")
 
             session["username"] = db_user.username
             session["user_id"] = db_user.user_id 
@@ -387,11 +387,9 @@ def contact():
     comment = request.form.get("comment")
 
     msg = MIMEText(f"Username: {username}\n\n{comment}")
-    msg["Subject"] = f"User Feedback : {date.strftime('%Y-%m-%d %H:%M:%S')}"
-    msg["From"] = email
-    msg["To"] = config.smtp_email
+    subject = f"User Feedback : {date.strftime('%Y-%m-%d %H:%M:%S')}"
 
-    send_email_async(msg)
+    send_email_async(email, subject, msg.as_string())
 
     success = "Thanks for your comment <3"
     return render_template("contact.html", success=success)
