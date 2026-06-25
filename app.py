@@ -381,15 +381,11 @@ def contact():
     email = request.form.get("email") or session.get("email")
     comment = request.form.get("comment")
 
-    msg = MIMEText(f"Username: {username}\nEmail: {email}\n\n{comment}")
-    subject = f"User Feedback : {date.strftime('%Y-%m-%d %H:%M:%S')}"
-    
-
     send_email_async(
         recipient=config.official_email,
         sender=f"support@{config.MAILGUN_DOMAIN}",
-        subject=subject, 
-        body=msg.as_string()
+        subject=f"User Feedback : {date.strftime('%Y-%m-%d %H:%M:%S')}", 
+        body=f"Username: {username}\nEmail: {email}\n\n{comment}"
         )
 
     success = "Thanks for your comment <3"
