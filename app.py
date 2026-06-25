@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, abort 
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta
@@ -7,24 +8,13 @@ from urllib.parse import urlparse
 from database import db
 from copy import error
 import database, config
-import data_storage as dpn #abbrev datapipeline
+import data_storage as dpn
+from db_setup import init_db
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = config.secret_key
-db_url = os.environ.get("DATABASE_URL") or config.InternalDatabaseURL
-if db_url and db_url.startswith("postgres://"):
-    db_url = db_url.replace("postgres://", "postgresql://", 1)
-app.config["SQLALCHEMY_DATABASE_URI"] = db_url or "sqlite:///project.db"
-db.init_app(app)
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "fallback-secret")
 
-with app.app_context():
-    db.create_all()
-    
-def checkUsername(username):
-    return database.User.query.filter_by(username=username).first()
-
-def checkEmail(email):
-    return database.User.query.filter_by(email=email).first()
+init_db(app)
 
 #Sub-functions
 def create_otp(username):
@@ -44,18 +34,17 @@ def create_otp(username):
 def send_otp_email(user_email, otp_code):
     subject = "MMUinfo; OTP Verification"
     body = f"Your OTP code is {otp_code}\n\nThis code will expire in 5 minutes."
-    send_email_async(user_email, subject, body)
+    send_email_async(user_email, f"noreply@{config.MAILGUN_DOMAIN}", subject, body)
 
-def send_email_async(user_email, subject, body):
+def send_email_async(recipient, sender, subject, body):
     def send_email():
-        FROM_EMAIL = f"noreply@{config.MAILGUN_DOMAIN}"
         try:
             response = requests.post(
                 f"https://api.mailgun.net/v3/{config.MAILGUN_DOMAIN}/messages",
                 auth=("api", config.MAILGUN_API_KEY),
                 data={
-                    "from": FROM_EMAIL,
-                    "to": [user_email],
+                    "from": sender,
+                    "to": recipient,
                     "subject": subject,
                     "text": body
                 }
@@ -155,6 +144,12 @@ def signup():
             raise Exception("Passwords do not match.")
         if len(password) < 8:
             raise Exception("Password must be at least 8 characters long.")
+        if not any(char.isupper() for char in password):
+            raise Exception("Password must contain at least one uppercase letter.")
+        if not any(char.islower() for char in password):
+            raise Exception("Password must contain at least one lowercase letter.")
+        if not any(char.isdigit() for char in password):
+            raise Exception("Password must contain at least one number.")
 
         hashed_pw = database.generatePassword(password)
 
@@ -374,25 +369,31 @@ def display_name():
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
     if request.method == "GET":
-        if request.method == "GET":
-            return render_template(
-            "contact.html",
-            name=session.get("username"),
-            date=datetime.now().strftime("%Y-%m-%d"),
-            email=session.get("email")
-        )
+        return render_template(
+        "contact.html",
+        name=session.get("username"),
+        date=datetime.now().strftime('%Y-%m-%d'),
+        email=session.get("email")
+    )
+
     date = datetime.now()
-    username = request.form.get("name")
-    email = request.form.get("email")
+    username = request.form.get("name") or session.get("username")
+    email = request.form.get("email") or session.get("email")
     comment = request.form.get("comment")
 
-    msg = MIMEText(f"Username: {username}\n\n{comment}")
+    msg = MIMEText(f"Username: {username}\nEmail: {email}\n\n{comment}")
     subject = f"User Feedback : {date.strftime('%Y-%m-%d %H:%M:%S')}"
+    
 
-    send_email_async(email, subject, msg.as_string())
+    send_email_async(
+        recipient=config.official_email,
+        sender=f"support@{config.MAILGUN_DOMAIN}",
+        subject=subject, 
+        body=msg.as_string()
+        )
 
     success = "Thanks for your comment <3"
-    return render_template("contact.html", success=success)
+    return render_template("contact.html", success=success, name=username, date=datetime.now().strftime('%Y-%m-%d'), email=email)
 
 
 if __name__ == "__main__":

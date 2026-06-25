@@ -4,11 +4,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.schema import ForeignKey
 from datetime import datetime
 from werkzeug.security import check_password_hash as checkPasswordHash, generate_password_hash as generatePasswordHash
-
-class Base(DeclarativeBase):
-    pass
-
-db = SQLAlchemy(model_class=Base)
+from db_setup import db, Base
 
 class User(Base):
     __tablename__ = "users"
