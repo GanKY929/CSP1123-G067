@@ -22,18 +22,17 @@ def get_posts_details(first_post_id: int, last_post_id: int):
     if not first_post_id or not last_post_id:
         print("Invalid argument")
         return
-   
+
     posts = []
 
     for _post_id in range(first_post_id, last_post_id+1):
-        post_details = db.session.execute(select(database.Post).where(database.Post.post_id == _post_id)).scalar()
- 
+        post_details = db.session.scalar(select(database.Post).where(database.Post.post_id == _post_id))
+
         post_dict = {
             "post_id" : post_details.post_id,
             "post_title" : post_details.post_title,
             "post_content" : post_details.post_content,
-            "image_path" : post_details.image_path,
-            "post_owner" : post_details.post_owner
+            "image_path" : post_details.image_path
         }
 
         posts.append(post_dict)
