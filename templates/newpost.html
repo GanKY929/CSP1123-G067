@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<head>
+<title>MMU InfoHUB – New Post</title>
+<link rel="stylesheet" href="/static/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  .newpost-wrapper {
+    margin: 30px 28px;
+    margin-right: 330px;
+    margin-top: 470px;
+    padding-bottom: 80px;
+  }
+
+  .newpost-card {
+    border: solid #333333;
+    background-color: #f8f5f3;
+    padding: 32px 36px;
+  }
+
+  .newpost-card h2 {
+    font-size: 32px;
+    color: #333333;
+    margin-bottom: 28px;
+    background: transparent;
+    height: auto;
+    padding: 0;
+    position: static;
+    display: block;
+    animation: none;
+  }
+
+  .field-group { margin-bottom: 20px; }
+
+  .field-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #333333;
+    margin-bottom: 8px;
+  }
+
+  .field-group input[type="text"],
+  .field-group textarea {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    background: #ffffff;
+    border: solid #333333;
+    color: #333333;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    resize: vertical;
+  }
+
+  .field-group input[type="text"]:focus,
+  .field-group textarea:focus {
+    background: #333333;
+    color: #f8f5f3;
+  }
+
+  .field-group textarea { min-height: 160px; }
+
+  .media-type-row {
+    display: flex;
+    gap: 0;
+    margin-bottom: 16px;
+  }
+
+  .media-type-btn {
+    flex: 1;
+    padding: 10px;
+    border: solid #333333;
+    border-right: none;
+    background-color: #333333;
+    color: #f8f5f3;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    width: auto;
+    letter-spacing: 0.04em;
+  }
+
+  .media-type-btn:last-child { border-right: solid #333333; }
+  .media-type-btn:hover { background-color: #555555; }
+  .media-type-btn.active { background-color: #555555; }
+
+  .drop-zone {
+    border: 2px dashed #333333;
+    background-color: #f0ede9;
+    padding: 40px 20px;
+    text-align: center;
+    display: none;
+    margin-bottom: 8px;
+  }
+
+  .drop-zone.show { display: block; }
+
+  .drop-zone p {
+    font-size: 14px;
+    color: #888;
+    padding: 0;
+    margin: 0 0 12px 0;
+  }
+
+  .drop-zone input[type="file"] { display: none; }
+
+  .drop-zone-label {
+    border: solid #333333;
+    background: #333333;
+    color: #f8f5f3;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    padding: 8px 20px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    display: inline-block;
+  }
+
+  .drop-zone-label:hover { background: #555555; }
+
+  .file-preview {
+    display: none;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #555;
+  }
+
+  .file-preview.show { display: block; }
+
+  .url-input-row {
+    display: none;
+    margin-bottom: 8px;
+  }
+
+  .url-input-row.show { display: flex; }
+
+  .url-input-row input {
+    flex: 1;
+    padding: 12px 14px;
+    background: #ffffff;
+    border: solid #333333;
+    color: #333333;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .url-input-row input:focus {
+    background: #333333;
+    color: #f8f5f3;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 28px 0;
+  }
+
+  .submit-row {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+  }
+
+  .btn-cancel {
+    padding: 12px 28px;
+    border: solid #333333;
+    background: #f8f5f3;
+    color: #333333;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    width: auto;
+    letter-spacing: 0.04em;
+  }
+
+  .btn-cancel:hover { background: #333333; color: #f8f5f3; }
+
+  .btn-submit-post {
+    padding: 12px 36px;
+    border: solid #333333;
+    background: #333333;
+    color: #f8f5f3;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    width: auto;
+    letter-spacing: 0.04em;
+  }
+
+  .btn-submit-post:hover { background: #555555; }
+
+  @media (max-width: 768px) {
+    .newpost-wrapper { margin: 16px; margin-top: 20px; }
+    .newpost-card { padding: 20px; }
+    .submit-row { flex-direction: column; }
+    .btn-cancel, .btn-submit-post { width: 100%; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>MMU InfoHUB</h1>
+</header>
+
+<div class="navigationBar">
+<ul><br>
+    <li><a href="/">HOME</a></li><br>
+    <li><a href="/newpost">POST</a></li><br>
+    <li><a href="/contact">CONTACT</a></li><br>
+    <li><a href="/profile">PROFILE</a></li><br>
+    {% if session.user_id %}
+    <li><a href="/logout">LOGOUT</a></li><br>
+    {% else %}
+    <li><a href="/login">LOGIN</a></li><br>
+    {% endif %}
+    <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project 2610 G067</li>
+</ul>
+</div>
+
+<div id="task"><h2>NEW POST</h2></div>
+
+<div class="newpost-wrapper">
+  <div class="newpost-card">
+    <h2>CREATE A POST</h2>
+
+    <form method="POST" action="/create_post" enctype="multipart/form-data" id="post-form">
+
+      <div class="field-group">
+        <label for="post-title">Title</label>
+        <input type="text" id="post-title" name="post_title" placeholder="Give your post a title..." maxlength="200" />
+      </div>
+
+      <div class="field-group">
+        <label for="post-body">Body Text <span style="font-weight:400;color:#888;">(optional)</span></label>
+        <textarea id="post-body" name="post_content" placeholder="Write something..."></textarea>
+      </div>
+
+      <hr class="divider">
+
+      <div class="field-group">
+        <label>Media <span style="font-weight:400;color:#888;">(optional)</span></label>
+        <div class="media-type-row">
+          <button type="button" class="media-type-btn active" onclick="setMedia('none', this)">None</button>
+          <button type="button" class="media-type-btn" onclick="setMedia('media', this)">Import Media</button>
+          <button type="button" class="media-type-btn" onclick="setMedia('video', this)">Video URL</button>
+        </div>
+
+        <div class="drop-zone" id="drop-zone">
+          <p>Drag and drop media here, or click to browse</p>
+          <label class="drop-zone-label" for="file-input">CHOOSE FILE</label>
+          <input type="file" id="file-input" name="post_image" accept="image/png,image/jpeg,image/gif,image/webp,video/mp4" onchange="previewFile(this)">
+          <p class="file-preview" id="file-preview"></p>
+        </div>
+
+        <div class="url-input-row" id="url-input-row">
+          <input type="text" name="post_video_url" placeholder="Paste a YouTube or video link..." />
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="submit-row">
+        <button type="button" class="btn-cancel" onclick="window.location.href='/'">CANCEL</button>
+        <button type="submit" class="btn-submit-post">POST</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script>
+  function setMedia(type, btn) {
+    document.querySelectorAll('.media-type-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('drop-zone').classList.remove('show');
+    document.getElementById('url-input-row').classList.remove('show');
+    if (type === 'media') { document.getElementById('drop-zone').classList.add('show'); }
+    else if (type === 'video') { document.getElementById('url-input-row').classList.add('show'); }
+  }
+
+  function previewFile(input) {
+    var preview = document.getElementById('file-preview');
+    if (input.files && input.files[0]) {
+      preview.textContent = 'Selected: ' + input.files[0].name;
+      preview.classList.add('show');
+    } else {
+      preview.classList.remove('show');
+    }
+  }
+
+  var dropZone = document.getElementById('drop-zone');
+  dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.style.backgroundColor = '#333333'; dropZone.querySelector('p').style.color = '#f8f5f3'; });
+  dropZone.addEventListener('dragleave', function() { dropZone.style.backgroundColor = ''; dropZone.querySelector('p').style.color = ''; });
+  dropZone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    dropZone.style.backgroundColor = '';
+    dropZone.querySelector('p').style.color = '';
+    var files = e.dataTransfer.files;
+    if (files.length > 0) {
+      document.getElementById('file-input').files = files;
+      previewFile(document.getElementById('file-input'));
+    }
+  });
+</script>
+
+</body>
+</html>
+
+
