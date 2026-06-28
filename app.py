@@ -102,7 +102,7 @@ def post():
         return render_template("post.html")
 
     first_post_id = 1 
-    last_post_id = post_count + 1
+    last_post_id = post_count
 
     post_data = dpn.get_posts_details(first_post_id, last_post_id)
 
