@@ -351,28 +351,41 @@ def user_is_admin() -> bool:
     return False
 
 
-@app.route("/profile", methods=["GET", "POST"])
+@app.route("/profile", methods=["GET"])
 def user_profile():
-    if request.method == "GET":
-        try:
-            if "user_id" not in session:
-                raise Exception("You are not logged in.")    
-        except Exception as error:
-            return render_template("login.html", error=str(error))
+    try:
+        if "user_id" not in session:
+            raise Exception("You are not logged in.")    
 
-        user_id = session["user_id"]
-        username = session["username"]
-        email = session["email"]
-        display_name = db.session.query(database.User).filter_by(user_id=user_id).first().display_name
-        _tagged_post = dpn.get_user_details(user_id)
+    except Exception as error:
+        return render_template("login.html", error=str(error))
 
-        return render_template(
-            "profile.html",
-            username=username,
-            email=email,
-            display_name=display_name,
-            tagged_post = _tagged_post
-        )
+    _username = session["username"]
+    _email = session["email"]
+    _user_id = session["user_id"]
+    _display_name = db.session.query(database.User).filter_by(user_id=_user_id).first().display_name
+    _tagged_post = db.session.scalar(select(database.User)
+                                    .join(database.User.tagged_post)
+                                    .where(database.User.user_id == _user_id))
+
+    _posts = []
+
+    if _tagged_post:        
+        for post_info in _tagged_post.tagged_post:
+            post_dict = {
+                "post_title" : post_info.post_title,
+                "post_content" : post_info.post_content
+            }
+        
+        _posts.append(post_dict)       
+
+    return render_template(
+        "profile.html",
+        username=_username,
+        email=_email,
+        display_name=_display_name,
+        posts = _posts
+    )
 
 
 @app.route("/edit_display_name", methods=["GET", "POST"])
