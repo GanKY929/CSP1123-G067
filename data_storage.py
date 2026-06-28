@@ -2,21 +2,6 @@ from database import db
 from sqlalchemy import select
 import database
 
-def save_post_details(_post_title: str, _post_content: str, _image_path: str, _post_author: int):
-    if not _post_title or not _post_content or not _post_author or not _image_path:
-        print("Invalid arguments")
-        return        
-    
-    new_post = database.Post(
-        post_title = _post_title,
-        post_content = _post_content,
-        image_path = _image_path,
-        post_author = _post_author
-    )
-
-    db.session.add(new_post)
-    db.session.commit()
-
 
 def get_posts_details(first_post_id: int, last_post_id: int):
     if not first_post_id or not last_post_id:
