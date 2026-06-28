@@ -103,22 +103,6 @@ def create_post():
     return redirect(url_for("create_post_page"))
 
 
-@app.route("/post/")
-def post():
-    post_count = db.session.query(database.Post).count() 
-
-    if post_count == 0:
-        print("No posts in the database")
-        return render_template("post.html")
-
-    first_post_id = 1 
-    last_post_id = post_count
-
-    post_data = dpn.get_posts_details(first_post_id, last_post_id)
-
-    return render_template("post.html", posts=post_data)
-
-
 @app.route("/post/postlayout")
 def postlayout():
     _post_id = request.args.get("post_id")
