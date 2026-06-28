@@ -430,14 +430,15 @@ def user_profile():
 
     _posts = []
 
-    if _tagged_post:        
+    if _tagged_post:
         for post_info in _tagged_post.tagged_post:
             post_dict = {
                 "post_title" : post_info.post_title,
-                "post_content" : post_info.post_content
+                "post_content" : post_info.post_content,
+                "post_id" : post_info.post_id
             }
         
-        _posts.append(post_dict)       
+            _posts.append(post_dict)
 
     return render_template(
         "profile.html",
