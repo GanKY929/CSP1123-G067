@@ -114,7 +114,33 @@ def postlayout():
     _post_id = request.args.get("post_id")
     _error = request.args.get("error")
 
-    return render_template("postlayout.html", post = _post_details)
+    _post_details, _comments = dpn.get_post_details(_post_id)
+
+    return render_template("postlayout.html", post=_post_details, comments=_comments, error=_error)
+    
+
+@app.route("/comment", methods = ["POST"])
+def add_comment():
+    if "user_id" not in session:
+        return redirect(url_for("login", error="You are not logged in!"))
+
+    _post_id = request.args.get("post_id")
+    _user_id = session["user_id"]
+    _comment_content = request.form.get("comment_text")
+
+    if not _comment_content:
+        return redirect(url_for("postlayout", post_id = _post_id, error="You didn't write anything for comment"))
+
+    new_comment = database.Comments(
+        comment_content = _comment_content,
+        comment_author = _user_id,
+        comment_post_id = _post_id
+    )
+
+    db.session.add(new_comment)
+    db.session.commit()
+
+    return redirect(url_for("postlayout", post_id = _post_id))
 
 
 @app.route("/login", methods=["GET", "POST"])
