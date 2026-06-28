@@ -90,59 +90,18 @@
   .media-type-btn:hover { background-color: #555555; }
   .media-type-btn.active { background-color: #555555; }
 
-  .drop-zone {
-    border: 2px dashed #333333;
-    background-color: #f0ede9;
-    padding: 40px 20px;
-    text-align: center;
-    display: none;
-    margin-bottom: 8px;
-  }
-
-  .drop-zone.show { display: block; }
-
-  .drop-zone p {
-    font-size: 14px;
-    color: #888;
-    padding: 0;
-    margin: 0 0 12px 0;
-  }
-
-  .drop-zone input[type="file"] { display: none; }
-
-  .drop-zone-label {
-    border: solid #333333;
-    background: #333333;
-    color: #f8f5f3;
-    font-size: 13px;
-    font-weight: 600;
-    font-family: inherit;
-    padding: 8px 20px;
-    cursor: pointer;
-    letter-spacing: 0.04em;
-    display: inline-block;
-  }
-
-  .drop-zone-label:hover { background: #555555; }
-
-  .file-preview {
-    display: none;
-    margin-top: 12px;
-    font-size: 13px;
-    color: #555;
-  }
-
-  .file-preview.show { display: block; }
-
   .url-input-row {
     display: none;
+    flex-direction: column;
+    gap: 6px;
     margin-bottom: 8px;
   }
 
   .url-input-row.show { display: flex; }
 
   .url-input-row input {
-    flex: 1;
+    width: 100%;
+    box-sizing: border-box;
     padding: 12px 14px;
     background: #ffffff;
     border: solid #333333;
@@ -150,12 +109,18 @@
     font-size: 14px;
     font-family: inherit;
     outline: none;
-    box-sizing: border-box;
   }
 
   .url-input-row input:focus {
     background: #333333;
     color: #f8f5f3;
+  }
+
+  .url-hint {
+    font-size: 12px;
+    color: #888;
+    padding: 0;
+    margin: 0;
   }
 
   .divider {
@@ -218,7 +183,7 @@
 <div class="navigationBar">
 <ul><br>
     <li><a href="/">HOME</a></li><br>
-    <li><a href="/newpost">POST</a></li><br>
+    <li><a href="/newpost">+ POST</a></li><br>
     <li><a href="/contact">CONTACT</a></li><br>
     <li><a href="/profile">PROFILE</a></li><br>
     {% if session.user_id %}
@@ -236,7 +201,7 @@
   <div class="newpost-card">
     <h2>CREATE A POST</h2>
 
-    <form method="POST" action="/create_post" enctype="multipart/form-data" id="post-form">
+    <form method="POST" action="/create_post" id="post-form">
 
       <div class="field-group">
         <label for="post-title">Title</label>
@@ -251,22 +216,15 @@
       <hr class="divider">
 
       <div class="field-group">
-        <label>Media <span style="font-weight:400;color:#888;">(optional)</span></label>
+        <label>Image <span style="font-weight:400;color:#888;">(optional)</span></label>
         <div class="media-type-row">
-          <button type="button" class="media-type-btn active" onclick="setMedia('none', this)">None</button>
-          <button type="button" class="media-type-btn" onclick="setMedia('media', this)">Import Media</button>
-          <button type="button" class="media-type-btn" onclick="setMedia('video', this)">Video URL</button>
-        </div>
-
-        <div class="drop-zone" id="drop-zone">
-          <p>Drag and drop media here, or click to browse</p>
-          <label class="drop-zone-label" for="file-input">CHOOSE FILE</label>
-          <input type="file" id="file-input" name="post_image" accept="image/png,image/jpeg,image/gif,image/webp,video/mp4" onchange="previewFile(this)">
-          <p class="file-preview" id="file-preview"></p>
+          <button type="button" class="media-type-btn active" onclick="setMedia('none', this)">No Image</button>
+          <button type="button" class="media-type-btn" onclick="setMedia('url', this)">Image URL</button>
         </div>
 
         <div class="url-input-row" id="url-input-row">
-          <input type="text" name="post_video_url" placeholder="Paste a YouTube or video link..." />
+          <input type="text" name="post_image" placeholder="Paste an image URL... (e.g. https://example.com/photo.jpg)" />
+          <p class="url-hint">Paste a direct link to an image — must end in .jpg, .png, .gif or .webp</p>
         </div>
       </div>
 
@@ -285,38 +243,14 @@
   function setMedia(type, btn) {
     document.querySelectorAll('.media-type-btn').forEach(function(b) { b.classList.remove('active'); });
     btn.classList.add('active');
-    document.getElementById('drop-zone').classList.remove('show');
-    document.getElementById('url-input-row').classList.remove('show');
-    if (type === 'media') { document.getElementById('drop-zone').classList.add('show'); }
-    else if (type === 'video') { document.getElementById('url-input-row').classList.add('show'); }
-  }
-
-  function previewFile(input) {
-    var preview = document.getElementById('file-preview');
-    if (input.files && input.files[0]) {
-      preview.textContent = 'Selected: ' + input.files[0].name;
-      preview.classList.add('show');
+    if (type === 'url') {
+      document.getElementById('url-input-row').classList.add('show');
     } else {
-      preview.classList.remove('show');
+      document.getElementById('url-input-row').classList.remove('show');
     }
   }
-
-  var dropZone = document.getElementById('drop-zone');
-  dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.style.backgroundColor = '#333333'; dropZone.querySelector('p').style.color = '#f8f5f3'; });
-  dropZone.addEventListener('dragleave', function() { dropZone.style.backgroundColor = ''; dropZone.querySelector('p').style.color = ''; });
-  dropZone.addEventListener('drop', function(e) {
-    e.preventDefault();
-    dropZone.style.backgroundColor = '';
-    dropZone.querySelector('p').style.color = '';
-    var files = e.dataTransfer.files;
-    if (files.length > 0) {
-      document.getElementById('file-input').files = files;
-      previewFile(document.getElementById('file-input'));
-    }
-  });
 </script>
 
 </body>
 </html>
-
 
