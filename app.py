@@ -183,9 +183,9 @@ def signup():
         new_user = database.User(
             username=username,
             email=email,
-            password=hashed_pw,
-            tagged_post="test",
+            password=hashed_pw
         )
+
         db.session.add(new_user)
         db.session.commit()
 
