@@ -181,6 +181,32 @@ def add_comment():
     return redirect(url_for("postlayout", post_id = _post_id))
 
 
+@app.route("/reply", methods=["POST"])
+def add_reply():
+    if "user_id" not in session:
+        return redirect(url_for("login", error="You are not logged in"))
+
+    _reply_content = request.form.get("reply_text")
+    _comment_id = request.args.get("comment_id")
+    _post_id = request.args.get("post_id")
+    _user_id = session["user_id"] 
+
+    if _reply_content == None:
+        print("No content in reply")
+        return redirect(url_for("postlayout", post_id = _post_id))
+    
+    new_reply = database.Replies(
+        reply_content = _reply_content,
+        reply_author_id = _user_id,
+        reply_comment_id = _comment_id 
+    )
+
+    db.session.add(new_reply)
+    db.session.commit()
+
+    return redirect(url_for("postlayout", post_id = _post_id))
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
