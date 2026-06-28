@@ -432,8 +432,8 @@
                 <button id="post-like-btn" onclick="handleAction(event, toggleLike, this)" data-liked="false">👍 <span class="like-count" id="post-like-count">{{ post.like_count or 0 }}</span></button>
                 <button id="post-dislike-btn" onclick="handleAction(event, toggleDislike, this)" data-disliked="false">👎</button>
             </div>
-            {% if session.user_id == post.post_owner %}
-            <form method="POST" action="/post/{{ post.post_id }}/delete" onsubmit="return confirm('Delete this post?')" style="margin:0;">
+            {% if session.user_id == post.post_author_id %}
+            <form method="POST" action="{{ url_for('remove_post', post_id=post.post_id) }}" onsubmit="return confirm('Delete this post?')" style="margin:0;">
                 <button type="submit" class="btn-delete">🗑 Delete</button>
             </form>
             {% endif %}
