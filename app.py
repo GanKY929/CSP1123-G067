@@ -109,7 +109,7 @@ def create_post_page():
 
 @app.route("/create_post", methods=["POST"])
 def create_post():
-    _post_title = request.form.get("post-title")
+    _post_title = request.form.get("post_title")
     _post_content = request.form.get("post_content")
     _post_image = request.form.get("post_image")
     _post_owner = session["user_id"]
