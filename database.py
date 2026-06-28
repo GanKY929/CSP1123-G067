@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Integer, String, text, Boolean, DateTime
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.schema import ForeignKey
 from datetime import datetime
 from werkzeug.security import check_password_hash as checkPasswordHash, generate_password_hash as generatePasswordHash
