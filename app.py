@@ -111,11 +111,23 @@ def create_post_page():
 def create_post():
     _post_title = request.form.get("post_title")
     _post_content = request.form.get("post_content")
-    _post_image = request.form.get("post_image")
-    _post_owner = session["user_id"]
+    _image_path = request.form.get("post_image")
+    _post_author_id = session["user_id"]
 
-    print(_post_title, _post_content, _post_image, _post_owner)
-    
+    if _post_title == None or _post_content == None or _post_author_id == None:
+        print("Invalid post inputs") 
+        return redirect(url_for("create_post_page"))
+ 
+    new_post = database.Post(
+        post_title = _post_title,
+        post_content = _post_content,
+        image_path = _image_path,
+        post_author = _post_author_id
+    ) 
+
+    db.session.add(new_post)
+    db.session.commit()
+
     return redirect(url_for("create_post_page"))
 
 
