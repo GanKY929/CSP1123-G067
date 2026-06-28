@@ -65,7 +65,8 @@ def get_post_details(_post_id):
         "post_title" : post_details.post_title,
         "post_content" : post_details.post_content,
         "image_path" : post_details.image_path,
-        "author_username" : post_details.post_author_info.username
+        "author_username" : post_details.post_author_info.username,
+        "post_author_id" : post_details.post_author_info.user_id
     }
 
     return post_dict, post_comments
