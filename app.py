@@ -207,6 +207,21 @@ def add_reply():
     return redirect(url_for("postlayout", post_id = _post_id))
 
 
+@app.route("/remove_post", methods=["POST"])
+def remove_post():
+    _post_id = request.args.get("post_id")
+
+    if _post_id == None:
+        print("Post ID does not exist")
+        return redirect(url_for("index"))
+
+    post_to_delete = db.session.get(database.Post, _post_id)
+    db.session.delete(post_to_delete)
+    db.session.commit()
+
+    return redirect(url_for("index"))
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
