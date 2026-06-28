@@ -111,8 +111,8 @@ def post():
 
 @app.route("/post/postlayout")
 def postlayout():
-    _post_id = request.args.get("post_id") 
-    _post_details = dpn.get_post_details(_post_id)
+    _post_id = request.args.get("post_id")
+    _error = request.args.get("error")
 
     return render_template("postlayout.html", post = _post_details)
 
