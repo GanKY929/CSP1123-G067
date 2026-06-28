@@ -109,6 +109,9 @@ def create_post_page():
 
 @app.route("/create_post", methods=["POST"])
 def create_post():
+    if "user_id" not in session:
+        return redirect(url_for("login", error="You are not logged in"))
+
     _post_title = request.form.get("post_title")
     _post_content = request.form.get("post_content")
     _image_path = request.form.get("post_image")
