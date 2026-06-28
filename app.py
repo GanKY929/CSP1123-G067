@@ -120,7 +120,8 @@ def postlayout():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        return render_template("login.html")
+        _error = request.args.get("error")
+        return render_template("login.html", error=_error)
 
     if request.method == "POST":
         username: str = request.form.get("username")
