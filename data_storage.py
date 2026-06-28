@@ -77,8 +77,8 @@ def get_replies(replies):
 
     for reply in replies: 
         reply = {
-            "author_username" : replies.reply_author_info.username,
-            "comment_text" : replies.reply_content
+            "author_username" : reply.reply_author_info.username,
+            "comment_text" : reply.reply_content
         }
 
         comment_replies.append(reply)
