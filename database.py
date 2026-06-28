@@ -18,11 +18,14 @@ class User(Base):
     display_name: Mapped[str] = mapped_column(String(100), nullable=True)
     password: Mapped[str] = mapped_column(String(200), nullable=False)
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
-    tagged_post: Mapped[int] = mapped_column(Integer, server_default=text("0"), nullable=True)
 
     verified: Mapped[bool] = mapped_column(Boolean, server_default="0", nullable=False)
     otp_code: Mapped[int] = mapped_column(String(6), nullable=True)
     otp_created_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+ 
+    tagged_post: Mapped[list["Post"]] = relationship(back_populates="post_author_info")
+    user_comments: Mapped[list["Comments"]] = relationship(back_populates="comment_author_info")
+    user_replies: Mapped[list["Replies"]] = relationship(back_populates="reply_author_info")
 
 class Post(Base):
     __tablename__ = "posts"
