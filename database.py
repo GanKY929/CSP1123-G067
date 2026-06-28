@@ -34,8 +34,35 @@ class Post(Base):
     post_title: Mapped[str] = mapped_column(String(200), nullable=False)
     post_content: Mapped[str] = mapped_column(String, nullable=False)
     image_path: Mapped[str] = mapped_column(String, nullable=True)
-    post_owner: Mapped[int] = mapped_column(Integer, ForeignKey("users.user_id"), nullable=False)
+    
+    post_author: Mapped[int] = mapped_column(Integer, ForeignKey("users.user_id"), nullable=True)
+    post_author_info: Mapped["User"] = relationship(back_populates="tagged_post")
 
+    post_comments: Mapped[list["Comments"]] = relationship(cascade="all, delete")
+
+class Comments(Base):
+    __tablename__ = "comments"
+
+    comment_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    comment_content: Mapped[str] = mapped_column(String, nullable=False)
+    
+    comment_author: Mapped[int] = mapped_column(Integer, ForeignKey("users.user_id"), nullable=True)
+    comment_author_info: Mapped["User"] = relationship(back_populates="user_comments")
+
+    comment_post_id: Mapped[int] = mapped_column(Integer, ForeignKey("posts.post_id"), nullable=True)
+
+    replies: Mapped[list["Replies"]] = relationship(cascade="all, delete")
+
+class Replies(Base):
+    __tablename__ = "replies"
+
+    reply_id:  Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    reply_content: Mapped[str] = mapped_column(String, nullable=False)
+
+    reply_author_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.user_id"), nullable=False)
+    reply_author_info: Mapped["User"] = relationship(back_populates="user_replies")
+
+    reply_comment_id: Mapped[int] = mapped_column(Integer, ForeignKey("comments.comment_id"), nullable=False)
 
 def generatePassword(password):
     return generatePasswordHash(password)
