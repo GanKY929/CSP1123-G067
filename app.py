@@ -29,7 +29,7 @@ def testing_add_post():
         post_title = "ToleTole Post",
         post_content = "ToleTole is a very cute cat",
         image_path = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgekM9I89hyjp2oDaZQtcQtYHFdVQxHsI7h4z9gfq8JzhxfZTWGgw8BRBm&s=10",
-        post_owner = "Mithirilz"
+        post_author = 1 
     ) 
 
     db.session.add(new_post)
@@ -86,11 +86,37 @@ def send_otp_email(user_email, otp_code):
 @app.route("/")
 def index(): 
     success = request.args.get("success")
+    post_data = []
 
     if ("username" in session) and (session["username"] == "Mithirilz"):
         return redirect(url_for("admin"))
 
-    return render_template("index.html", success=success)
+    post_count = db.session.query(database.Post).count() 
+
+    if post_count != 0:
+        first_post_id = 1 
+        last_post_id = post_count
+
+        post_data = dpn.get_posts_details(first_post_id, last_post_id)
+
+    return render_template("index.html", success=success, posts=post_data)
+
+
+@app.route("/newpost")
+def create_post_page():
+    return render_template("newpost.html")
+
+
+@app.route("/create_post", methods=["POST"])
+def create_post():
+    _post_title = request.form.get("post-title")
+    _post_content = request.form.get("post_content")
+    _post_image = request.form.get("post_image")
+    _post_owner = session["user_id"]
+
+    print(_post_title, _post_content, _post_image, _post_owner)
+    
+    return redirect(url_for("create_post_page"))
 
 
 @app.route("/post/")
