@@ -141,7 +141,7 @@ def login():
             session["email"] = db_user.email
             session["display_name"] = db_user.display_name
             
-            return redirect(url_for("index"))
+            return redirect(url_for("index", success=f"Welcome {db_user.username}"))
 
         except Exception as error:
             return render_template("login.html", error=str(error), username=username)
