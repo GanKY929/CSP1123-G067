@@ -42,10 +42,10 @@ def testing_remove_post():
 
     if post_count == 0:
         print("No posts in the database")
-        return render_template("post.html")
+        return 
 
     first_post_id = 1
-    last_post_id = post_count + 1
+    last_post_id = post_count+1
 
     for _post_id in range(first_post_id, last_post_id):
         post_to_delete = db.session.get(database.Post, _post_id) 
