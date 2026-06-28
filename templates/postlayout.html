@@ -264,6 +264,65 @@
   .comment-reactions button:nth-child(2).active { background-color: #c0392b; }
   .comment-reactions button:last-child:hover { background-color: #555555; }
 
+  .reply-box {
+    display: none;
+    margin-top: 12px;
+    gap: 10px;
+    flex-direction: column;
+  }
+
+  .reply-box.show { display: flex; }
+
+  .reply-box textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    background: #ffffff;
+    border: solid #333333;
+    color: #333333;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    resize: vertical;
+    min-height: 50px;
+  }
+
+  .reply-box textarea:focus { background: #333333; color: #f8f5f3; }
+
+  .reply-box-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  .reply-cancel {
+    padding: 8px 18px;
+    border: solid #333333;
+    background: #f8f5f3;
+    color: #333333;
+    font-size: 12px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    width: auto;
+  }
+
+  .reply-cancel:hover { background: #333333; color: #f8f5f3; }
+
+  .reply-submit {
+    padding: 8px 18px;
+    border: solid #333333;
+    background: #333333;
+    color: #f8f5f3;
+    font-size: 12px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    width: auto;
+  }
+
+  .reply-submit:hover { background: #555555; }
+
   .reply-thread {
     margin-top: 14px;
     margin-left: 18px;
@@ -274,7 +333,6 @@
     gap: 14px;
   }
 
-  /* LOGIN POPUP */
   .login-popup {
     display: none;
     position: fixed;
@@ -371,8 +429,8 @@
 
         <div class="reaction-bar">
             <div class="like-dislike-pill">
-                <button onclick="handleAction(event, toggleLike, this)">👍 <span class="like-count">{{ post.like_count or 0 }}</span></button>
-                <button onclick="handleAction(event, toggleDislike, this)">👎</button>
+                <button id="post-like-btn" onclick="handleAction(event, toggleLike, this)" data-liked="false">👍 <span class="like-count" id="post-like-count">{{ post.like_count or 0 }}</span></button>
+                <button id="post-dislike-btn" onclick="handleAction(event, toggleDislike, this)" data-disliked="false">👎</button>
             </div>
             {% if session.user_id == post.post_owner %}
             <form method="POST" action="/post/{{ post.post_id }}/delete" onsubmit="return confirm('Delete this post?')" style="margin:0;">
@@ -382,6 +440,7 @@
         </div>
     </div>
 
+    <!-- MAIN COMMENT INPUT -->
     <div class="comment-input-block">
         <p class="section-label">JOIN THE DISCUSSION</p>
         <form method="POST" action="{{ url_for('add_comment', post_id=post.post_id) }}" onsubmit="return checkLogin(event)">
@@ -402,10 +461,22 @@
                 <p class="comment-user">{{ comment.author_username }} <span>{{ comment.created_at.strftime('%d %b %Y') if comment.created_at else '' }}</span></p>
                 <p class="comment-text">{{ comment.comment_text }}</p>
                 <div class="comment-reactions">
-                    <button onclick="handleAction(event, toggleLike, this)">👍 <span class="like-count">{{ comment.like_count or 0 }}</span></button>
-                    <button onclick="handleAction(event, toggleDislike, this)">👎</button>
-                    <button onclick="handleAction(event, null, this)">Reply</button>
+                    <button onclick="handleAction(event, toggleLike, this)" data-liked="false">👍 <span class="like-count">{{ comment.like_count or 0 }}</span></button>
+                    <button onclick="handleAction(event, toggleDislike, this)" data-disliked="false">👎</button>
+                    <button onclick="handleAction(event, openReply, this)" data-id="{{ comment.comment_id }}">Reply</button>
                 </div>
+
+                <!-- INLINE REPLY BOX -->
+                <div class="reply-box" id="reply-box-{{ comment.comment_id }}">
+                    <form method="POST" action="{{ url_for('add_reply', post_id=post.post_id, comment_id=comment.comment_id) }}">
+                        <textarea name="reply_text" placeholder="Write a reply..."></textarea>
+                        <div class="reply-box-actions">
+                            <button type="button" class="reply-cancel" onclick="closeReply('{{ comment.comment_id }}')">CANCEL</button>
+                            <button type="submit" class="reply-submit">REPLY</button>
+                        </div>
+                    </form>
+                </div>
+
                 {% if comment.replies %}
                 <div class="reply-thread">
                     {% for reply in comment.replies %}
@@ -413,14 +484,14 @@
                         <p class="comment-user">{{ reply.author_username }} <span>{{ reply.created_at.strftime('%d %b %Y') if reply.created_at else '' }}</span></p>
                         <p class="comment-text">{{ reply.comment_text }}</p>
                         <div class="comment-reactions">
-                            <button onclick="handleAction(event, toggleLike, this)">👍 <span class="like-count">{{ reply.like_count or 0 }}</span></button>
-                            <button onclick="handleAction(event, toggleDislike, this)">👎</button>
-                            <button onclick="handleAction(event, null, this)">Reply</button>
+                            <button onclick="handleAction(event, toggleLike, this)" data-liked="false">👍 <span class="like-count">{{ reply.like_count or 0 }}</span></button>
+                            <button onclick="handleAction(event, toggleDislike, this)" data-disliked="false">👎</button>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
                 {% endif %}
+
             </div>
         </div>
         {% else %}
@@ -467,21 +538,63 @@
     if (fn) fn(btn);
   }
 
+  function openReply(btn) {
+    var id = btn.getAttribute('data-id');
+    var box = document.getElementById('reply-box-' + id);
+    if (box) {
+      box.classList.toggle('show');
+      if (box.classList.contains('show')) {
+        box.querySelector('textarea').focus();
+      }
+    }
+  }
+
+  function closeReply(id) {
+    var box = document.getElementById('reply-box-' + id);
+    if (box) {
+      box.classList.remove('show');
+      box.querySelector('textarea').value = '';
+    }
+  }
+
   function toggleLike(btn) {
     var pill = btn.closest('.like-dislike-pill, .comment-reactions');
     var dislikeBtn = pill.querySelector('button:nth-child(2)');
-    btn.classList.toggle('active');
-    if (dislikeBtn && dislikeBtn.classList.contains('active')) {
-      dislikeBtn.classList.remove('active');
+    var countEl = btn.querySelector('.like-count');
+    var liked = btn.getAttribute('data-liked') === 'true';
+
+    if (liked) {
+      btn.setAttribute('data-liked', 'false');
+      btn.classList.remove('active');
+      if (countEl) countEl.textContent = parseInt(countEl.textContent) - 1;
+    } else {
+      btn.setAttribute('data-liked', 'true');
+      btn.classList.add('active');
+      if (countEl) countEl.textContent = parseInt(countEl.textContent) + 1;
+      if (dislikeBtn && dislikeBtn.getAttribute('data-disliked') === 'true') {
+        dislikeBtn.setAttribute('data-disliked', 'false');
+        dislikeBtn.classList.remove('active');
+      }
     }
   }
 
   function toggleDislike(btn) {
     var pill = btn.closest('.like-dislike-pill, .comment-reactions');
     var likeBtn = pill.querySelector('button:nth-child(1)');
-    btn.classList.toggle('active');
-    if (likeBtn && likeBtn.classList.contains('active')) {
-      likeBtn.classList.remove('active');
+    var likeCountEl = likeBtn ? likeBtn.querySelector('.like-count') : null;
+    var disliked = btn.getAttribute('data-disliked') === 'true';
+
+    if (disliked) {
+      btn.setAttribute('data-disliked', 'false');
+      btn.classList.remove('active');
+    } else {
+      btn.setAttribute('data-disliked', 'true');
+      btn.classList.add('active');
+      if (likeBtn && likeBtn.getAttribute('data-liked') === 'true') {
+        likeBtn.setAttribute('data-liked', 'false');
+        likeBtn.classList.remove('active');
+        if (likeCountEl) likeCountEl.textContent = parseInt(likeCountEl.textContent) - 1;
+      }
     }
   }
 </script>
