@@ -45,8 +45,21 @@ def get_post_details(_post_id):
         print("Invalid argument")
         return
    
-    post_details = db.session.execute(select(database.Post).where(database.Post.post_id == _post_id)).scalar()
- 
+    post_details = db.session.scalar(select(database.Post).where(database.Post.post_id == _post_id))
+    post_comments = [] 
+
+    for comments in post_details.post_comments:  
+        replies = get_replies(comments.replies)
+
+        comment = {
+            "comment_id": comments.comment_id,
+            "author_username" : comments.comment_author_info.username,
+            "comment_text" : comments.comment_content,
+            "replies" : replies
+        }
+
+        post_comments.append(comment)
+
     post_dict = {
         "post_id" : post_details.post_id,
         "post_title" : post_details.post_title,
