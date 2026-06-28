@@ -68,7 +68,21 @@ def get_post_details(_post_id):
         "author_username" : post_details.post_author_info.username
     }
 
-    return post_dict
+    return post_dict, post_comments
+
+
+def get_replies(replies):
+    comment_replies = []
+
+    for reply in replies: 
+        reply = {
+            "author_username" : replies.reply_author_info.username,
+            "comment_text" : replies.reply_content
+        }
+
+        comment_replies.append(reply)
+    
+    return comment_replies
 
 
 def get_user_details(_user_id: int):
