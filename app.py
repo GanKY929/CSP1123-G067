@@ -197,7 +197,7 @@ def add_reply():
     if _reply_content == None:
         print("No content in reply")
         return redirect(url_for("postlayout", post_id = _post_id))
-    
+
     new_reply = database.Replies(
         reply_content = _reply_content,
         reply_author_id = _user_id,
