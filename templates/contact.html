@@ -78,11 +78,16 @@ div.credit ul{
 
 <div class="navigationBar">
 <ul><br>
-<li><a href="/">HOME</a></li><br>
-<li><a href="#">LEARNING RESOURCES</a></li><br>
-<li><a href="#">QUEST BOARD</a></li><br>
-<li><a href="#">CONTACT</a></li><br>
-<li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project 2610 G067</li>
+    <li><a href="/">HOME</a></li><br>
+    <li><a href="/newpost">POST</a></li><br>
+    <li><a href="/contact">CONTACT</a></li><br>
+    <li><a href="/profile">PROFILE</a></li><br>
+    {% if session.user_id %}
+    <li><a href="/logout">LOGOUT</a></li><br>
+    {% else %}
+    <li><a href="/login">LOGIN</a></li><br>
+    {% endif %}
+    <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project 2610 G067</li>
 </ul>
 </div>
 

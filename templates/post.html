@@ -12,10 +12,15 @@
 
 <div class="navigationBar">
 <ul><br>
-    <li><a href="{{ url_for('index') }}">HOME</a></li><br>
-    <li><a href="#">LEARNING RESOURCES</a></li><br>
-    <li><a href="#">QUEST BOARD</a></li><br>
-    <li><a href="{{ url_for('contact') }}">CONTACT</a></li><br>
+    <li><a href="/">HOME</a></li><br>
+    <li><a href="/newpost">POST</a></li><br>
+    <li><a href="/contact">CONTACT</a></li><br>
+    <li><a href="/profile">PROFILE</a></li><br>
+    {% if session.user_id %}
+    <li><a href="/logout">LOGOUT</a></li><br>
+    {% else %}
+    <li><a href="/login">LOGIN</a></li><br>
+    {% endif %}
     <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project 2610 G067</li>
 </ul>
 </div>
@@ -26,7 +31,7 @@
 
     <div class="feed">
         {% for post in posts %}
-        <div class="feed-card" onclick="window.location.href="{{ url_for('postlayout', post_id=post.post_id) }}">
+        <div class="feed-card" onclick="window.location.href='{{ url_for('postlayout', post_id=post.post_id) }}'">
             <div class="feed-card-img">
                 <img src="{{ post.image_path or '' }}" alt="{{ post.post_title }}" />
             </div>
