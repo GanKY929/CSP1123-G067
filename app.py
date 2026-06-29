@@ -1,30 +1,34 @@
-from copy import error
-
-from flask import Flask, render_template, request, redirect, url_for, session
-import random, smtplib
+from flask import Flask, render_template, request, redirect, url_for, session, abort 
+from sqlalchemy import select
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta
-import database, config, os
 from urllib.parse import urlparse
 from database import db
+from copy import error
+import random, smtplib
+import database, config, os
 import data_storage as dpn #abbrev datapipeline
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = config.secret_key
+
 db_url = os.environ.get("DATABASE_URL") or config.InternalDatabaseURL
+
 if db_url and db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
+
 app.config["SQLALCHEMY_DATABASE_URI"] = db_url or "sqlite:///project.db"
 db.init_app(app)
 
 with app.app_context():
     db.create_all()
-
+    
 def checkUsername(username):
     return database.User.query.filter_by(username=username).first()
 
 def checkEmail(email):
     return database.User.query.filter_by(email=email).first()
+
 
 #Sub-functions
 def create_otp(username):
@@ -55,14 +59,136 @@ def send_otp_email(user_email, otp_code):
 
 
 @app.route("/")
-def index():
+def index(): 
     success = request.args.get("success")
-    return render_template("index.html", success=success)
+    post_data = []
+
+    if ("username" in session) and (session["username"] == "Mithirilz"):
+        return redirect(url_for("admin"))
+
+    post_count = db.session.query(database.Post).count() 
+
+    if post_count != 0:
+        first_post_id = 1 
+        last_post_id = post_count
+
+        post_data = dpn.get_posts_details(first_post_id, last_post_id)
+
+    return render_template("index.html", success=success, posts=post_data)
+
+
+@app.route("/newpost")
+def create_post_page():
+    return render_template("newpost.html")
+
+
+@app.route("/create_post", methods=["POST"])
+def create_post():
+    if "user_id" not in session:
+        return redirect(url_for("login", error="You are not logged in"))
+
+    _post_title = request.form.get("post_title")
+    _post_content = request.form.get("post_content")
+    _image_path = request.form.get("post_image")
+    _post_author_id = session["user_id"]
+
+    if _post_title == None or _post_content == None or _post_author_id == None:
+        print("Invalid post inputs") 
+        return redirect(url_for("create_post_page"))
+ 
+    new_post = database.Post(
+        post_title = _post_title,
+        post_content = _post_content,
+        image_path = _image_path,
+        post_author = _post_author_id
+    ) 
+
+    db.session.add(new_post)
+    db.session.commit()
+
+    return redirect(url_for("create_post_page"))
+
+
+@app.route("/post/postlayout")
+def postlayout():
+    _post_id = request.args.get("post_id")
+    _error = request.args.get("error")
+
+    _post_details, _comments = dpn.get_post_details(_post_id)
+
+    return render_template("postlayout.html", post=_post_details, comments=_comments, error=_error)
+    
+
+@app.route("/comment", methods = ["POST"])
+def add_comment():
+    if "user_id" not in session:
+        return redirect(url_for("login", error="You are not logged in!"))
+
+    _post_id = request.args.get("post_id")
+    _user_id = session["user_id"]
+    _comment_content = request.form.get("comment_text")
+
+    if not _comment_content:
+        return redirect(url_for("postlayout", post_id = _post_id, error="You didn't write anything for comment"))
+
+    new_comment = database.Comments(
+        comment_content = _comment_content,
+        comment_author = _user_id,
+        comment_post_id = _post_id
+    )
+
+    db.session.add(new_comment)
+    db.session.commit()
+
+    return redirect(url_for("postlayout", post_id = _post_id))
+
+
+@app.route("/reply", methods=["POST"])
+def add_reply():
+    if "user_id" not in session:
+        return redirect(url_for("login", error="You are not logged in"))
+
+    _reply_content = request.form.get("reply_text")
+    _comment_id = request.args.get("comment_id")
+    _post_id = request.args.get("post_id")
+    _user_id = session["user_id"] 
+
+    if _reply_content == None:
+        print("No content in reply")
+        return redirect(url_for("postlayout", post_id = _post_id))
+
+    new_reply = database.Replies(
+        reply_content = _reply_content,
+        reply_author_id = _user_id,
+        reply_comment_id = _comment_id 
+    )
+
+    db.session.add(new_reply)
+    db.session.commit()
+
+    return redirect(url_for("postlayout", post_id = _post_id))
+
+
+@app.route("/remove_post", methods=["POST"])
+def remove_post():
+    _post_id = request.args.get("post_id")
+
+    if _post_id == None:
+        print("Post ID does not exist")
+        return redirect(url_for("index"))
+
+    post_to_delete = db.session.get(database.Post, _post_id)
+    db.session.delete(post_to_delete)
+    db.session.commit()
+
+    return redirect(url_for("index"))
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        return render_template("login.html")
+        _error = request.args.get("error")
+        return render_template("login.html", error=_error)
 
     if request.method == "POST":
         username: str = request.form.get("username")
@@ -82,7 +208,8 @@ def login():
             session["user_id"] = db_user.user_id 
             session["email"] = db_user.email
             session["display_name"] = db_user.display_name
-            return redirect(url_for("index"))
+            
+            return redirect(url_for("index", success=f"Welcome {db_user.username}"))
 
         except Exception as error:
             return render_template("login.html", error=str(error), username=username)
@@ -90,10 +217,7 @@ def login():
 
 @app.route("/logout")
 def logout():
-    session.pop("username")
-    session.pop("user_id")
-    session.pop("email")
-    session.pop("display_name")
+    session.clear()
     success = "Logged out successfully!"
     return redirect(url_for("index", success=success))
 
@@ -125,9 +249,9 @@ def signup():
         new_user = database.User(
             username=username,
             email=email,
-            password=hashed_pw,
-            tagged_post="0",
+            password=hashed_pw
         )
+
         db.session.add(new_user)
         db.session.commit()
 
@@ -138,8 +262,6 @@ def signup():
     
     except Exception as error:
         return render_template("signup.html", error=str(error))
-
-
 
 
 @app.route("/otp", methods=["GET", "POST"])
@@ -201,7 +323,6 @@ def resend_otp():
     return render_template("otp.html", success="OTP resent successfully.", email=email)
 
 
-
 @app.route("/forgotPass", methods=["GET", "POST"])
 def forgotPass():
     if request.method == "GET":
@@ -217,8 +338,6 @@ def forgotPass():
     send_otp_email(email, otp_code)
 
     return redirect(url_for("otp", email=email, purpose="reset"))
-
-
 
 
 @app.route("/resetPass", methods=["GET", "POST"])
@@ -250,28 +369,91 @@ def resetPass():
     return redirect(url_for("login", success="Password reset successfully! You can now log in."))
 
 
-@app.route("/profile", methods=["GET", "POST"])
+@app.route("/admin")
+def admin(): 
+    if not user_is_admin():
+        abort(404)
+
+    user_list = []
+    _gmail_users = []
+
+    users = db.session.execute(select(database.User).order_by(database.User.username)).scalars()
+
+    for _user in users:
+        user_dict = {
+            "user_id" : int(_user.user_id),
+            "email" : str(_user.email),
+            "username" : str(_user.username),
+            "verified" : bool(_user.verified)
+        }
+
+        if str(_user.email).find("@gmail.com"):
+            _gmail_users.append(user_dict)
+        
+        else:
+            user_list.append(user_dict)
+        
+    return render_template("Admin.html", users = _gmail_users)
+
+
+@app.route("/delete_user", methods = ["POST"])
+def delete_user():
+    if not user_is_admin():
+        return redirect("index", success = "You're not an admin.")
+
+    _user_id = request.args.get("user_id")
+
+    user_to_delete = db.session.get(database.User, _user_id)
+    db.session.delete(user_to_delete) 
+    db.session.commit()
+
+    return redirect(url_for("admin"))    
+
+
+def user_is_admin() -> bool:
+    if ("username" in session) and (session["username"] == "Mithirilz"):
+        return True
+    
+    return False
+
+
+@app.route("/profile", methods=["GET"])
 def user_profile():
-    if request.method == "GET":
-        try:
-            if "user_id" not in session:
-                raise Exception("You are not logged in.")    
-        except Exception as error:
-            return render_template("login.html", error=str(error))
+    try:
+        if "user_id" not in session:
+            raise Exception("You are not logged in.")    
 
-        user_id = session["user_id"]
-        username = session["username"]
-        email = session["email"]
-        display_name = db.session.query(database.User).filter_by(user_id=user_id).first().display_name
-        _tagged_post = dpn.get_user_details(user_id)
+    except Exception as error:
+        return render_template("login.html", error=str(error))
 
-        return render_template(
-            "profile.html",
-            username=username,
-            email=email,
-            display_name=display_name,
-            tagged_post = _tagged_post
-        )
+    _username = session["username"]
+    _email = session["email"]
+    _user_id = session["user_id"]
+    _display_name = db.session.query(database.User).filter_by(user_id=_user_id).first().display_name
+    _tagged_post = db.session.scalar(select(database.User)
+                                    .join(database.User.tagged_post)
+                                    .where(database.User.user_id == _user_id))
+
+    _posts = []
+
+    if _tagged_post:
+        for post_info in _tagged_post.tagged_post:
+            post_dict = {
+                "post_title" : post_info.post_title,
+                "post_content" : post_info.post_content,
+                "post_id" : post_info.post_id
+            }
+        
+            _posts.append(post_dict)
+
+    return render_template(
+        "profile.html",
+        username=_username,
+        email=_email,
+        display_name=_display_name,
+        posts = _posts
+    )
+
 
 @app.route("/edit_display_name", methods=["GET", "POST"])
 def display_name():
@@ -281,6 +463,7 @@ def display_name():
     try:
         if db.session.query(database.User).filter_by(display_name=display_name).first():
             raise Exception("Name already exists")
+    
     except Exception as error:
         return render_template("profile.html", error=str(error), username=session["username"])
     
@@ -288,6 +471,7 @@ def display_name():
     db.session.commit()
     session["display_name"] = display_name
     return redirect(url_for("user_profile", success="Name updated successfully!"))
+
 
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
@@ -310,6 +494,7 @@ def contact():
         server.send_message(msg)
     success="Thanks for your comment <3"
     return render_template("contact.html", success=success)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

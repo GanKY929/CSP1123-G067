@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<head>
+<title>MMU InfoHUB – New Post</title>
+<link rel="stylesheet" href="/static/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  .newpost-wrapper {
+    margin: 30px 28px;
+    margin-right: 330px;
+    margin-top: 470px;
+    padding-bottom: 80px;
+  }
+
+  .newpost-card {
+    border: solid #333333;
+    background-color: #f8f5f3;
+    padding: 32px 36px;
+  }
+
+  .newpost-card h2 {
+    font-size: 32px;
+    color: #333333;
+    margin-bottom: 28px;
+    background: transparent;
+    height: auto;
+    padding: 0;
+    position: static;
+    display: block;
+    animation: none;
+  }
+
+  .field-group { margin-bottom: 20px; }
+
+  .field-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #333333;
+    margin-bottom: 8px;
+  }
+
+  .field-group input[type="text"],
+  .field-group textarea {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    background: #ffffff;
+    border: solid #333333;
+    color: #333333;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    resize: vertical;
+  }
+
+  .field-group input[type="text"]:focus,
+  .field-group textarea:focus {
+    background: #333333;
+    color: #f8f5f3;
+  }
+
+  .field-group textarea { min-height: 160px; }
+
+  .media-type-row {
+    display: flex;
+    gap: 0;
+    margin-bottom: 16px;
+  }
+
+  .media-type-btn {
+    flex: 1;
+    padding: 10px;
+    border: solid #333333;
+    border-right: none;
+    background-color: #333333;
+    color: #f8f5f3;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    width: auto;
+    letter-spacing: 0.04em;
+  }
+
+  .media-type-btn:last-child { border-right: solid #333333; }
+  .media-type-btn:hover { background-color: #555555; }
+  .media-type-btn.active { background-color: #555555; }
+
+  .url-input-row {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .url-input-row.show { display: flex; }
+
+  .url-input-row input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    background: #ffffff;
+    border: solid #333333;
+    color: #333333;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+  }
+
+  .url-input-row input:focus {
+    background: #333333;
+    color: #f8f5f3;
+  }
+
+  .url-hint {
+    font-size: 12px;
+    color: #888;
+    padding: 0;
+    margin: 0;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 28px 0;
+  }
+
+  .submit-row {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+  }
+
+  .btn-cancel {
+    padding: 12px 28px;
+    border: solid #333333;
+    background: #f8f5f3;
+    color: #333333;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    width: auto;
+    letter-spacing: 0.04em;
+  }
+
+  .btn-cancel:hover { background: #333333; color: #f8f5f3; }
+
+  .btn-submit-post {
+    padding: 12px 36px;
+    border: solid #333333;
+    background: #333333;
+    color: #f8f5f3;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    width: auto;
+    letter-spacing: 0.04em;
+  }
+
+  .btn-submit-post:hover { background: #555555; }
+
+  @media (max-width: 768px) {
+    .newpost-wrapper { margin: 16px; margin-top: 20px; }
+    .newpost-card { padding: 20px; }
+    .submit-row { flex-direction: column; }
+    .btn-cancel, .btn-submit-post { width: 100%; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>MMU InfoHUB</h1>
+</header>
+
+<div class="navigationBar">
+<ul><br>
+    <li><a href="/">HOME</a></li><br>
+    <li><a href="/newpost">POST</a></li><br>
+    <li><a href="/contact">CONTACT</a></li><br>
+    <li><a href="/profile">PROFILE</a></li><br>
+    {% if session.user_id %}
+    <li><a href="/logout">LOGOUT</a></li><br>
+    {% else %}
+    <li><a href="/login">LOGIN</a></li><br>
+    {% endif %}
+    <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project 2610 G067</li>
+</ul>
+</div>
+
+<div id="task"><h2>NEW POST</h2></div>
+
+<div class="newpost-wrapper">
+  <div class="newpost-card">
+    <h2>CREATE A POST</h2>
+
+    <form method="POST" action="/create_post" id="post-form">
+
+      <div class="field-group">
+        <label for="post-title">Title</label>
+        <input type="text" id="post-title" name="post_title" placeholder="Give your post a title..." maxlength="200" />
+      </div>
+
+      <div class="field-group">
+        <label for="post-body">Body Text</label>
+        <textarea id="post-body" name="post_content" placeholder="Write something..."></textarea>
+      </div>
+
+      <hr class="divider">
+
+      <div class="field-group">
+        <label>Image <span style="font-weight:400;color:#888;">(optional)</span></label>
+        <div class="media-type-row">
+          <button type="button" class="media-type-btn active" onclick="setMedia('none', this)">No Image</button>
+          <button type="button" class="media-type-btn" onclick="setMedia('url', this)">Image URL</button>
+        </div>
+
+        <div class="url-input-row" id="url-input-row">
+          <input type="text" name="post_image" placeholder="Paste an image URL... (e.g. https://example.com/photo.jpg)" />
+          <p class="url-hint">Paste a direct link to an image — must end in .jpg, .png, .gif or .webp</p>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="submit-row">
+        <button type="button" class="btn-cancel" onclick="window.location.href='/'">CANCEL</button>
+        <button type="submit" class="btn-submit-post">POST</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script>
+  function setMedia(type, btn) {
+    document.querySelectorAll('.media-type-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    if (type === 'url') {
+      document.getElementById('url-input-row').classList.add('show');
+    } else {
+      document.getElementById('url-input-row').classList.remove('show');
+    }
+  }
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<head>
+<title>MMU InfoHUB – Admin</title>
+<link rel="stylesheet" href="/static/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    .admin-wrapper {
+    margin: 30px 28px;
+    margin-right: 330px;
+    margin-top: 470px;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background-color: #333333;
+    color: #f8f5f3;
+    display: inline-block;
+    padding: 4px 14px;
+    margin-bottom: 16px;
+    margin-top: 32px;
+  }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    border: solid #333333;
+    padding: 24px 20px;
+    background-color: #f8f5f3;
+  }
+
+  .stat-card .stat-number {
+    font-size: 48px;
+    font-weight: 700;
+    color: #333333;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+  }
+
+  .stat-card .stat-label {
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0;
+    margin: 0;
+    margin-top: 6px;
+  }
+
+.stat-card.alert .stat-number {
+  color: #f8f5f3;
+  padding: 0;
+  margin: 0;
+}
+
+.stat-card.alert .stat-label {
+  color: #aaaaaa;
+  padding: 0;
+  margin: 0;
+}
+
+  .alert-banner {
+    border: solid #c0392b;
+    padding: 14px 20px;
+    margin-bottom: 24px;
+    background-color: #f8f5f3;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .alert-banner p {
+    font-size: 14px;
+    color: #c0392b;
+    font-weight: 600;
+    padding: 0;
+    margin: 0;
+  }
+
+  .alert-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #c0392b;
+    flex-shrink: 0;
+  }
+
+  .user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 48px;
+  }
+
+  .user-table th, .user-table td {
+    border: 2px solid #333333;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  .user-table th {
+    background-color: #333333;
+    color: #f8f5f3;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .user-table td {
+    background-color: #f8f5f3;
+    color: #333333;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border: solid 1.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .badge.verified { border-color: #27ae60; color: #27ae60; }
+  .badge.unverified { border-color: #c0392b; color: #c0392b; }
+  .badge.mmu { border-color: #2980b9; color: #2980b9; }
+  .badge.gmail { border-color: #e67e22; color: #e67e22; }
+  .badge.other { border-color: #888; color: #888; }
+
+  .btn-action {
+    background: none;
+    border: solid #333333;
+    color: #333333;
+    font-size: 11px;
+    font-family: inherit;
+    padding: 4px 10px;
+    cursor: pointer;
+    width: auto;
+    letter-spacing: 0.04em;
+    margin-right: 4px;
+  }
+
+  .btn-action:hover { background: #333333; color: #f8f5f3; }
+  .btn-action.danger { border-color: #c0392b; color: #c0392b; }
+  .btn-action.danger:hover { background: #c0392b; color: #f8f5f3; }
+
+  @media (max-width: 768px) {
+    .admin-wrapper { margin: 16px; }
+    .stat-row { grid-template-columns: 1fr 1fr; }
+    .user-table td.hide-mobile { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>MMU InfoHUB</h1>
+</header>
+
+<div class="navigationBar">
+<ul><br>
+    <li><a href="/">HOME</a></li><br>
+    <li><a href="#">BOARD</a></li><br>
+    <li><a href="/profile">PROFILE</a></li><br>
+    <li><a href="/logout">LOGOUT</a></li><br>
+    <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project G067</li>
+</ul>
+</div>
+
+<div id="task"><h2>ADMIN</h2></div>
+
+<div class="admin-wrapper"> 
+
+    <!-- ALERT BANNER -->
+    {% if gmail_users %}
+    <div class="alert-banner">
+        <div class="alert-dot"></div>
+        <p>{{ gmail_users | length }} user(s) have not replaced their Gmail with an MMU email yet.</p>
+    </div>
+    {% endif %}
+
+    <!-- OVERVIEW -->
+    <div class="section-title">OVERVIEW</div>
+    <div class="stat-row">
+        <div class="stat-card">
+            <p class="stat-number">{{ users | length }}</p>
+            <p class="stat-label">Total Users</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-number">{{ users | length }}</p>
+            <p class="stat-label">Verified</p>
+        </div>
+        <div class="stat-card {% if gmail_users %}alert{% endif %}">
+            <p class="stat-number">{{ gmail_users | length }}</p>
+            <p class="stat-label">Pending MMU Email</p>
+        </div>
+    </div>
+
+    <!-- ALL USERS -->
+    <div class="section-title">ALL USERS</div>
+    <table class="user-table">
+        <tr>
+            <th>ID</th>
+            <th>USERNAME</th>
+            <th>EMAIL</th>
+            <th class="hide-mobile">STATUS</th>
+            <th class="hide-mobile">EMAIL TYPE</th>
+            <th>ACTIONS</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.user_id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td class="hide-mobile">
+                {% if user.verified %}
+                <span class="badge verified">VERIFIED</span>
+                {% else %}
+                <span class="badge unverified">UNVERIFIED</span>
+                {% endif %}
+            </td>
+            <td class="hide-mobile">
+                {% if 'mmu.edu.my' in user.email %}
+                <span class="badge mmu">MMU EMAIL</span>
+                {% elif 'gmail.com' in user.email %}
+                <span class="badge gmail">GMAIL — PENDING</span>
+                {% else %}
+                <span class="badge other">OTHER</span>
+                {% endif %}
+            </td>
+            <td>
+                <form method="POST" action="{{ url_for('delete_user', user_id = user.user_id) }}" style="display:inline;" onsubmit="return confirm('Delete this user?')">
+                    <button type="submit" class="btn-action danger">DELETE</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6">No users yet.</td></tr>
+        {% endfor %}
+    </table>
+
+    <!-- NEW REGISTRATIONS -->
+    <div class="section-title">NEW REGISTRATIONS</div>
+    <table class="user-table">
+        <tr>
+            <th>USERNAME</th>
+            <th>EMAIL</th>
+            <th class="hide-mobile">EMAIL TYPE</th>
+            <th>OTP STATUS</th>
+            <th>ACTIONS</th>
+        </tr>
+        {% for user in users if not user.verified %}
+        <tr>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td class="hide-mobile">
+                {% if 'mmu.edu.my' in user.email %}
+                <span class="badge mmu">MMU EMAIL</span>
+                {% elif 'gmail.com' in user.email %}
+                <span class="badge gmail">GMAIL — PENDING</span>
+                {% else %}
+                <span class="badge other">OTHER</span>
+                {% endif %}
+            </td>
+            <td>
+                <span class="badge unverified">OTP PENDING</span>
+            </td>
+            <td>
+                <form method="POST" action="{{ url_for('delete_user', user_id = user.user_id) }}" style="display:inline;" onsubmit="return confirm('Delete this user?')">
+                    <button type="submit" class="btn-action danger">DELETE</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5">No pending registrations.</td></tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+</body>
+</html>
