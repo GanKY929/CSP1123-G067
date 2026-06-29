@@ -81,7 +81,10 @@ def index():
 
 @app.route("/newpost")
 def create_post_page():
-    return render_template("newpost.html")
+    _success = request.args.get("success")
+    _error = request.args.get("error")
+    
+    return render_template("newpost.html", success = _success)
 
 
 @app.route("/create_post", methods=["POST"])
@@ -96,7 +99,7 @@ def create_post():
 
     if _post_title == None or _post_content == None or _post_author_id == None:
         print("Invalid post inputs") 
-        return redirect(url_for("create_post_page"))
+        return redirect(url_for("create_post_page", error="Your post inputs were not valid"))
  
     new_post = database.Post(
         post_title = _post_title,
@@ -108,7 +111,7 @@ def create_post():
     db.session.add(new_post)
     db.session.commit()
 
-    return redirect(url_for("create_post_page"))
+    return redirect(url_for("create_post_page", success="You have successfully created a post"))
 
 
 @app.route("/post/postlayout")
