@@ -8,7 +8,7 @@ import email_service
 from db_setup import init_db
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = config.SECRET_KEY
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") or config.SECRET_KEY
 
 init_db(app)
 

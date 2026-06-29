@@ -1,35 +1,28 @@
-import requests
 import threading
 import config
+from brevo import Brevo
+from brevo.transactional_emails import (
+    SendTransacEmailRequestSender,
+    SendTransacEmailRequestToItem,
+)
 
-EMAIL_DOMAIN = config.EMAIL_DOMAIN
-EMAIL_API_KEY = config.EMAIL_API_KEY
-EMAIL_FROM = f"MMU InfoHUB <postmaster@{EMAIL_DOMAIN}>"
+client = Brevo(api_key=config.EMAIL_API_KEY)
 
 def _send(recipient, subject, body_text, body_html=None):
     try:
-        data = {
-            "from": EMAIL_FROM,
-            "to": recipient,
-            "subject": subject,
-            "text": body_text
-        }
-        if body_html:
-            data["html"] = body_html
-
-        response = requests.post(
-            f"https://api.mailgun.net/v3/{EMAIL_DOMAIN}/messages",
-            auth=("api", EMAIL_API_KEY),
-            data=data
+        result = client.transactional_emails.send_transac_email(
+            subject=subject,
+            text_content=body_text,
+            html_content=body_html,
+            sender=SendTransacEmailRequestSender(
+                name="MMU InfoHUB",
+                email=config.OFFICIAL_GMAIL,
+            ),
+            to=[SendTransacEmailRequestToItem(email=recipient)]
         )
-
-        if response.status_code == 200:
-            print(f"[EMAIL] Sent to {recipient} | Subject: {subject}")
-        else:
-            print(f"[EMAIL] Failed to send to {recipient}: {response.text}")
-
+        print(f"[EMAIL] Sent to {recipient} | Subject: {subject} | ID: {result.message_id}")
     except Exception as e:
-        print(f"[EMAIL] Exception while sending to {recipient}: {e}")
+        print(f"[EMAIL] Failed to send to {recipient}: {e}")
 
 def send_async(recipient, subject, body_text, body_html=None):
     threading.Thread(
@@ -38,6 +31,7 @@ def send_async(recipient, subject, body_text, body_html=None):
         daemon=True
     ).start()
 
+# ─── Pre-built email types ───────────────────────────────
 
 def send_otp(user_email, otp_code):
     subject = "MMUinfo | OTP Verification"
