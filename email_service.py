@@ -1,45 +1,35 @@
-import smtplib
+import requests
 import threading
 import config
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 
-_smtp_connection = None
-_smtp_lock = threading.Lock()
-
-def _get_smtp():
-    global _smtp_connection
-    try:
-        if _smtp_connection is None:
-            raise Exception("No connection")
-        _smtp_connection.noop()
-        return _smtp_connection
-    except:
-        _smtp_connection = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-        _smtp_connection.login(config.OFFICIAL_GMAIL, config.GMAIL_APP_PASSWORD)
-        return _smtp_connection
+MAILGUN_DOMAIN = config.MAILGUN_DOMAIN   # e.g. "sandboxXXX.mailgun.org"
+MAILGUN_API_KEY = config.MAILGUN_API_KEY # your API key
+MAILGUN_FROM = f"MMU InfoHUB <postmaster@{MAILGUN_DOMAIN}>"
 
 def _send(recipient, subject, body_text, body_html=None):
     try:
+        data = {
+            "from": MAILGUN_FROM,
+            "to": recipient,
+            "subject": subject,
+            "text": body_text
+        }
         if body_html:
-            msg = MIMEMultipart("alternative")
-            msg.attach(MIMEText(body_text, "plain"))
-            msg.attach(MIMEText(body_html, "html"))
+            data["html"] = body_html
+
+        response = requests.post(
+            f"https://api.mailgun.net/v3/{MAILGUN_DOMAIN}/messages",
+            auth=("api", MAILGUN_API_KEY),
+            data=data
+        )
+
+        if response.status_code == 200:
+            print(f"[EMAIL] Sent to {recipient} | Subject: {subject}")
         else:
-            msg = MIMEText(body_text, "plain")
-
-        msg["Subject"] = subject
-        msg["From"] = f"MMU InfoHUB <{config.OFFICIAL_GMAIL}>"
-        msg["To"] = recipient
-
-        with _smtp_lock:
-            smtp = _get_smtp()
-            smtp.sendmail(config.OFFICIAL_GMAIL, recipient, msg.as_string())
-
-        print(f"[EMAIL] Sent to {recipient} | Subject: {subject}")
+            print(f"[EMAIL] Failed to send to {recipient}: {response.text}")
 
     except Exception as e:
-        print(f"[EMAIL] Failed to send to {recipient}: {e}")
+        print(f"[EMAIL] Exception while sending to {recipient}: {e}")
 
 def send_async(recipient, subject, body_text, body_html=None):
     threading.Thread(
