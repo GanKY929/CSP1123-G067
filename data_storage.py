@@ -39,6 +39,7 @@ def get_post_details(_post_id):
         comment = {
             "comment_id": comments.comment_id,
             "author_username" : comments.comment_author_info.username,
+            "author_displayname" : comments.comment_author_info.display_name,
             "comment_text" : comments.comment_content,
             "replies" : replies
         }
@@ -51,6 +52,7 @@ def get_post_details(_post_id):
         "post_content" : post_details.post_content,
         "image_path" : post_details.image_path,
         "author_username" : post_details.post_author_info.username,
+        "author_displayname" : post_details.post_author_info.display_name,
         "post_author_id" : post_details.post_author_info.user_id
     }
 
