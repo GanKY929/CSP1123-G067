@@ -32,19 +32,27 @@ def create_otp(username):
 def send_otp_email(user_email, otp_code):
     subject = "MMUinfo; OTP Verification"
     body = f"Your OTP code is {otp_code}\n\nThis code will expire in 5 minutes."
-    send_email_async(user_email, f"noreply@{config.MAILGUN_DOMAIN}", subject, body)
+    send_email_async(user_email, f"noreply@{config.official_email.split('@')[1]}", subject, body)
 
 def send_email_async(recipient, sender, subject, body):
     def send_email():
         try:
             response = requests.post(
-                f"https://api.mailgun.net/v3/{config.MAILGUN_DOMAIN}/messages",
-                auth=("api", config.MAILGUN_API_KEY),
-                data={
-                    "from": sender,
-                    "to": recipient,
+                "https://api.brevo.com/v3/smtp/email",
+                headers={
+                    "api-key": config.EMAIL_API_KEY,
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "sender": {
+                        "name": "MMU InfoHUB",
+                        "email": sender
+                    },
+                    "to": [
+                        {"email": recipient}
+                    ],
                     "subject": subject,
-                    "text": body
+                    "textContent": body
                 }
             )
             print("Email sent:", response.status_code)
@@ -52,7 +60,6 @@ def send_email_async(recipient, sender, subject, body):
             print("Failed to send email:", e)
 
     threading.Thread(target=send_email).start()
-
 @app.route("/")
 def index(): 
     success = request.args.get("success")
