@@ -32,7 +32,7 @@ def create_otp(username):
 def send_otp_email(user_email, otp_code):
     subject = "MMUinfo; OTP Verification"
     body = f"Your OTP code is {otp_code}\n\nThis code will expire in 5 minutes."
-    send_email_async(user_email, f"noreply@{config.official_email.split('@')[1]}", subject, body)
+    send_email_async(user_email, config.official_email, subject, body)
 
 def send_email_async(recipient, sender, subject, body):
     def send_email():
@@ -499,7 +499,7 @@ def contact():
 
     send_email_async(
         recipient=config.official_email,
-        sender=f"support@{config.MAILGUN_DOMAIN}",
+        sender=config.official_email,
         subject=f"User Feedback : {date.strftime('%Y-%m-%d %H:%M:%S')}", 
         body=f"Username: {username}\nEmail: {email}\n\n{comment}"
         )
