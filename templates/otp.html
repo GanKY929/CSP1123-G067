@@ -12,12 +12,13 @@
     <input type="hidden" name="purpose" value="{{ purpose }}">
     <input type="hidden" name="email" value="{{ email }}">
     <div class="mb-3">
-        <p>We have sent an OTP to your email: <strong>{{ email }}</strong>.</p>
+        <p>We have sent an OTP to your email: <strong>{{ email }}</strong>. The OTP code will be sent to <strong>JUNK / SPAM</strong> folder if you don't see it in your inbox.</p>
         <label>Enter OTP</label>
         <input type="text" name="otp" class="form-control" required>
     </div>
     <button type="submit" class="btn btn-success">Verify</button>
 </form>
+<a href="https://learn-attachment.microsoft.com/api/attachments/ca5f709e-7b80-4dd0-9dd1-aa3eededa492?platform=QnA" target="_blank">Where the junk folder at?</a>
 
 <hr>
 <form method="POST" action="/resend_otp" class="mt-3">

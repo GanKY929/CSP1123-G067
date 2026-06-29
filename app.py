@@ -48,6 +48,9 @@ def validate_password(password, confirm):
     if not any(c.isdigit() for c in password):
         raise Exception("Password must contain at least one number.")
 
+def validate_mmu_student_email(email):
+    if not "student.mmu.edu.my" in email:
+        raise Exception("MMU InfoHUB for MMU Student only, please using your student account to register.")
 
 # ─── Index ───────────────────────────────────────────────
 
@@ -201,8 +204,7 @@ def signup():
             raise Exception("Must fill all fields.")
         if get_user_by(username=username):
             raise Exception("Username already exists.")
-        if get_user_by(email=email):
-            raise Exception("Email already exists.")
+        validate_mmu_student_email(email)
         validate_password(password, confirm)
 
         db.session.add(database.User(
