@@ -37,8 +37,17 @@
     flex-shrink: 0;
   }
 
-  .post-author-meta p { padding: 0; margin: 0; font-size: 13px; color: #888; }
-  .post-author-meta .author-name { font-weight: 700; color: #333333; }
+  .post-author-meta p {
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+    color: #888;
+  }
+
+  .post-author-meta .author-name {
+    font-weight: 700;
+    color: #333333;
+  }
 
   .post-card-main h2 {
     font-size: 34px;
@@ -109,17 +118,25 @@
     gap: 8px;
   }
 
-  .like-dislike-pill button:first-child { border-right: solid #f8f5f3; }
-  .like-dislike-pill button:first-child:hover,
-  .like-dislike-pill button:first-child.active { background-color: #27ae60; }
-  .like-dislike-pill button:last-child:hover,
-  .like-dislike-pill button:last-child.active { background-color: #c0392b; }
+  .like-dislike-pill button:first-child {
+    border-right: solid #f8f5f3;
+  }
 
-  .btn-delete {
-    border: solid #c0392b;
-    border-radius: 999px;
+  .like-dislike-pill button:first-child:hover,
+  .like-dislike-pill button:first-child.active {
+    background-color: #27ae60;
+  }
+
+  .like-dislike-pill button:last-child:hover,
+  .like-dislike-pill button:last-child.active {
     background-color: #c0392b;
-    color: #f8f5f3;
+  }
+
+  .reaction-btn {
+    border: solid #333333;
+    border-radius: 999px;
+    background-color: #f8f5f3;
+    color: #333333;
     font-size: 14px;
     font-family: inherit;
     font-weight: 600;
@@ -131,7 +148,10 @@
     gap: 8px;
   }
 
-  .btn-delete:hover { background-color: #a93226; }
+  .reaction-btn:hover {
+    background-color: #333333;
+    color: #f8f5f3;
+  }
 
   .comment-input-block {
     border: solid #333333;
@@ -149,7 +169,10 @@
     margin-bottom: 14px;
   }
 
-  .comment-input-row { display: flex; gap: 12px; }
+  .comment-input-row {
+    display: flex;
+    gap: 12px;
+  }
 
   .comment-input-row textarea {
     flex: 1;
@@ -164,7 +187,10 @@
     min-height: 50px;
   }
 
-  .comment-input-row textarea:focus { background: #333333; color: #f8f5f3; }
+  .comment-input-row textarea:focus {
+    background: #333333;
+    color: #f8f5f3;
+  }
 
   .comment-input-row button {
     border: solid #333333;
@@ -179,7 +205,7 @@
     letter-spacing: 0.03em;
   }
 
-  .comment-input-row button:hover { background-color: #555555; }
+  .comment-input-row button:hover { opacity: 0.85; }
 
   .comments-section-title {
     font-size: 13px;
@@ -193,7 +219,11 @@
     margin-bottom: 18px;
   }
 
-  .comment-thread { display: flex; flex-direction: column; gap: 0; }
+  .comment-thread {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
 
   .comment-block {
     display: flex;
@@ -204,7 +234,9 @@
     background-color: #f8f5f3;
   }
 
-  .comment-thread .comment-block:first-child { border-top: solid #333333; }
+  .comment-thread .comment-block:first-child {
+    border-top: solid #333333;
+  }
 
   .comment-avatar {
     width: 36px;
@@ -230,7 +262,11 @@
     margin: 0 0 4px 0;
   }
 
-  .comment-body .comment-user span { font-weight: 400; color: #888; margin-left: 6px; }
+  .comment-body .comment-user span {
+    font-weight: 400;
+    color: #888;
+    margin-left: 6px;
+  }
 
   .comment-body .comment-text {
     font-size: 15px;
@@ -240,7 +276,11 @@
     margin: 0 0 10px 0;
   }
 
-  .comment-reactions { display: flex; align-items: center; gap: 8px; }
+  .comment-reactions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 
   .comment-reactions button {
     background: #333333;
@@ -259,69 +299,18 @@
   }
 
   .comment-reactions button:first-child:hover,
-  .comment-reactions button:first-child.active { background-color: #27ae60; }
+  .comment-reactions button:first-child.active {
+    background-color: #27ae60;
+  }
+
   .comment-reactions button:nth-child(2):hover,
-  .comment-reactions button:nth-child(2).active { background-color: #c0392b; }
-  .comment-reactions button:last-child:hover { background-color: #555555; }
-
-  .reply-box {
-    display: none;
-    margin-top: 12px;
-    gap: 10px;
-    flex-direction: column;
+  .comment-reactions button:nth-child(2).active {
+    background-color: #c0392b;
   }
 
-  .reply-box.show { display: flex; }
-
-  .reply-box textarea {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 10px 12px;
-    background: #ffffff;
-    border: solid #333333;
-    color: #333333;
-    font-size: 14px;
-    font-family: inherit;
-    outline: none;
-    resize: vertical;
-    min-height: 50px;
+  .comment-reactions button:last-child:hover {
+    background-color: #888888;
   }
-
-  .reply-box textarea:focus { background: #333333; color: #f8f5f3; }
-
-  .reply-box-actions {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-  }
-
-  .reply-cancel {
-    padding: 8px 18px;
-    border: solid #333333;
-    background: #f8f5f3;
-    color: #333333;
-    font-size: 12px;
-    font-family: inherit;
-    font-weight: 600;
-    cursor: pointer;
-    width: auto;
-  }
-
-  .reply-cancel:hover { background: #333333; color: #f8f5f3; }
-
-  .reply-submit {
-    padding: 8px 18px;
-    border: solid #333333;
-    background: #333333;
-    color: #f8f5f3;
-    font-size: 12px;
-    font-family: inherit;
-    font-weight: 600;
-    cursor: pointer;
-    width: auto;
-  }
-
-  .reply-submit:hover { background: #555555; }
 
   .reply-thread {
     margin-top: 14px;
@@ -333,53 +322,13 @@
     gap: 14px;
   }
 
-  .login-popup {
-    display: none;
-    position: fixed;
-    bottom: 28px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #333333;
-    color: #f8f5f3;
-    padding: 14px 20px;
-    border: solid #f8f5f3;
-    font-size: 14px;
-    white-space: nowrap;
-    z-index: 999;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .login-popup.show { display: flex; }
-
-  .login-popup-btn {
-    border: solid #f8f5f3;
-    background: #f8f5f3;
-    color: #333333;
-    font-size: 12px;
-    font-weight: 700;
-    font-family: inherit;
-    padding: 6px 14px;
-    cursor: pointer;
-  }
-
-  .login-popup-btn:hover { background: #dddddd; }
-
-  .login-popup-close {
-    background: none;
-    border: none;
-    color: #f8f5f3;
-    font-size: 18px;
-    cursor: pointer;
-    padding: 0;
-    font-weight: 700;
-    line-height: 1;
-  }
-
   @media (max-width: 768px) {
     .post-page { margin: 16px; margin-top: 20px; }
+    .post-card-top, .post-card-main h2, .post-image-area, .post-card-main > p.post-body-text {
+      margin-left: 16px; margin-right: 16px; padding-left: 0; padding-right: 0;
+    }
+    .reaction-bar { padding: 24px 16px; }
     .reply-thread { margin-left: 10px; padding-left: 12px; }
-    .login-popup { white-space: normal; text-align: center; flex-direction: column; bottom: 16px; width: 80%; }
   }
 </style>
 </head>
@@ -391,15 +340,10 @@
 
 <div class="navigationBar">
 <ul><br>
-    <li><a href="/">HOME</a></li><br>
-    <li><a href="/newpost">POST</a></li><br>
-    <li><a href="/contact">CONTACT</a></li><br>
-    <li><a href="/profile">PROFILE</a></li><br>
-    {% if session.user_id %}
-    <li><a href="/logout">LOGOUT</a></li><br>
-    {% else %}
-    <li><a href="/login">LOGIN</a></li><br>
-    {% endif %}
+    <li><a href="{{ url_for('index') }}">HOME</a></li><br>
+    <li><a href="#">LEARNING RESOURCES</a></li><br>
+    <li><a href="#">QUEST BOARD</a></li><br>
+    <li><a href="{{ url_for('contact') }}">CONTACT</a></li><br>
     <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project 2610 G067</li>
 </ul>
 </div>
@@ -407,13 +351,15 @@
 <div id="task"><h2>POST</h2></div>
 
 <div class="post-page">
-    {% include "flash.html" %}
+
     <!-- POST CARD -->
     <div class="post-card-main">
+
         <div class="post-card-top">
             <div class="post-author-avatar">{{ post.author_username[0].upper() }}</div>
             <div class="post-author-meta">
                 <p class="author-name">{{ post.author_username }}</p>
+                <p class="post-date">{{ post.created_at.strftime('%d %b %Y') if post.created_at else '' }}</p>
             </div>
         </div>
 
@@ -427,23 +373,22 @@
 
         <p class="post-body-text">{{ post.post_content }}</p>
 
+        <!-- REACTION BAR -->
         <div class="reaction-bar">
             <div class="like-dislike-pill">
-                <button id="post-like-btn" onclick="handleAction(event, toggleLike, this)" data-liked="false">👍 <span class="like-count" id="post-like-count">{{ post.like_count or 0 }}</span></button>
-                <button id="post-dislike-btn" onclick="handleAction(event, toggleDislike, this)" data-disliked="false">👎</button>
+                <button onclick="toggleLike(this)">👍 <span class="like-count">{{ post.like_count or 0 }}</span></button>
+                <button onclick="toggleDislike(this)">👎</button>
             </div>
-            {% if session.user_id == post.post_author_id %}
-            <form method="POST" action="{{ url_for('remove_post', post_id=post.post_id) }}" onsubmit="return confirm('Delete this post?')" style="margin:0;">
-                <button type="submit" class="btn-delete">🗑 Delete</button>
-            </form>
-            {% endif %}
+            <button class="reaction-btn">💬 <span class="comment-count">{{ comments|length }}</span> Comments</button>
+            <button class="reaction-btn">↗ Share</button>
         </div>
+
     </div>
 
-    <!-- MAIN COMMENT INPUT -->
+    <!-- COMMENT INPUT -->
     <div class="comment-input-block">
         <p class="section-label">JOIN THE DISCUSSION</p>
-        <form method="POST" action="{{ url_for('add_comment', post_id=post.post_id) }}" onsubmit="return checkLogin(event)">
+        <form method="POST" action="{{ url_for('add_comment', post_id=post.post_id) }}">
             <div class="comment-input-row">
                 <textarea name="comment_text" placeholder="Write a comment..."></textarea>
                 <button type="submit">POST</button>
@@ -451,9 +396,11 @@
         </form>
     </div>
 
+    <!-- COMMENTS -->
     <p class="comments-section-title">COMMENTS</p>
 
     <div class="comment-thread">
+
         {% for comment in comments %}
         <div class="comment-block">
             <div class="comment-avatar">{{ comment.author_username[0].upper() }}</div>
@@ -461,20 +408,9 @@
                 <p class="comment-user">{{ comment.author_username }} <span>{{ comment.created_at.strftime('%d %b %Y') if comment.created_at else '' }}</span></p>
                 <p class="comment-text">{{ comment.comment_text }}</p>
                 <div class="comment-reactions">
-                    <button onclick="handleAction(event, toggleLike, this)" data-liked="false">👍 <span class="like-count">{{ comment.like_count or 0 }}</span></button>
-                    <button onclick="handleAction(event, toggleDislike, this)" data-disliked="false">👎</button>
-                    <button onclick="handleAction(event, openReply, this)" data-id="{{ comment.comment_id }}">Reply</button>
-                </div>
-
-                <!-- INLINE REPLY BOX -->
-                <div class="reply-box" id="reply-box-{{ comment.comment_id }}">
-                    <form method="POST" action="{{ url_for('add_reply', post_id=post.post_id, comment_id=comment.comment_id) }}">
-                        <textarea name="reply_text" placeholder="Write a reply..."></textarea>
-                        <div class="reply-box-actions">
-                            <button type="button" class="reply-cancel" onclick="closeReply('{{ comment.comment_id }}')">CANCEL</button>
-                            <button type="submit" class="reply-submit">REPLY</button>
-                        </div>
-                    </form>
+                    <button onclick="toggleLike(this)">👍 <span class="like-count">{{ comment.like_count or 0 }}</span></button>
+                    <button onclick="toggleDislike(this)">👎</button>
+                    <button>Reply</button>
                 </div>
 
                 {% if comment.replies %}
@@ -484,8 +420,9 @@
                         <p class="comment-user">{{ reply.author_username }} <span>{{ reply.created_at.strftime('%d %b %Y') if reply.created_at else '' }}</span></p>
                         <p class="comment-text">{{ reply.comment_text }}</p>
                         <div class="comment-reactions">
-                            <button onclick="handleAction(event, toggleLike, this)" data-liked="false">👍 <span class="like-count">{{ reply.like_count or 0 }}</span></button>
-                            <button onclick="handleAction(event, toggleDislike, this)" data-disliked="false">👎</button>
+                            <button onclick="toggleLike(this)">👍 <span class="like-count">{{ reply.like_count or 0 }}</span></button>
+                            <button onclick="toggleDislike(this)">👎</button>
+                            <button>Reply</button>
                         </div>
                     </div>
                     {% endfor %}
@@ -497,104 +434,27 @@
         {% else %}
         <p style="padding:16px;border:solid #333333;background:#f8f5f3;color:#888;">No comments yet. Be the first!</p>
         {% endfor %}
+
     </div>
 
 </div>
 
-<!-- LOGIN POPUP -->
-<div class="login-popup" id="login-popup">
-    <span>Log in before you can comment or post.</span>
-    <button class="login-popup-btn" onclick="window.location.href='/login'">LOG IN</button>
-    <button class="login-popup-close" onclick="hidePopup()">✕</button>
-</div>
-
 <script>
-  var isLoggedIn = {{ 'true' if session.user_id else 'false' }};
-
-  function showPopup() {
-    document.getElementById('login-popup').classList.add('show');
-    setTimeout(hidePopup, 4000);
-  }
-
-  function hidePopup() {
-    document.getElementById('login-popup').classList.remove('show');
-  }
-
-  function checkLogin(e) {
-    if (!isLoggedIn) {
-      e.preventDefault();
-      showPopup();
-      return false;
-    }
-    return true;
-  }
-
-  function handleAction(e, fn, btn) {
-    if (!isLoggedIn) {
-      e.preventDefault();
-      showPopup();
-      return;
-    }
-    if (fn) fn(btn);
-  }
-
-  function openReply(btn) {
-    var id = btn.getAttribute('data-id');
-    var box = document.getElementById('reply-box-' + id);
-    if (box) {
-      box.classList.toggle('show');
-      if (box.classList.contains('show')) {
-        box.querySelector('textarea').focus();
-      }
-    }
-  }
-
-  function closeReply(id) {
-    var box = document.getElementById('reply-box-' + id);
-    if (box) {
-      box.classList.remove('show');
-      box.querySelector('textarea').value = '';
-    }
-  }
-
   function toggleLike(btn) {
     var pill = btn.closest('.like-dislike-pill, .comment-reactions');
     var dislikeBtn = pill.querySelector('button:nth-child(2)');
-    var countEl = btn.querySelector('.like-count');
-    var liked = btn.getAttribute('data-liked') === 'true';
-
-    if (liked) {
-      btn.setAttribute('data-liked', 'false');
-      btn.classList.remove('active');
-      if (countEl) countEl.textContent = parseInt(countEl.textContent) - 1;
-    } else {
-      btn.setAttribute('data-liked', 'true');
-      btn.classList.add('active');
-      if (countEl) countEl.textContent = parseInt(countEl.textContent) + 1;
-      if (dislikeBtn && dislikeBtn.getAttribute('data-disliked') === 'true') {
-        dislikeBtn.setAttribute('data-disliked', 'false');
-        dislikeBtn.classList.remove('active');
-      }
+    btn.classList.toggle('active');
+    if (dislikeBtn && dislikeBtn.classList.contains('active')) {
+      dislikeBtn.classList.remove('active');
     }
   }
 
   function toggleDislike(btn) {
     var pill = btn.closest('.like-dislike-pill, .comment-reactions');
     var likeBtn = pill.querySelector('button:nth-child(1)');
-    var likeCountEl = likeBtn ? likeBtn.querySelector('.like-count') : null;
-    var disliked = btn.getAttribute('data-disliked') === 'true';
-
-    if (disliked) {
-      btn.setAttribute('data-disliked', 'false');
-      btn.classList.remove('active');
-    } else {
-      btn.setAttribute('data-disliked', 'true');
-      btn.classList.add('active');
-      if (likeBtn && likeBtn.getAttribute('data-liked') === 'true') {
-        likeBtn.setAttribute('data-liked', 'false');
-        likeBtn.classList.remove('active');
-        if (likeCountEl) likeCountEl.textContent = parseInt(likeCountEl.textContent) - 1;
-      }
+    btn.classList.toggle('active');
+    if (likeBtn && likeBtn.classList.contains('active')) {
+      likeBtn.classList.remove('active');
     }
   }
 </script>

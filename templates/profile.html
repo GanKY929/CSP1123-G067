@@ -237,9 +237,10 @@
         {% for post in posts %}
         <div class="history-row">
             <div>
-                <a href="{{ url_for('postlayout', post_id=post.post_id) }}">{{ post.post_title }}</a>
+                <a href="{{ url_for('view_post', post_id=post.post_id) }}">{{ post.post_title }}</a>
                 <p class="row-excerpt">{{ post.post_content[:100] }}...</p>
             </div>
+            <p class="history-date">{{ post.created_at.strftime('%d %b %Y') if post.created_at else '' }}</p>
         </div>
         {% else %}
         <p class="empty-msg">No posts yet.</p>
