@@ -9,13 +9,18 @@
 <header>
   <h1>MMU InfoHUB</h1>
 </header>
+
 <div class="navigationBar">
 <ul><br>
     <li><a href="/">HOME</a></li><br>
-    <li><a href="#">QUEST BOARD</a></li><br>
+    <li><a href="/newpost">POST</a></li><br>
     <li><a href="/contact">CONTACT</a></li><br>
     <li><a href="/profile">PROFILE</a></li><br>
+    {% if session.user_id %}
+    <li><a href="/logout">LOGOUT</a></li><br>
+    {% else %}
     <li><a href="/login">LOGIN</a></li><br>
+    {% endif %}
     <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project 2610 G067</li>
 </ul>
 </div>
@@ -26,112 +31,22 @@
 
     <h2 id="subtask">LATEST EVENTS!</h2>
     {% include 'flash.html' %}
+
     <div class="posts-grid">
-        <div class="post-card" style="background-color:#2a2a2a;" onclick="window.location.href='/post/'">
-            <img src="" alt="" />
-            <div class="post-card-body">
-                <p class="post-meta"></p>
-                <h3></h3>
-                <p></p>
-            </div>
-        </div>
 
-        <div class="post-card" style="background-color:#3a3a3a;" onclick="window.location.href='/post/'">
-            <img src="" alt="" />
+        {% for post in posts %}
+        <div class="post-card" onclick="window.location.href='{{ url_for('postlayout', post_id=post.post_id) }}'">
+            <img src="{{ post.image_path or '' }}" alt="{{ post.post_title }}" />
             <div class="post-card-body">
-                <p class="post-meta"></p>
-                <h3></h3>
-                <p></p>
+                <p class="post-meta">{{ post.created_at.strftime('%d %b %Y') if post.created_at else '' }} &nbsp;·&nbsp; {{ post.author_username }}</p>
+                <h3>{{ post.post_title }}</h3>
+                <p>{{ post.post_content[:100] }}...</p>
             </div>
         </div>
+        {% else %}
+        <p>No posts yet. Be the first — click + POST!</p>
+        {% endfor %}
 
-        <div class="post-card" style="background-color:#444444;" onclick="window.location.href='/post/'">
-            <img src="" alt="" />
-            <div class="post-card-body">
-                <p class="post-meta"></p>
-                <h3></h3>
-                <p></p>
-            </div>
-        </div>
-
-        <div class="post-card" style="background-color:#3a3a3a;" onclick="window.location.href='/post/'">
-            <img src="" alt="" />
-            <div class="post-card-body">
-                <p class="post-meta"></p>
-                <h3></h3>
-                <p></p>
-            </div>
-        </div>
-
-        <div class="post-card" style="background-color:#2a2a2a;" onclick="window.location.href='/post/'">
-            <img src="" alt="" />
-            <div class="post-card-body">
-                <p class="post-meta"></p>
-                <h3></h3>
-                <p></p>
-            </div>
-        </div>
-        <div class="post-card" style="background-color:#2a2a2a;" onclick="window.location.href='/post/'">
-            <img src="" alt="" />
-            <div class="post-card-body">
-                <p class="post-meta"></p>
-                <h3></h3>
-                <p></p>
-            </div>
-        </div>
-
-        <div class="post-card" style="background-color:#3a3a3a;" onclick="window.location.href='/post/'">
-            <img src="" alt="" />
-            <div class="post-card-body">
-                <p class="post-meta"></p>
-                <h3></h3>
-                <p></p>
-            </div>
-        </div>
-
-        <div class="post-card" style="background-color:#444444;" onclick="window.location.href='/post/'">
-            <img src="" alt="" />
-            <div class="post-card-body">
-                <p class="post-meta"></p>
-                <h3></h3>
-                <p></p>
-            </div>
-        </div>
-
-        <div class="post-card" style="background-color:#3a3a3a;" onclick="window.location.href='/post/'">
-            <img src="" alt="" />
-            <div class="post-card-body">
-                <p class="post-meta"></p>
-                <h3></h3>
-                <p></p>
-            </div>
-        </div>
-
-        <div class="post-card" style="background-color:#2a2a2a;" onclick="window.location.href='/post/'">
-            <img src="" alt="" />
-            <div class="post-card-body">
-                <p class="post-meta"></p>
-                <h3></h3>
-                <p></p>
-            </div>
-        </div>
-        <div class="post-card" style="background-color:#3a3a3a;" onclick="window.location.href='/post/'">
-            <img src="" alt="" />
-            <div class="post-card-body">
-                <p class="post-meta"></p>
-                <h3></h3>
-                <p></p>
-            </div>
-        </div>
-
-        <div class="post-card" style="background-color:#2a2a2a;" onclick="window.location.href='/post/'">
-            <img src="" alt="" />
-            <div class="post-card-body">
-                <p class="post-meta"></p>
-                <h3></h3>
-                <p></p>
-            </div>
-        </div>
     </div>
 
 </div>
