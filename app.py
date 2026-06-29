@@ -251,7 +251,7 @@ def signup():
             username=username,
             email=email,
             password=hashed_pw,
-            tagged_post="0",
+            tagged_post=[]  ,
         )
 
         db.session.add(new_user)
