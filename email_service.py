@@ -2,14 +2,14 @@ import requests
 import threading
 import config
 
-MAILGUN_DOMAIN = config.MAILGUN_DOMAIN   # e.g. "sandboxXXX.mailgun.org"
-MAILGUN_API_KEY = config.MAILGUN_API_KEY # your API key
-MAILGUN_FROM = f"MMU InfoHUB <postmaster@{MAILGUN_DOMAIN}>"
+EMAIL_DOMAIN = config.EMAIL_DOMAIN
+EMAIL_API_KEY = config.EMAIL_API_KEY
+EMAIL_FROM = f"MMU InfoHUB <postmaster@{EMAIL_DOMAIN}>"
 
 def _send(recipient, subject, body_text, body_html=None):
     try:
         data = {
-            "from": MAILGUN_FROM,
+            "from": EMAIL_FROM,
             "to": recipient,
             "subject": subject,
             "text": body_text
@@ -18,8 +18,8 @@ def _send(recipient, subject, body_text, body_html=None):
             data["html"] = body_html
 
         response = requests.post(
-            f"https://api.mailgun.net/v3/{MAILGUN_DOMAIN}/messages",
-            auth=("api", MAILGUN_API_KEY),
+            f"https://api.mailgun.net/v3/{EMAIL_DOMAIN}/messages",
+            auth=("api", EMAIL_API_KEY),
             data=data
         )
 
@@ -38,7 +38,6 @@ def send_async(recipient, subject, body_text, body_html=None):
         daemon=True
     ).start()
 
-# ─── Pre-built email types ───────────────────────────────
 
 def send_otp(user_email, otp_code):
     subject = "MMUinfo | OTP Verification"
