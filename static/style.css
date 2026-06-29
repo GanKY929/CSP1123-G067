@@ -24,12 +24,12 @@ top: 0;
 header h1{
 color: #333333;
 padding: 5px;
-font-size: 150px;
+font-size: 135px;
 text-align: center;
 margin-bottom: 0;
 }
 @keyframes moveDownToUp {
-    from {top: 150px;}
+    from {top: 38px;}
     to {top: 0px;}
 }
 div.content{
@@ -39,10 +39,15 @@ margin-right: 330px;
 padding: 0;
 font-size: 20px;
 position: relative;
-animation: moveDownToUp;
-animation-duration: 2.5s;
 display: block;
 z-index: 0;
+}
+div.movingContent{
+  display: block;
+  animation: moveDownToUp;
+  margin-top: -38px;
+  position: relative;
+  animation-duration: 2.5s;
 }
 #task{
 height: 55px;
@@ -51,10 +56,10 @@ top: 0;
 background-color: #333333;
 display: block;
 z-index: 2;
-margin-left: 28px;
 padding: 10px;
 padding-bottom: 0;
 overflow: hidden;
+animation: none;
 }
 @keyframes moveRightToLeft {
     from {left: 1000px;}
@@ -74,12 +79,16 @@ justify-content: center;
 }
 #subtask{
 border: none;
-padding: 10px;
+padding: 45px 0 0 10px;
 color: #333333;
 background-color: #f8f5f3;
 font-size: 35px;
 position: sticky;
-top: 65px;
+top: -10px;
+border-bottom: 2px solid #333333;
+border-left: 10px solid #333333;
+border-bottom-right-radius: 20px;
+border-right: 2px solid #333333;
 }
 div.navigationBar{
 background-color: transparent;
@@ -346,11 +355,14 @@ p {
         margin-right: 16px;
         margin-top: 20px;
     }
-
+    div.movingContent{
+    display: block;
+    animation: moveDownToUp;
+    position: relative;
+    animation-duration: 2.5s;
+    }
     #task {
-        margin-left: 16px;
-        margin-right: 16px;
-        position: static;
+        position: block;
         margin-top: 0;
     }
 
@@ -360,8 +372,8 @@ p {
     }
     #subtask {
         font-size: 24px;
-        animation: none;
-        position: static;
+        top: 5px;
+        position: sticky;
     }
     .posts-grid {
         grid-template-columns: 1fr;
