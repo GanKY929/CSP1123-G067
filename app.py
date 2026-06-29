@@ -1,13 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, session, abort 
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta
-import database, config, os, random, threading, requests
 from urllib.parse import urlparse
 from database import db
 from copy import error
-import database, config
+import database, config, random, threading, requests, os
 import data_storage as dpn
 from db_setup import init_db
 
@@ -58,38 +56,134 @@ def send_email_async(recipient, sender, subject, body):
 @app.route("/")
 def index(): 
     success = request.args.get("success")
-    
+    post_data = []
+
     if ("username" in session) and (session["username"] == "Mithirilz"):
         return redirect(url_for("admin"))
-    
-    return render_template("index.html", success=success)
 
-
-@app.route("/post/")
-def post():
     post_count = db.session.query(database.Post).count() 
 
-    if post_count == 0:
-        print("No posts in the database")
-        return render_template("post.html")
+    if post_count != 0:
+        first_post_id = 1 
+        last_post_id = post_count
 
-    first_post_id = post_count - (post_count-1)
-    last_post_id = post_count
+        post_data = dpn.get_posts_details(first_post_id, last_post_id)
 
-    post_data = dpn.get_posts_details(first_post_id, last_post_id)
+    return render_template("index.html", success=success, posts=post_data)
 
-    return render_template("post.html", posts=post_data)
+
+@app.route("/newpost")
+def create_post_page():
+    return render_template("newpost.html")
+
+
+@app.route("/create_post", methods=["POST"])
+def create_post():
+    if "user_id" not in session:
+        return redirect(url_for("login", error="You are not logged in"))
+
+    _post_title = request.form.get("post_title")
+    _post_content = request.form.get("post_content")
+    _image_path = request.form.get("post_image")
+    _post_author_id = session["user_id"]
+
+    if _post_title == None or _post_content == None or _post_author_id == None:
+        print("Invalid post inputs") 
+        return redirect(url_for("create_post_page"))
+ 
+    new_post = database.Post(
+        post_title = _post_title,
+        post_content = _post_content,
+        image_path = _image_path,
+        post_author = _post_author_id
+    ) 
+
+    db.session.add(new_post)
+    db.session.commit()
+
+    return redirect(url_for("create_post_page"))
 
 
 @app.route("/post/postlayout")
 def postlayout():
-    return render_template("postlayout.html") 
+    _post_id = request.args.get("post_id")
+    _error = request.args.get("error")
+
+    _post_details, _comments = dpn.get_post_details(_post_id)
+
+    return render_template("postlayout.html", post=_post_details, comments=_comments, error=_error)
+    
+
+@app.route("/comment", methods = ["POST"])
+def add_comment():
+    if "user_id" not in session:
+        return redirect(url_for("login", error="You are not logged in!"))
+
+    _post_id = request.args.get("post_id")
+    _user_id = session["user_id"]
+    _comment_content = request.form.get("comment_text")
+
+    if not _comment_content:
+        return redirect(url_for("postlayout", post_id = _post_id, error="You didn't write anything for comment"))
+
+    new_comment = database.Comments(
+        comment_content = _comment_content,
+        comment_author = _user_id,
+        comment_post_id = _post_id
+    )
+
+    db.session.add(new_comment)
+    db.session.commit()
+
+    return redirect(url_for("postlayout", post_id = _post_id))
+
+
+@app.route("/reply", methods=["POST"])
+def add_reply():
+    if "user_id" not in session:
+        return redirect(url_for("login", error="You are not logged in"))
+
+    _reply_content = request.form.get("reply_text")
+    _comment_id = request.args.get("comment_id")
+    _post_id = request.args.get("post_id")
+    _user_id = session["user_id"] 
+
+    if _reply_content == None:
+        print("No content in reply")
+        return redirect(url_for("postlayout", post_id = _post_id))
+
+    new_reply = database.Replies(
+        reply_content = _reply_content,
+        reply_author_id = _user_id,
+        reply_comment_id = _comment_id 
+    )
+
+    db.session.add(new_reply)
+    db.session.commit()
+
+    return redirect(url_for("postlayout", post_id = _post_id))
+
+
+@app.route("/remove_post", methods=["POST"])
+def remove_post():
+    _post_id = request.args.get("post_id")
+
+    if _post_id == None:
+        print("Post ID does not exist")
+        return redirect(url_for("index"))
+
+    post_to_delete = db.session.get(database.Post, _post_id)
+    db.session.delete(post_to_delete)
+    db.session.commit()
+
+    return redirect(url_for("index"))
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        return render_template("login.html")
+        _error = request.args.get("error")
+        return render_template("login.html", error=_error)
 
     if request.method == "POST":
         username: str = request.form.get("username")
@@ -110,7 +204,7 @@ def login():
             session["email"] = db_user.email
             session["display_name"] = db_user.display_name
             
-            return redirect(url_for("index"))
+            return redirect(url_for("index", success=f"Welcome {db_user.username}"))
 
         except Exception as error:
             return render_template("login.html", error=str(error), username=username)
@@ -159,6 +253,7 @@ def signup():
             password=hashed_pw,
             tagged_post="0",
         )
+
         db.session.add(new_user)
         db.session.commit()
 
@@ -324,28 +419,42 @@ def user_is_admin() -> bool:
     return False
 
 
-@app.route("/profile", methods=["GET", "POST"])
+@app.route("/profile", methods=["GET"])
 def user_profile():
-    if request.method == "GET":
-        try:
-            if "user_id" not in session:
-                raise Exception("You are not logged in.")    
-        except Exception as error:
-            return render_template("login.html", error=str(error))
+    try:
+        if "user_id" not in session:
+            raise Exception("You are not logged in.")    
 
-        user_id = session["user_id"]
-        username = session["username"]
-        email = session["email"]
-        display_name = db.session.query(database.User).filter_by(user_id=user_id).first().display_name
-        _tagged_post = dpn.get_user_details(user_id)
+    except Exception as error:
+        return render_template("login.html", error=str(error))
 
-        return render_template(
-            "profile.html",
-            username=username,
-            email=email,
-            display_name=display_name,
-            tagged_post = _tagged_post
-        )
+    _username = session["username"]
+    _email = session["email"]
+    _user_id = session["user_id"]
+    _display_name = db.session.query(database.User).filter_by(user_id=_user_id).first().display_name
+    _tagged_post = db.session.scalar(select(database.User)
+                                    .join(database.User.tagged_post)
+                                    .where(database.User.user_id == _user_id))
+
+    _posts = []
+
+    if _tagged_post:
+        for post_info in _tagged_post.tagged_post:
+            post_dict = {
+                "post_title" : post_info.post_title,
+                "post_content" : post_info.post_content,
+                "post_id" : post_info.post_id
+            }
+        
+            _posts.append(post_dict)
+
+    return render_template(
+        "profile.html",
+        username=_username,
+        email=_email,
+        display_name=_display_name,
+        posts = _posts
+    )
 
 
 @app.route("/edit_display_name", methods=["GET", "POST"])
