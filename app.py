@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, abort
-from sqlalchemy import select
+from sqlalchemy import select, desc
 from datetime import datetime, timedelta
 from database import db
 import database, config, random, os
@@ -89,7 +89,13 @@ def create_post():
         post_author=session["user_id"]
     ))
     db.session.commit()
-    return redirect(url_for("create_post_page"))
+    result = db.session.query(database.Post.post_id)\
+        .filter(database.Post.post_author == session["user_id"])\
+        .order_by(database.Post.post_id.desc())\
+        .first()
+    post_id = result[0] if result else None
+    post_details, comments = dpn.get_post_details(post_id)
+    return render_template("postlayout.html", post=post_details, comments=comments, success="Posting successful!")
 
 
 @app.route("/post/postlayout")
