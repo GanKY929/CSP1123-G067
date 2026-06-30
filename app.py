@@ -470,9 +470,8 @@ def user_profile():
 
 @app.route("/edit_display_name", methods=["GET", "POST"])
 def display_name():
-    if request.method == "GET":
-        return redirect(url_for("profile"))
     display_name: str = request.form.get("display_name")
+
     try:
         if db.session.query(database.User).filter_by(display_name=display_name).first():
             raise Exception("Name already exists")
