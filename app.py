@@ -71,13 +71,13 @@ def create_post_page():
     _success = request.args.get("success")
     _error = request.args.get("error")
     
-    return render_template("newpost.html", success = _success)
+    return render_template("newpost.html", success = _success, error = _error)
 
 
 @app.route("/create_post", methods=["POST"])
 def create_post():
     if "user_id" not in session:
-        return redirect(url_for("login", error="You are not logged in"))
+        return redirect(url_for("login", error="You are not logged in!"))
 
     _post_title = request.form.get("post_title")
     _post_content = request.form.get("post_content")
