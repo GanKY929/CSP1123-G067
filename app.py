@@ -68,7 +68,10 @@ def index():
 
 @app.route("/newpost")
 def create_post_page():
-    return render_template("newpost.html")
+    _success = request.args.get("success")
+    _error = request.args.get("error")
+    
+    return render_template("newpost.html", success = _success)
 
 
 @app.route("/create_post", methods=["POST"])
@@ -76,19 +79,25 @@ def create_post():
     if "user_id" not in session:
         return redirect(url_for("login", error="You are not logged in"))
 
-    title = request.form.get("post_title")
-    content = request.form.get("post_content")
+    _post_title = request.form.get("post_title")
+    _post_content = request.form.get("post_content")
+    _image_path = request.form.get("post_image")
+    _post_author_id = session["user_id"]
 
-    if not title or not content:
-        return redirect(url_for("create_post_page"))
+    if _post_title == None or _post_content == None or _post_author_id == None:
+        print("Invalid post inputs") 
+        return redirect(url_for("create_post_page", error="Your post inputs were not valid"))
+ 
+    new_post = database.Post(
+        post_title = _post_title,
+        post_content = _post_content,
+        image_path = _image_path,
+        post_author = _post_author_id
+    ) 
 
-    db.session.add(database.Post(
-        post_title=title,
-        post_content=content,
-        image_path=request.form.get("post_image"),
-        post_author=session["user_id"]
-    ))
+    db.session.add(new_post)
     db.session.commit()
+
     result = db.session.query(database.Post.post_id)\
         .filter(database.Post.post_author == session["user_id"])\
         .order_by(database.Post.post_id.desc())\
@@ -389,7 +398,21 @@ def user_profile():
 
 @app.route("/edit_display_name", methods=["POST"])
 def display_name():
-    new_name = request.form.get("display_name")
+    if request.method == "GET":
+        return redirect(url_for("profile"))
+    display_name: str = request.form.get("display_name")
+
+    try:
+        if db.session.query(database.User).filter_by(display_name=display_name).first():
+            raise Exception("Name already exists")
+    
+    except Exception as error:
+        return render_template("profile.html", error=str(error), username=session["username"])
+    
+    db.session.query(database.User).filter_by(user_id=session["user_id"]).update({"display_name": display_name})
+    db.session.commit()
+    session["display_name"] = display_name
+    return redirect(url_for("user_profile", success="Name updated successfully!"))
 
     if db.session.query(database.User).filter_by(display_name=new_name).first():
         return render_template("profile.html", error="Name already exists", username=session["username"])
