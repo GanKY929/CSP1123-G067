@@ -210,7 +210,8 @@ def signup():
             raise Exception("Must fill all fields.")
         if get_user_by(username=username):
             raise Exception("Username already exists.")
-        validate_mmu_student_email(email)
+        if get_user_by(email=email):
+            raise Exception("Email already exists.")
         validate_password(password, confirm)
 
         db.session.add(database.User(
@@ -429,3 +430,26 @@ def contact():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+# ─── Search ─────────────────────────────────────────────
+ 
+@app.route("/search")
+def search():
+    query = request.args.get("q", "").strip()
+    if not query:
+        return render_template("search.html", posts=[], query="")
+ 
+    results = db.session.query(database.Post).filter(
+        db.or_(
+            database.Post.post_title.ilike(f"%{query}%"),
+            database.Post.post_content.ilike(f"%{query}%")
+        )
+    ).order_by(database.Post.post_id.desc()).all()
+ 
+    for post in results:
+        user = db.session.query(database.User).filter_by(user_id=post.post_author).first()
+        post.author_username = user.username if user else "unknown"
+        post.profile_pic = user.profile_pic if user and hasattr(user, 'profile_pic') else None
+        post.image_path = None
+ 
+    return render_template("search.html", posts=results, query=query)

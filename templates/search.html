@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<head>
+<title>MMU InfoHUB – Search</title>
+<link rel="stylesheet" href="/static/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  .search-wrapper {
+    margin: 30px 28px;
+    margin-right: 330px;
+    margin-top: 470px;
+    padding-bottom: 80px;
+  }
+
+  .search-bar-block {
+    display: flex;
+    gap: 0;
+    margin-bottom: 28px;
+    border: solid #333333;
+  }
+
+  .search-bar-block input {
+    flex: 1;
+    padding: 14px 18px;
+    background: #ffffff;
+    border: none;
+    color: #333333;
+    font-size: 16px;
+    font-family: inherit;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .search-bar-block input:focus {
+    background: #f8f5f3;
+  }
+
+  .search-bar-block button {
+    padding: 0 28px;
+    border: none;
+    border-left: solid #333333;
+    background: #333333;
+    color: #f8f5f3;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    width: auto;
+  }
+
+  .search-bar-block button:hover { background: #555555; }
+
+  .search-meta {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 20px;
+    padding: 0;
+  }
+
+  .search-meta strong { color: #333333; }
+
+  /* RESULTS FEED */
+  .search-feed { display: flex; flex-direction: column; gap: 2px; }
+
+  .search-card {
+    display: flex;
+    gap: 0;
+    border: solid #333333;
+    background: #f8f5f3;
+    cursor: pointer;
+    transition: background-color 0.15s;
+  }
+
+  .search-card:hover { background: #333333; color: #f8f5f3; }
+  .search-card:hover .search-card-meta,
+  .search-card:hover .search-card-excerpt,
+  .search-card:hover .search-author-name { color: #f8f5f3; }
+
+  .search-card-img {
+    width: 140px;
+    flex-shrink: 0;
+    background: #ddd;
+    border-right: solid #333333;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+  }
+
+  .search-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .search-card-img.no-img {
+    background: #e0e0e0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #f8f5f3;
+    background-color: #333333;
+  }
+
+  .search-card-body {
+    flex: 1;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .search-card-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #333333;
+  }
+
+  .search-card:hover .search-card-title { color: #f8f5f3; }
+
+  .search-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: #888;
+    padding: 0;
+    margin: 0;
+  }
+
+  .search-author-avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: #555555;
+    color: #f8f5f3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .search-author-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .search-author-name { font-weight: 600; color: #555; }
+
+  .search-card-excerpt {
+    font-size: 13px;
+    color: #555;
+    padding: 0;
+    margin: 0;
+  }
+
+  .no-results {
+    padding: 40px 0;
+    text-align: center;
+    font-size: 15px;
+    color: #888;
+  }
+
+  @media (max-width: 768px) {
+    .search-wrapper { margin: 16px; margin-top: 20px; }
+    .search-card-img { width: 90px; min-height: 80px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>MMU InfoHUB</h1>
+</header>
+
+<div class="navigationBar">
+<ul><br>
+    <li><a href="/">HOME</a></li><br>
+    <li><a href="/newpost">POST</a></li><br>
+    <li><a href="/search">SEARCH</a></li><br>
+    <li><a href="/contact">CONTACT</a></li><br>
+    <li><a href="/profile">PROFILE</a></li><br>
+    {% if session.user_id %}
+    <li><a href="/logout">LOGOUT</a></li><br>
+    {% else %}
+    <li><a href="/login">LOGIN</a></li><br>
+    {% endif %}
+    <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project 2610 G067</li>
+</ul>
+</div>
+
+<div id="task"><h2>SEARCH</h2></div>
+
+<div class="search-wrapper">
+
+    <!-- SEARCH BAR -->
+    <form method="GET" action="/search">
+        <div class="search-bar-block">
+            <input type="text" name="q" placeholder="Search posts..." value="{{ query }}" autofocus />
+            <button type="submit">SEARCH</button>
+        </div>
+    </form>
+
+    <!-- RESULTS META -->
+    {% if query %}
+    <p class="search-meta">
+        {% if posts %}
+        {{ posts|length }} result{{ 's' if posts|length != 1 else '' }} for <strong>"{{ query }}"</strong>
+        {% else %}
+        No results for <strong>"{{ query }}"</strong> — try a different word.
+        {% endif %}
+    </p>
+    {% endif %}
+
+    <!-- RESULTS -->
+    <div class="search-feed">
+        {% for post in posts %}
+        <div class="search-card" onclick="window.location.href='/post/{{ post.post_id }}'">
+
+            <div class="search-card-img {% if not post.image_path %}no-img{% endif %}">
+                {% if post.image_path %}
+                <img src="{{ post.image_path }}" alt="{{ post.post_title }}" />
+                {% else %}
+                {{ post.post_title[0].upper() }}
+                {% endif %}
+            </div>
+
+            <div class="search-card-body">
+                <p class="search-card-title">{{ post.post_title }}</p>
+                <p class="search-card-meta">
+                    <span class="search-author-avatar">
+                        {% if post.profile_pic %}
+                        <img src="{{ post.profile_pic }}" alt="{{ post.author_username }}" />
+                        {% else %}
+                        {{ post.author_username[0].upper() }}
+                        {% endif %}
+                    </span>
+                    <span class="search-author-name">{{ post.author_username }}</span>
+                    <span>·</span>
+                    <span>{{ post.created_at.strftime('%d %b %Y') if post.created_at else '' }}</span>
+                </p>
+                <p class="search-card-excerpt">{{ post.post_content[:150] }}...</p>
+            </div>
+        </div>
+        {% else %}
+        {% if not query %}
+        <div class="no-results">Type something above to search posts.</div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+</div>
+
+</body>
+</html>
