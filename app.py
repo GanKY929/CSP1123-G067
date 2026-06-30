@@ -436,7 +436,8 @@ def user_profile():
             raise Exception("You are not logged in.")    
 
     except Exception as error:
-        return render_template("login.html", error=str(error))
+        return redirect(url_for("login", error="You're not logged in"))
+
 
     _username = session["username"]
     _email = session["email"]
