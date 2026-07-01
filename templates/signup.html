@@ -16,9 +16,9 @@
     <div class="login-box">
       <h2>SIGN UP</h2>
       {% include "flash.html" %}
-      <div style="display: inline;">
       <label>Email</label>
       <input type="email" id="s-email" placeholder="Enter your email" name="email"/>
+      <p style="font-size: 10px;">MMU Student Email only <br> (example@student.mmu.edu.my)</p>
 
       <label>Username</label>
       <input type="text" id="s-user" placeholder="Choose a username" name="username"/>
@@ -28,11 +28,9 @@
 
       <label>Confirm password</label>
       <input type="password" id="s-pass2" placeholder="Repeat password" name="confirmPassword"/>
-      </div>
-      <div style="display: inline;">
       <p>Password must be at least: <br>- 8 characters long, <br>- A uppercase letter, <br>- A lowercase letter, <br>- A number.</p><br>
       <button class="btn-main" type="submit">CREATE ACCOUNT</button><br>
-      </div>
+    </div>
       
       <div class="sub-links">
         <a href="{{ url_for('login') }}" class="btn-link">← Back to login</a>
