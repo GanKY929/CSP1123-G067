@@ -1,43 +1,26 @@
-import smtplib
 import threading
 import config
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+from brevo import Brevo
+from brevo.transactional_emails import (
+    SendTransacEmailRequestSender,
+    SendTransacEmailRequestToItem,
+)
 
-_smtp_connection = None
-_smtp_lock = threading.Lock()
-
-def _get_smtp():
-    global _smtp_connection
-    try:
-        if _smtp_connection is None:
-            raise Exception("No connection")
-        _smtp_connection.noop()
-        return _smtp_connection
-    except:
-        _smtp_connection = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-        _smtp_connection.login(config.OFFICIAL_GMAIL, config.GMAIL_APP_PASSWORD)
-        return _smtp_connection
+client = Brevo(api_key=config.EMAIL_API_KEY)
 
 def _send(recipient, subject, body_text, body_html=None):
     try:
-        if body_html:
-            msg = MIMEMultipart("alternative")
-            msg.attach(MIMEText(body_text, "plain"))
-            msg.attach(MIMEText(body_html, "html"))
-        else:
-            msg = MIMEText(body_text, "plain")
-
-        msg["Subject"] = subject
-        msg["From"] = f"MMU InfoHUB <{config.OFFICIAL_GMAIL}>"
-        msg["To"] = recipient
-
-        with _smtp_lock:
-            smtp = _get_smtp()
-            smtp.sendmail(config.OFFICIAL_GMAIL, recipient, msg.as_string())
-
-        print(f"[EMAIL] Sent to {recipient} | Subject: {subject}")
-
+        result = client.transactional_emails.send_transac_email(
+            subject=subject,
+            text_content=body_text,
+            html_content=body_html,
+            sender=SendTransacEmailRequestSender(
+                name="MMU InfoHUB",
+                email=config.OFFICIAL_GMAIL,
+            ),
+            to=[SendTransacEmailRequestToItem(email=recipient)]
+        )
+        print(f"[EMAIL] Sent to {recipient} | Subject: {subject} | ID: {result.message_id}")
     except Exception as e:
         print(f"[EMAIL] Failed to send to {recipient}: {e}")
 

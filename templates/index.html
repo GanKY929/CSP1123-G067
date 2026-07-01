@@ -25,18 +25,18 @@
 </ul>
 </div>
 
+<div class="content">
 <div id="task"><h2>HOME</h2></div>
 
-<div class="content">
-
+<div class="movingContent">
     <h2 id="subtask">LATEST EVENTS!</h2>
     {% include 'flash.html' %}
 
     <div class="posts-grid">
 
         {% for post in posts %}
-        <div class="post-card" onclick="window.location.href='{{ url_for('postlayout', post_id=post.post_id) }}'">
-            <img src="{{ post.image_path or '' }}" alt="{{ post.post_title }}" />
+        <div class="post-card" onclick="window.location.href='{{ url_for("postlayout", post_id=post.post_id) }}';">
+            <img src="{{ post.image_path or 'https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-blank-avatar-modern-vector-png-image_40962406.jpg' }}" alt="{{ post.post_title }}" />
             <div class="post-card-body">
                 <p class="post-meta">{{ post.created_at.strftime('%d %b %Y') if post.created_at else '' }} &nbsp;·&nbsp; {{ post.author_username }}</p>
                 <h3>{{ post.post_title }}</h3>
@@ -48,7 +48,7 @@
         {% endfor %}
 
     </div>
-
+</div>
 </div>
 
 </body>

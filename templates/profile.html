@@ -198,19 +198,21 @@
         <div class="profile-details">
             <h2>
               {% if display_name %}
-              {{ display_name }} 
+                {{ display_name }} 
               {% else %}
-              {{ username }}
+                {{ username }}
               {% endif %}
-              <input type="checkbox" id="click-trigger" class="toggle-checkbox" style="display: none;">
-              <label for="click-trigger" id="edit-toggle-btn">( Edit )</label>
-              <div id="hidden-block">
-                <form method="POST" action="/edit_display_name">
-                  <input type="text" name="display_name" placeholder="Enter display name" required>
-                  <button type="submit">Save</button>
-                </form>
-              </div>
-              </h2>
+              {% if session["username"] == username %}
+                <input type="checkbox" id="click-trigger" class="toggle-checkbox" style="display: none;">
+                <label for="click-trigger" id="edit-toggle-btn">( Edit )</label>
+                <div id="hidden-block">
+                  <form method="POST" action="/edit_display_name">
+                    <input type="text" name="display_name" placeholder="Enter display name" required>
+                    <button type="submit">Save</button>
+                  </form>
+                </div>
+                </h2>
+              {% endif %}
               {% if display_name != username %}
               <p>username: {{ username }}</p>
               {% else %}

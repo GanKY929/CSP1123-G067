@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, abort
-from sqlalchemy import select
+from sqlalchemy import select, desc
 from datetime import datetime, timedelta
 from database import db
 import database, config, random, os
@@ -8,14 +8,14 @@ import email_service
 from db_setup import init_db
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = config.SECRET_KEY
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") or config.SECRET_KEY
 
 init_db(app)
 
 # ─── Helpers ─────────────────────────────────────────────
 
 def user_is_admin():
-    return session.get("username") == "Mithirilz"
+    return session.get("username") == "Mithirilz" or session.get("username") == "Gan"
 
 def get_user_by(email=None, username=None):
     if email:
@@ -48,6 +48,9 @@ def validate_password(password, confirm):
     if not any(c.isdigit() for c in password):
         raise Exception("Password must contain at least one number.")
 
+def validate_mmu_student_email(email):
+    if not "@student.mmu.edu.my" in email:
+        raise Exception("MMU InfoHUB for MMU Student only, please using your student account to register.")
 
 # ─── Index ───────────────────────────────────────────────
 
@@ -56,7 +59,8 @@ def index():
     if user_is_admin():
         return redirect(url_for("admin"))
 
-    post_data = dpn.get_posts_details()
+    post_data = list(dpn.get_posts_details())
+    post_data.reverse()
 
     return render_template("index.html", success=request.args.get("success"), posts=post_data)
 
@@ -68,28 +72,40 @@ def create_post_page():
     _success = request.args.get("success")
     _error = request.args.get("error")
     
-    return render_template("newpost.html", success = _success)
+    return render_template("newpost.html", success = _success, error = _error)
 
 
 @app.route("/create_post", methods=["POST"])
 def create_post():
     if "user_id" not in session:
-        return redirect(url_for("login", error="You are not logged in"))
+        return redirect(url_for("login", error="You are not logged in!"))
 
-    title = request.form.get("post_title")
-    content = request.form.get("post_content")
+    _post_title = request.form.get("post_title")
+    _post_content = request.form.get("post_content")
+    _image_path = request.form.get("post_image")
+    _post_author_id = session["user_id"]
 
-    if not title or not content:
-        return redirect(url_for("create_post_page"))
+    if _post_title == None or _post_content == None or _post_author_id == None:
+        print("Invalid post inputs") 
+        return redirect(url_for("create_post_page", error="Your post inputs were not valid"))
+ 
+    new_post = database.Post(
+        post_title = _post_title,
+        post_content = _post_content,
+        image_path = _image_path,
+        post_author = _post_author_id
+    ) 
 
-    db.session.add(database.Post(
-        post_title=title,
-        post_content=content,
-        image_path=request.form.get("post_image"),
-        post_author=session["user_id"]
-    ))
+    db.session.add(new_post)
     db.session.commit()
-    return redirect(url_for("create_post_page"))
+
+    result = db.session.query(database.Post.post_id)\
+        .filter(database.Post.post_author == session["user_id"])\
+        .order_by(database.Post.post_id.desc())\
+        .first()
+    post_id = result[0] if result else None
+    post_details, comments = dpn.get_post_details(post_id)
+    return render_template("postlayout.html", post=post_details, comments=comments, success="Posting successful!")
 
 
 @app.route("/post/postlayout")
@@ -195,7 +211,7 @@ def signup():
         return render_template("signup.html")
 
     username = request.form.get("username")
-    email    = request.form.get("email")
+    email    = request.form.get("email").lower()
     password = request.form.get("password")
     confirm  = request.form.get("confirmPassword")
 
@@ -207,6 +223,7 @@ def signup():
         if get_user_by(email=email):
             raise Exception("Email already exists.")
         validate_password(password, confirm)
+        validate_mmu_student_email(email)
 
         db.session.add(database.User(
             username=username,
@@ -383,16 +400,21 @@ def user_profile():
 
 @app.route("/edit_display_name", methods=["POST"])
 def display_name():
-    new_name = request.form.get("display_name")
+    if request.method == "GET":
+        return redirect(url_for("profile"))
+    display_name: str = request.form.get("display_name")
 
-    if db.session.query(database.User).filter_by(display_name=new_name).first():
-        return render_template("profile.html", error="Name already exists", username=session["username"])
-
-    db.session.query(database.User).filter_by(user_id=session["user_id"]).update({"display_name": new_name})
+    try:
+        if db.session.query(database.User).filter_by(display_name=display_name).first():
+            raise Exception("Name already exists")
+    
+    except Exception as error:
+        return render_template("profile.html", error=str(error), username=session["username"])
+    
+    db.session.query(database.User).filter_by(user_id=session["user_id"]).update({"display_name": display_name})
     db.session.commit()
-    session["display_name"] = new_name
-    return redirect(url_for("user_profile"))
-
+    session["display_name"] = display_name
+    return redirect(url_for("user_profile", success="Name updated successfully!"))
 
 # ─── Contact ─────────────────────────────────────────────
 
@@ -424,3 +446,26 @@ def contact():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+# ─── Search ─────────────────────────────────────────────
+ 
+@app.route("/search")
+def search():
+    query = request.args.get("q", "").strip()
+    if not query:
+        return render_template("search.html", posts=[], query="")
+ 
+    results = db.session.query(database.Post).filter(
+        db.or_(
+            database.Post.post_title.ilike(f"%{query}%"),
+            database.Post.post_content.ilike(f"%{query}%")
+        )
+    ).order_by(database.Post.post_id.desc()).all()
+ 
+    for post in results:
+        user = db.session.query(database.User).filter_by(user_id=post.post_author).first()
+        post.author_username = user.username if user else "unknown"
+        post.profile_pic = user.profile_pic if user and hasattr(user, 'profile_pic') else None
+        post.image_path = None
+ 
+    return render_template("search.html", posts=results, query=query)

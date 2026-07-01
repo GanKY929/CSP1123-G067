@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<head>
+<title>MMU InfoHUB – Search</title>
+<link rel="stylesheet" href="/static/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<header>
+    <h1>MMU InfoHUB</h1>
+</header>
+
+<div class="navigationBar">
+<ul><br>
+    <li><a href="/">HOME</a></li><br>
+    <li><a href="/newpost">POST</a></li><br>
+    <li><a href="/search">SEARCH</a></li><br>
+    <li><a href="/contact">CONTACT</a></li><br>
+    <li><a href="/profile">PROFILE</a></li><br>
+    {% if session.user_id %}
+    <li><a href="/logout">LOGOUT</a></li><br>
+    {% else %}
+    <li><a href="/login">LOGIN</a></li><br>
+    {% endif %}
+    <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project 2610 G067</li>
+</ul>
+</div>
+
+<div id="task"><h2>SEARCH</h2></div>
+
+<div class="search-wrapper">
+
+    <!-- SEARCH BAR -->
+    <form method="GET" action="/search">
+        <div class="search-bar-block">
+            <input type="text" name="q" placeholder="Search posts..." value="{{ query }}" autofocus />
+            <button type="submit">SEARCH</button>
+        </div>
+    </form>
+
+    <!-- RESULTS META -->
+    {% if query %}
+    <p class="search-meta">
+        {% if posts %}
+        {{ posts|length }} result{{ 's' if posts|length != 1 else '' }} for <strong>"{{ query }}"</strong>
+        {% else %}
+        No results for <strong>"{{ query }}"</strong> — try a different word.
+        {% endif %}
+    </p>
+    {% endif %}
+
+    <!-- RESULTS -->
+    <div class="search-feed">
+        {% for post in posts %}
+        <div class="search-card" onclick="window.location.href='/post/{{ post.post_id }}'">
+
+            <div class="search-card-img {% if not post.image_path %}no-img{% endif %}">
+                {% if post.image_path %}
+                <img src="{{ post.image_path }}" alt="{{ post.post_title }}" />
+                {% else %}
+                {{ post.post_title[0].upper() }}
+                {% endif %}
+            </div>
+
+            <div class="search-card-body">
+                <p class="search-card-title">{{ post.post_title }}</p>
+                <p class="search-card-meta">
+                    <span class="search-author-avatar">
+                        {% if post.profile_pic %}
+                        <img src="{{ post.profile_pic }}" alt="{{ post.author_username }}" />
+                        {% else %}
+                        {{ post.author_username[0].upper() }}
+                        {% endif %}
+                    </span>
+                    <span class="search-author-name">{{ post.author_username }}</span>
+                    <span>·</span>
+                    <span>{{ post.created_at.strftime('%d %b %Y') if post.created_at else '' }}</span>
+                </p>
+                <p class="search-card-excerpt">{{ post.post_content[:150] }}...</p>
+            </div>
+        </div>
+        {% else %}
+        {% if not query %}
+        <div class="no-results">Type something above to search posts.</div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -32,7 +32,7 @@ top: 0;
 header h1{
 color: #f8f5f3;
 padding: 5px;
-font-size: 120px;
+font-size: 100px;
 text-align: center;
 margin-bottom: 0;
 }
@@ -112,6 +112,7 @@ z-index: 3;
 float: right;
 padding: 50px;
 position: sticky;
+margin-bottom: -100%;
 top: 0;
 right: 0;
 width: 230px;
