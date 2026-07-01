@@ -15,7 +15,7 @@ init_db(app)
 # ─── Helpers ─────────────────────────────────────────────
 
 def user_is_admin():
-    return session.get("username") == "Mithirilz"
+    return session.get("username") == "Mithirilz" or session.get("username") == "Gan"
 
 def get_user_by(email=None, username=None):
     if email:
@@ -49,7 +49,7 @@ def validate_password(password, confirm):
         raise Exception("Password must contain at least one number.")
 
 def validate_mmu_student_email(email):
-    if not "student.mmu.edu.my" in email:
+    if not "@student.mmu.edu.my" in email:
         raise Exception("MMU InfoHUB for MMU Student only, please using your student account to register.")
 
 # ─── Index ───────────────────────────────────────────────
@@ -222,6 +222,7 @@ def signup():
         if get_user_by(email=email):
             raise Exception("Email already exists.")
         validate_password(password, confirm)
+        validate_mmu_student_email(email)
 
         db.session.add(database.User(
             username=username,
