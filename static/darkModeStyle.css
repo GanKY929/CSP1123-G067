@@ -112,6 +112,7 @@ z-index: 3;
 float: right;
 padding: 50px;
 position: sticky;
+margin-bottom: -100%;
 top: 0;
 right: 0;
 width: 230px;
