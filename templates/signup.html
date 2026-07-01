@@ -3,6 +3,15 @@
 <head>
   <title>MMU InfoHUB – Sign Up</title>
   <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+<script>
+  /* Auto scroll down */
+window.addEventListener('load', function() {
+  window.scrollTo({
+    top: document.body.scrollHeight,
+    behavior: 'smooth'
+  });
+});
+</script>
 </head>
 <body>
 
@@ -30,11 +39,10 @@
       <input type="password" id="s-pass2" placeholder="Repeat password" name="confirmPassword"/>
       <p>Password must be at least: <br>- 8 characters long, <br>- A uppercase letter, <br>- A lowercase letter, <br>- A number.</p><br>
       <button class="btn-main" type="submit">CREATE ACCOUNT</button><br>
-    </div>
-      
       <div class="sub-links">
         <a href="{{ url_for('login') }}" class="btn-link">← Back to login</a>
       </div>
+    </div>
     </div>
   </div>
   </form>
