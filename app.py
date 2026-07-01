@@ -380,7 +380,7 @@ def user_profile():
         return render_template("login.html", error="You are not logged in.")
 
     user_id = session["user_id"]
-    db_user = db.session.query(database.User).filter_by(user_id=user_id).first()
+    db_user = db.session.scalar(select(database.User).where(database.User.user_id == user_id))
 
     posts = []
     if db_user and db_user.tagged_post:

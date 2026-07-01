@@ -4,7 +4,7 @@ import database
 
 
 def get_posts_details():
-    posts = db.session.execute(select(database.Post)).scalars().all()
+    posts = db.session.scalars(select(database.Post))
 
     return [
         {
