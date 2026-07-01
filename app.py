@@ -365,6 +365,9 @@ def delete_user():
     if not user_is_admin():
         abort(403)
 
+    if request.args.get("user_id") == session.get("user_id"):
+        return redirect(url_for("admin", error="You cannot delete your own account"))
+
     user = db.session.get(database.User, request.args.get("user_id"))
     if user:
         db.session.delete(user)
