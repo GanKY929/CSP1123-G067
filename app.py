@@ -59,7 +59,8 @@ def index():
     if user_is_admin():
         return redirect(url_for("admin"))
 
-    post_data = dpn.get_posts_details()
+    post_data = list(dpn.get_posts_details())
+    post_data.reverse()
 
     return render_template("index.html", success=request.args.get("success"), posts=post_data)
 
