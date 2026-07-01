@@ -210,7 +210,7 @@ def signup():
         return render_template("signup.html")
 
     username = request.form.get("username")
-    email    = request.form.get("email")
+    email    = request.form.get("email").lower()
     password = request.form.get("password")
     confirm  = request.form.get("confirmPassword")
 
@@ -414,15 +414,6 @@ def display_name():
     db.session.commit()
     session["display_name"] = display_name
     return redirect(url_for("user_profile", success="Name updated successfully!"))
-
-    if db.session.query(database.User).filter_by(display_name=new_name).first():
-        return render_template("profile.html", error="Name already exists", username=session["username"])
-
-    db.session.query(database.User).filter_by(user_id=session["user_id"]).update({"display_name": new_name})
-    db.session.commit()
-    session["display_name"] = new_name
-    return redirect(url_for("user_profile"))
-
 
 # ─── Contact ─────────────────────────────────────────────
 
