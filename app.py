@@ -361,14 +361,21 @@ def admin():
         }
         for u in users
     ]
+
     gmail_users = [u for u in user_list if "gmail.com" in u["email"]]
-    return render_template("admin.html", users=user_list, gmail_users=gmail_users)
+
+    error = request.args.get("error")
+    success = request.args.get("success")
+    return render_template("Admin.html", users=user_list, gmail_users=gmail_users, error=error, success=success)
 
 
 @app.route("/delete_user", methods=["POST"])
 def delete_user():
     if not user_is_admin():
         abort(403)
+
+    if int(request.args.get("user_id")) == session.get("user_id"):
+        return redirect(url_for("admin", error="You cannot delete your own account"))
 
     user = db.session.get(database.User, request.args.get("user_id"))
     if user:
