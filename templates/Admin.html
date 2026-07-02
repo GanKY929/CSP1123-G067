@@ -13,9 +13,15 @@
 <div class="navigationBar">
 <ul><br>
     <li><a href="/">HOME</a></li><br>
-    <li><a href="#">BOARD</a></li><br>
+    <li><a href="/newpost">POST</a></li><br>
+    <li><a href="/search">SEARCH</a></li><br>
+    <li><a href="/contact">CONTACT</a></li><br>
     <li><a href="/profile">PROFILE</a></li><br>
+    {% if session.user_id %}
     <li><a href="/logout">LOGOUT</a></li><br>
+    {% else %}
+    <li><a href="/login">LOGIN</a></li><br>
+    {% endif %}
     <li style="font-size: x-small;">Copyright &#169; 2026 Mini IT Project G067</li>
 </ul>
 </div>
