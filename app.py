@@ -211,7 +211,8 @@ def signup():
         return render_template("signup.html")
 
     username = request.form.get("username")
-    email    = request.form.get("email").lower()
+    email    = request.form.get("email")
+    email    = email.lower() if email else None
     password = request.form.get("password")
     confirm  = request.form.get("confirmPassword")
 
@@ -244,6 +245,7 @@ def signup():
 @app.route("/otp", methods=["GET", "POST"])
 def otp():
     email   = request.args.get("email") or request.form.get("email")
+    email   = email.lower() if email else None
     purpose = request.args.get("purpose") or request.form.get("purpose", "verify")
 
     if not email:
@@ -282,6 +284,7 @@ def otp():
 @app.route("/resend_otp", methods=["GET", "POST"])
 def resend_otp():
     email = request.form.get("email") or request.args.get("email")
+    email = email.lower() if email else None
     if not email:
         return render_template("login.html", error="Missing email")
 
@@ -301,6 +304,7 @@ def forgotPass():
         return render_template("forgotPass.html")
 
     email = request.form.get("email")
+    email = email.lower() if email else None
     db_user = get_user_by(email=email)
 
     if not db_user:
@@ -314,6 +318,7 @@ def forgotPass():
 @app.route("/resetPass", methods=["GET", "POST"])
 def resetPass():
     email = request.args.get("email") or request.form.get("email")
+    email = email.lower() if email else None
     if not email:
         return redirect(url_for("forgotPass"))
 
@@ -357,7 +362,7 @@ def admin():
         for u in users
     ]
     gmail_users = [u for u in user_list if "gmail.com" in u["email"]]
-    return render_template("Admin.html", users=user_list, gmail_users=gmail_users)
+    return render_template("admin.html", users=user_list, gmail_users=gmail_users)
 
 
 @app.route("/delete_user", methods=["POST"])
@@ -379,8 +384,8 @@ def user_profile():
     if "user_id" not in session:
         return render_template("login.html", error="You are not logged in.")
 
-    user_id = session["user_id"]
-    db_user = db.session.query(database.User).filter_by(user_id=user_id).first()
+    profile_owner_username = request.args.get("username") or session.get("username")
+    db_user = db.session.query(database.User).filter_by(username=profile_owner_username).first()
 
     posts = []
     if db_user and db_user.tagged_post:
@@ -391,8 +396,9 @@ def user_profile():
 
     return render_template(
         "profile.html",
-        username=session["username"],
-        email=session["email"],
+        profile_owner_username=profile_owner_username,
+        username=db_user.username if db_user else None,
+        email=db_user.email if db_user else None,
         display_name=db_user.display_name if db_user else None,
         posts=posts
     )

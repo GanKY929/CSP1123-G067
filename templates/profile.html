@@ -202,7 +202,7 @@
               {% else %}
                 {{ username }}
               {% endif %}
-              {% if session["username"] == username %}
+              {% if session["username"] == profile_owner_username %}
                 <input type="checkbox" id="click-trigger" class="toggle-checkbox" style="display: none;">
                 <label for="click-trigger" id="edit-toggle-btn">( Edit )</label>
                 <div id="hidden-block">
@@ -231,7 +231,6 @@
     <!-- TABS -->
     <div class="history-tabs">
         <button class="tab-btn active" onclick="switchTab(event, 'posts')">POSTS</button>
-        <button class="tab-btn" onclick="switchTab(event, 'comments')">COMMENTS</button>
     </div>
 
     <!-- POSTS TAB -->
@@ -247,12 +246,6 @@
         <p class="empty-msg">No posts yet.</p>
         {% endfor %}
     </div>
-
-    <!-- COMMENTS TAB -->
-    <div class="tab-panel" id="tab-comments">
-        <p class="empty-msg">Comments coming soon.</p>
-    </div>
-
 </div>
 
 <script>

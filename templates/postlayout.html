@@ -34,7 +34,7 @@
         <div class="post-card-top">
             <div class="post-author-avatar">{{ post.author_username[0].upper() }}</div>
             <div class="post-author-meta">
-                <p class="author-name">{{ post.author_username }}</p>
+              <a href="{{ url_for('user_profile', username=post.author_username) }}" class="author-name">{{ post.author_username }}</a>
             </div>
         </div>
 
