@@ -3,6 +3,252 @@
 <title>MMU InfoHUB – Search</title>
 <link rel="stylesheet" href="/static/style.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
+=======
+<style>
+ .search-wrapper {
+    margin: 30px 28px;
+    margin-right: 330px;
+    padding-bottom: 80px;
+    overflow: hidden;
+  }
+
+  .search-bar-block {
+    display: flex;
+    gap: 0;
+    margin-bottom: 28px;
+    border: solid #333333;
+  }
+
+  .search-bar-block input {
+    flex: 1;
+    min-width: 0;
+    padding: 14px 18px;
+    background: #ffffff;
+    border: none;
+    color: #333333;
+    font-size: 16px;
+    font-family: inherit;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .search-bar-block input:focus {
+    background: #f8f5f3;
+  }
+
+  .search-bar-block button {
+    padding: 0 28px;
+    border: none;
+    border-left: solid #333333;
+    background: #333333;
+    color: #f8f5f3;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  .search-bar-block button:hover { background: #555555; }
+
+  .filter-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .filter-btn {
+    height: 100%;
+    padding: 0 28px;
+    border: none;
+    border-right: solid #333333;
+    background: #333333;
+    color: #f8f5f3;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .filter-btn:hover { background: #555555; }
+
+  .filter-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    background: #f8f5f3;
+    border: solid #333333;
+    z-index: 5;
+    min-width: 160px;
+  }
+
+  .filter-dropdown.open { display: block; }
+
+  .filter-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #333333;
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .filter-option:hover { background: #333333; color: #f8f5f3; }
+
+  .filter-option input[type="radio"] {
+    margin: 0;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    accent-color: #333333;
+  }
+
+  .search-meta {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 20px;
+    padding: 0;
+  }
+
+  .search-meta strong { color: #333333; }
+
+  /* RESULTS FEED */
+  .search-feed { display: flex; flex-direction: column; gap: 2px; }
+
+  .search-card {
+    display: flex;
+    gap: 0;
+    border: solid #333333;
+    background: #f8f5f3;
+    cursor: pointer;
+    transition: background-color 0.15s;
+  }
+
+  .search-card:hover { background: #333333; color: #f8f5f3; }
+  .search-card:hover .search-card-meta,
+  .search-card:hover .search-card-excerpt,
+  .search-card:hover .search-author-name { color: #f8f5f3; }
+
+  .search-card-img {
+    width: 140px;
+    flex-shrink: 0;
+    background: #ddd;
+    border-right: solid #333333;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+  }
+
+  .search-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .search-card-img.no-img {
+    background: #e0e0e0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #f8f5f3;
+    background-color: #333333;
+  }
+
+  .search-card-body {
+    flex: 1;
+    min-width: 0;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .search-card-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #333333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .search-card:hover .search-card-title { color: #f8f5f3; }
+
+  .search-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: #888;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+  }
+
+  .search-author-avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: #555555;
+    color: #f8f5f3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .search-author-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .search-author-name {
+    font-weight: 600;
+    color: #555;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .search-card-excerpt {
+    font-size: 13px;
+    color: #555;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .no-results {
+    padding: 40px 0;
+    text-align: center;
+    font-size: 15px;
+    color: #888;
+  }
+
+  @media (max-width: 768px) {
+    .search-wrapper { margin: 16px; margin-top: 20px; }
+    .search-card-img { width: 90px; min-height: 80px; }
+  }
+</style>
+>>>>>>> origin/Wah_Teck_Hao
 </head>
 <body>
 
@@ -33,6 +279,21 @@
     <!-- SEARCH BAR -->
     <form method="GET" action="/search">
         <div class="search-bar-block">
+            <div class="filter-wrap">
+                <button type="button" class="filter-btn" id="filterBtn" onclick="toggleFilterDropdown(event)">FILTER &#9662;</button>
+                <div class="filter-dropdown" id="filterDropdown">
+                    <label class="filter-option">
+                        <input type="radio" name="scope" value="all" {% if scope != 'mine' %}checked{% endif %} onchange="this.form.submit()">
+                        ALL
+                    </label>
+                    {% if session.user_id %}
+                    <label class="filter-option">
+                        <input type="radio" name="scope" value="mine" {% if scope == 'mine' %}checked{% endif %} onchange="this.form.submit()">
+                        YOURS
+                    </label>
+                    {% endif %}
+                </div>
+            </div>
             <input type="text" name="q" placeholder="Search posts..." value="{{ query }}" autofocus />
             <button type="submit">SEARCH</button>
         </div>
@@ -87,6 +348,20 @@
     </div>
 
 </div>
+
+<script>
+function toggleFilterDropdown(event) {
+    event.stopPropagation();
+    document.getElementById('filterDropdown').classList.toggle('open');
+}
+document.addEventListener('click', function (event) {
+    var dropdown = document.getElementById('filterDropdown');
+    var btn = document.getElementById('filterBtn');
+    if (dropdown && dropdown.classList.contains('open') && !dropdown.contains(event.target) && event.target !== btn) {
+        dropdown.classList.remove('open');
+    }
+});
+</script>
 
 </body>
 </html>
